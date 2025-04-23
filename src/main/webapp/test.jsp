@@ -8,5 +8,6 @@
 </head>
 <body>
 	board브랜치에서--test.jsp에 새로운 코드 추가
+	board브랜치에서--두번째 코드 추가
 </body>
 </html>
