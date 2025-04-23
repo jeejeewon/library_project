@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	board브랜치에서--test.jsp에 새로운 코드 추가
 </body>
 </html>
