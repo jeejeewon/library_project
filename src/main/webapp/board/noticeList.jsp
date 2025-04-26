@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>공지사항 리스트</title>
 </head>
 <body>
 	<h1>공지사항페이지</h1>

@@ -44,6 +44,11 @@ public class ViewController extends HttpServlet {
 		if (action.equals("/main")) {
 			nextPage = "/main.jsp";
 		}
+		
+		else if(action.equals("/board")) {
+			nextPage = "/board/noticeList.jsp";
+			
+		}
 
 		if (nextPage != null) {          
             RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);            
