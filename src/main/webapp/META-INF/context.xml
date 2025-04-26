@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+<!-- JNDI기술을 사용하여 접속할 DB정보를 지정 -->
+	 <Resource 
+   		name="jdbc/MyAzuredb"
+        auth="Container"
+        type="javax.sql.DataSource"
+        factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+        driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://jiwonserver2.mysql.database.azure.com:3306/library"
+        username="yjw5619"
+        password="Wl184545#@"
+	/>
+
+</Context>
