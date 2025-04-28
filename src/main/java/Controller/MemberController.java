@@ -12,8 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Service.MemberService;
+
 @WebServlet("/member/*")
 public class MemberController extends HttpServlet {
+
+	MemberService memberservice;
+
+	@Override
+	public void init() throws ServletException {
+		memberservice = new MemberService();
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,26 +40,62 @@ public class MemberController extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=utf-8");
-		PrintWriter pw = response.getWriter();
+		PrintWriter out = response.getWriter();
 		String action = request.getPathInfo();
-		
+
 		System.out.println(action);
 		
 		String nextPage = null;
-		
-		HttpSession session = request.getSession();
-		String id = (String) session.getAttribute("id");
 
-		if (action.equals("/login")) {
-			nextPage = "/login.jsp";
+		try {
+			switch (action) {
+
+			// 회원 가입 화면 요청
+			case "/join":
+				String center = memberservice.serviceJoinName(request);
+				request.setAttribute("center", center);
+				nextPage = "/main.jsp";
+				break;
+				
+			// 로그인 화면
+			case "/login":
+				String loginPage = memberservice.serviceLoginMember();
+				request.setAttribute("center", loginPage);
+				nextPage = "/main.jsp";
+				break;
+
+			// 로그인 요청
+			case "/loginPro.me":
+				// 아이디 체크
+				 int check = memberservice.serviceUserCheck(request);				
+				 if(check == 0) { // 비밀번호 틀림					 
+					 out.println("<script>window.alert('비밀번호 틀림'); history.go(-1);</script>");
+					 return; 
+				 } else if(check == -1) { 					 
+					 out.println("<script>window.alert('아이디 틀림'); history.go(-1);</script>");
+					 return; 
+				 }
+				// 로그인 성공 (check == 1)				
+				 HttpSession session = request.getSession();
+                 session.setAttribute("id", request.getParameter("id"));
+                 nextPage = "/main.jsp";
+                 break;
+
+			default:
+				System.out.println("알 수 없는 요청: " + action);
+				nextPage = "/main.jsp";
+				break;
+			}
+
+			if (nextPage != null) {
+				RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
+				dispatch.forward(request, response); // 지정된 페이지로 포워딩
+			}
+
+		} catch (Exception e) {
+			System.out.println("doHandle 메소드 실행 중 예외 발생: " + e.getMessage());
+			e.printStackTrace();
 		}
-
-		if (nextPage != null) {          
-            RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);            
-            dispatch.forward(request, response);
-        } else {           
-            System.out.println("nextPage가 null입니다. (아마도 pw.print로 직접 응답 처리됨)" );
-        }
 
 	} // doHandle 끝
 
