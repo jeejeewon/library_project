@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="center" value="${requestScope.center}" />
 <c:if test="${empty center}">
 	<c:set var="center" value="center.jsp" />
@@ -12,18 +12,26 @@
 <meta charset="UTF-8">
 <title>도서관 메인</title>
 <link href="../css/common.css" rel="stylesheet">
+<link href="../css/head.css" rel="stylesheet">
+<link href="../css/index.css" rel="stylesheet">
 <script src="../js/common.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
 	<header id="header">
-		<jsp:include page="head.jsp" />
+		<div class="container">
+			<jsp:include page="head.jsp" />
+		</div>
 	</header>
 	<div id="wrapper">
-		<jsp:include page="${center}" />
+		<div class="container">
+			<jsp:include page="${center}" />
+		</div>
 	</div>
-	<header id="tail">
-		<jsp:include page="tail.jsp" />
-	</header>
+	<footer id="tail">
+		<div class="container">
+			<jsp:include page="tail.jsp" />
+		</div>
+	</footer>
 </body>
 </html>
