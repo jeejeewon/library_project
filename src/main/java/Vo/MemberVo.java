@@ -4,22 +4,23 @@ import java.sql.Date;
 
 public class MemberVo {
 
-    private String id; // 회원 아이디
-    private String pass; // 비밀번호
-    private String name; // 이름   
-    private String gender; // 성별
-    private String address; // 주소
-    private String email; // 이메일
-    private String tel; // 전화번호
-    private Date joinDate; // 등록일
-    private String kakaoId; // 카카오 고유 ID 추가
+	private String id; // 회원 아이디
+	private String pass; // 비밀번호
+	private String name; // 이름
+	private String gender; // 성별
+	private String address; // 주소
+	private String email; // 이메일
+	private String tel; // 전화번호
+	private Date joinDate; // 등록일
+	private String kakaoId; // 카카오 고유 ID 추가
 
-    // 기본 생성자
-    public MemberVo() {}
-    
-    // 모든 정보 조회(관리자용)
-	public MemberVo(String id, String pass, String name, String gender, String address, String email,
-			String tel, Date joinDate, String kakaoId) {
+	// 기본 생성자
+	public MemberVo() {
+	}
+
+	// 모든 정보 조회(관리자용)
+	public MemberVo(String id, String pass, String name, String gender, String address, String email, String tel,
+			Date joinDate, String kakaoId) {
 		super();
 		this.id = id;
 		this.pass = pass;
@@ -31,10 +32,9 @@ public class MemberVo {
 		this.joinDate = joinDate;
 		this.kakaoId = kakaoId;
 	}
-	
+
 	// 회원가입
-	public MemberVo(String id, String pass, String name, String gender, String address, String email,
-			String tel) {
+	public MemberVo(String id, String pass, String name, String gender, String address, String email, String tel) {
 		super();
 		this.id = id;
 		this.pass = pass;
@@ -115,6 +115,6 @@ public class MemberVo {
 
 	public void setKakaoId(String kakaoId) {
 		this.kakaoId = kakaoId;
-	}	
-  
+	}
+
 }
