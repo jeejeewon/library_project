@@ -1,5 +1,105 @@
-#header .header_wrap {width: 100%; display: flex; hight:80px;  height: 80px;    align-items: center;    background: skyblue;}
-#header #logo {width: 20%; font-weight:600; text-align: center;}
-#header #menu {width: 80%;}
-#menu ul {display:flex; justify-content: space-between; gap:1rem; width:100%;}
-#menu ul li {width: calc(100%/4); text-align: center; cursor:pointer;}
+#header .top {
+	width: 100%;
+	border-bottom: 1px solid #dedede;
+}
+
+#header .top .container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.625rem;
+	width: 100%;
+	height: 70px;
+}
+
+#header .top #logo {
+	width: auto;
+	font-weight: 600;
+	font-size: 1.875rem;
+}
+
+#header .top #logo a {
+	display: flex;
+}
+
+#header .top #login {
+	width: 30%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+#header .top #login .inner {
+	display: flex;
+	gap: 10px;
+}
+
+#header .top #login .inner .item {
+	font-size: 14px;
+}
+
+#header .header_wrap {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#header .menu {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 60px;
+	border-bottom: 1px solid #dedede;
+}
+
+#header .menu ul {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	width: 100%;
+}
+
+#header .menu ul li {
+	width: calc(100%/ 4);
+	text-align: center;
+	cursor: pointer;
+	font-size: 18px;
+}
+
+#footer {
+	border-top: 1px solid #dcdcdc;
+	background: #272727;
+	color: #dcdcdc;
+	min-height: 150px;
+	padding: 10px 0;
+}
+
+#footer .container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 50px;
+}
+
+#footer .menu {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 0.625rem;
+	width: 100%;
+	height: 70px;
+}
+
+#footer .menu ul {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	width: 100%;
+}
+
+#footer .menu ul li {
+	width: calc(100%/ 5);
+	cursor: pointer;
+	font-size: 14px;
+}
+#footer .adress {font-size:12px;} 

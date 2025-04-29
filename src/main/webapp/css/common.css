@@ -1,35 +1,30 @@
-*{outline:none; }
-*, :after, :before {box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;}
+* {
+	outline: none;
+}
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
-pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary, time, mark, audio, video {margin: 0;padding: 0;border: 0;font: inherit;vertical-align: baseline; list-style: none;}
+*, :after, :before {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+	blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn,
+	em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var,
+	b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+	table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas,
+	details, embed, figure, figcaption, footer, header, hgroup, menu, nav,
+	output, ruby, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+	list-style: none;	
+}
 
-/* =============== Display =============== */
-.block { display: block; }
-.inline-block { display: inline-block; }
-
-.flex { display: -webkit-box; display: -ms-flexbox; display: flex; }
-.flex-wrap{display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;flex-wrap: wrap;}
-.flex-center {display: flex; align-items: center; justify-content: center;}
-.flex-between {display: flex; justify-content: space-between;}
-
-.justify-start { justify-content:flex-start !important}
-.justify-center { -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; }
-.justify-between { -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-
-.items-start { -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; }
-.items-center { -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
-.items-end { -webkit-box-align: end; -ms-flex-align: end; align-items: flex-end; }
-
-.align-self-start{-ms-flex-item-align: start;align-self: flex-start}
-.align-self-center{-ms-flex-item-align:center;align-self: center}
-.align-self-end{-ms-flex-item-align:end;align-self: flex-end}
-
-
-.container {width:100%; max-width:1400px; margin: 0 auto;}
+.container {
+	width: 100%;
+	max-width: 1400px;
+	margin: 0 auto;
+}
