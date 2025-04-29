@@ -46,9 +46,7 @@
 			<button value="3F" onclick="mapImgClick()">3F</button>	 			
 			<button value="4F" onclick="mapImgClick()">4F</button>	 			
 		</div>	
-		<div id="mapImg">
-			시설 배치도 나올 자리
-		</div>
+		<div id="mapImg"><!-- 시설 배치도 보여줄 자리 --></div>
 		<div id="mapRoom">
 			시설 현황 나올 자리	
 		</div>
@@ -63,19 +61,19 @@
         var btnValue = event.target.value;
         
         if (btnValue == "1F") {
-            mapImg.innerHTML = "<p style='font-size:24px;'>1F</p><br><br><img src='../infomation/img/mapImg1F.PNG' alt='1F Map'>";
+            mapImg.innerHTML = "<p style='font-size:24px;'>1F</p><br><br><img src='../information/img/mapImg1F.PNG' alt='1F Map'>";
         } else if (btnValue == "2F") {
-            mapImg.innerHTML = "<p style='font-size:24px;'>2F</p><br><br><img src='../infomation/img/mapImg2F.PNG' alt='2F Map'>";
+            mapImg.innerHTML = "<p style='font-size:24px;'>2F</p><br><br><img src='../information/img/mapImg2F.PNG' alt='2F Map'>";
         } else if (btnValue == "3F") {
-            mapImg.innerHTML = "<p style='font-size:24px;'>3F</p><br><br><img src='../infomation/img/mapImg3F.PNG' alt='3F Map'>";
+            mapImg.innerHTML = "<p style='font-size:24px;'>3F</p><br><br><img src='../information/img/mapImg3F.PNG' alt='3F Map'>";
         } else if (btnValue == "4F") {
-            mapImg.innerHTML = "<p style='font-size:24px;'>4F</p><br><br><img src='../infomation/img/mapImg4F.PNG' alt='4F Map'>";
+            mapImg.innerHTML = "<p style='font-size:24px;'>4F</p><br><br><img src='../information/img/mapImg4F.PNG' alt='4F Map'>";
     	}
 	}//mapImgClick
 	
-	//층버튼을 누르지않아도 기본적으로 1F 시설 배치도 보여주는 함수
+	//층버튼을 누르지 않아도 기본적으로 1F 시설 배치도 보여주는 함수
 	function showDefaultMap() {
-		document.getElementById("mapImg").innerHTML = "<p style='font-size:24px;'>1F</p><br><br><img src='../infomation/img/mapImg1F.PNG' alt='1F Map'>";
+		document.getElementById("mapImg").innerHTML = "<p style='font-size:24px;'>1F</p><br><br><img src='../information/img/mapImg1F.PNG' alt='1F Map'>";
 	}
 
 </script>

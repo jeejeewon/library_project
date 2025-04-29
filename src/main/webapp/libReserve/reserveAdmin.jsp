@@ -7,7 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	reserve.jsp
-    [ 도서관안내 ]-[ 시설예약 ] 뷰
+	<div align="center" style="margin-top: 300px; color: red;">
+		reserveAdmin.jsp <br>
+		[ 관리자메뉴 ]-[ 시설예약관리 ] 뷰
+	</div>	
 </body>
 </html>

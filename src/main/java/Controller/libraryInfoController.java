@@ -29,21 +29,34 @@ public class libraryInfoController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-		String contextPath = request.getContextPath();
-//		
-		System.out.println("contextPath : " + contextPath);		
+		String contextPath = request.getContextPath();	
 		String action = request.getPathInfo();		
 //		
 		System.out.println("doHandle() 호출됨! action = " + action);
 		
 		String nextPage = null;
-			
+		
+		//[도서관안내] 및 [도서관소개] 클릭시 보여줄 뷰
 		if(action.equals("/mapinfo")) {
 			
-			request.setAttribute("center", "/infomation/mapInfo.jsp");
+			request.setAttribute("center", "/information/mapInfo.jsp");
 			
-			nextPage = "/main.jsp";			
-					
+			nextPage = "/main.jsp";		
+			
+		//[이용안내] 클릭시 보여줄 뷰			
+		}else if(action.equals("/useinfo")) {
+			
+			request.setAttribute("center", "/information/useInfo.jsp");
+			
+			nextPage = "/main.jsp";	
+		
+		//[오시는길] 클릭시 보여줄 뷰	
+		}else if(action.equals("/map")) {
+			
+			request.setAttribute("center", "/information/map.jsp");
+			
+			nextPage = "/main.jsp";	
+			
 		}
 		
 		
@@ -54,13 +67,6 @@ public class libraryInfoController extends HttpServlet {
 			System.out.println("nextPage가 null입니다.");
 		}
 		
-		
-		
 	}//doHandle
-
-	
-	
-	
-	
-	
+		
 }

@@ -7,7 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	map.jsp
-	[ 도서관안내 ]-[ 오시는길 ] 뷰
+	<div align="center" style="margin-top: 300px; color: red;">
+		reserveMeeting.jsp <br>
+		[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰
+	</div>	
 </body>
 </html>
