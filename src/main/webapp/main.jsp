@@ -19,19 +19,15 @@
 </head>
 <body>
 	<header id="header">
-		<div class="container">
-			<jsp:include page="head.jsp" />
-		</div>
+		<jsp:include page="head.jsp" />
 	</header>
 	<div id="wrapper">
 		<div class="container">
 			<jsp:include page="${center}" />
 		</div>
 	</div>
-	<footer id="tail">
-		<div class="container">
-			<jsp:include page="tail.jsp" />
-		</div>
+	<footer id="footer">
+		<jsp:include page="tail.jsp" />
 	</footer>
 </body>
 </html>
