@@ -11,10 +11,7 @@
 request.setCharacterEncoding("UTF-8");
 %>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+
 <title>공지사항 리스트 - noticeLi</title>
 </head>
 <body>

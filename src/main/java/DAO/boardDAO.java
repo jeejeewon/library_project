@@ -24,7 +24,6 @@ public class boardDAO {
 	//기본생성자
 	public boardDAO() {}
 	
-
 	// 데이터베이스의 board테이블에 저장된 정보를 조회해서 읽어오는 메소드
 	public Vector<boardVO> getAllBoardList() {
 
@@ -69,10 +68,7 @@ public class boardDAO {
 	
 	
 	public Vector<boardVO> getNoticeList() {
-
-		// 조회된 정보들을 담을 배열vector 생성
 		Vector<boardVO> vector = new Vector();
-		// 조회된 정보를 임시로 담을 상자vo 준비
 		boardVO vo = null;
 
 		try {
@@ -99,7 +95,45 @@ public class boardDAO {
 								rs.getString("reply"));
 				vector.add(vo);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
 
+		return vector;
+	}
+	
+	
+	
+	public Vector<boardVO> getquestionList() {
+		Vector<boardVO> vector = new Vector();
+		boardVO vo = null;
+
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "select * from board where category = 1 "
+					   + "ORDER BY date desc";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+
+				// 현재 조회된 줄의 게시판 정보를 담을 새 상자 만들기
+				vo = new boardVO(rs.getInt("board_id"), 
+								rs.getInt("category"), 
+								rs.getString("title"),
+								rs.getString("content"), 
+								rs.getString("user_id"), 
+								rs.getInt("book_no"), 
+								rs.getString("file"),
+								rs.getString("banner_img"), 
+								rs.getDate("date"), 
+								rs.getInt("views"), 
+								rs.getBoolean("secret"),
+								rs.getString("reply"));
+				vector.add(vo);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

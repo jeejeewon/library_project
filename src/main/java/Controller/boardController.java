@@ -68,6 +68,24 @@ public class boardController extends HttpServlet {
 		}
 		
 		
+		// 요청주소 "/bbs/noticeList.do"
+		if (action.equals("/questionList.do")) {
+		
+			// 조회된 게시판을
+			Vector<boardVO> boardList = boardService.getquestionList();
+			
+			// 조회된 목록을 request에 "boardList"라는 이름으로 저장하기
+			request.setAttribute("boardList", boardList);
+			
+			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/questionList.jsp");
+			
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+			
+		}
+
+		
 		
 		
 		

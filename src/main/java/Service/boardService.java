@@ -31,6 +31,12 @@ public class boardService {
 		
 	}
 	
+	public Vector<boardVO> getquestionList() {
+		
+		return boardDao.getquestionList();
+		
+	}
+	
 	
 
 }
