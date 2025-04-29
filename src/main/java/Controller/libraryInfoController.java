@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 //시설 안내 컨트롤러
 @WebServlet("/info/*")
@@ -27,13 +28,32 @@ public class libraryInfoController extends HttpServlet {
 		
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=utf-8");
-		PrintWriter pw = response.getWriter();
-		String action = request.getPathInfo();
+		PrintWriter out = response.getWriter();
+		String contextPath = request.getContextPath();
+//		
+		System.out.println("contextPath : " + contextPath);		
+		String action = request.getPathInfo();		
+//		
+		System.out.println("doHandle() 호출됨! action = " + action);
 		
-		System.out.println("action: " + action);
+		String nextPage = null;
+			
+		if(action.equals("/mapinfo")) {
+			
+			request.setAttribute("center", "/infomation/mapInfo.jsp");
+			
+			nextPage = "/main.jsp";			
+					
+		}
 		
 		
-	
+		if(nextPage != null) {			
+			System.out.println("포워딩 실행 : " + nextPage);
+			request.getRequestDispatcher(nextPage).forward(request, response);			
+		}else {
+			System.out.println("nextPage가 null입니다.");
+		}
+		
 		
 		
 	}//doHandle
