@@ -17,13 +17,12 @@ public class MemberDao {
 	PreparedStatement pstmt;
 	ResultSet rs;
 	DataSource ds;
-	
-	
-	private Connection getConnection() throws Exception{
-		Connection con=null;		
-		Context init=new InitialContext();
-		DataSource ds=(DataSource)init.lookup("java:comp/env/jdbc/jspbeginner");
-		con=ds.getConnection();
+
+	private Connection getConnection() throws Exception {
+		Connection con = null;
+		Context init = new InitialContext();
+		DataSource ds = (DataSource) init.lookup("java:comp/env/jdbc/jspbeginner");
+		con = ds.getConnection();
 		return con;
 	}
 
@@ -41,7 +40,7 @@ public class MemberDao {
 				MemberVo vo = new MemberVo();
 				vo.setId(rs.getString("id"));
 				vo.setPass("********"); // 마스킹처리
-				vo.setName(rs.getString("name"));				
+				vo.setName(rs.getString("name"));
 				vo.setGender(rs.getString("gender"));
 				vo.setAddress(rs.getString("adress"));
 				vo.setEmail(rs.getString("email"));
@@ -61,30 +60,32 @@ public class MemberDao {
 	}
 
 	// 회원가입 시 아이디 중복 확인
-	public boolean idCheck(String id) {
+	public Boolean overlappedId(String id) {
+
 		boolean result = false;
+		String sql = "";
+
 		try {
 
-			con = getConnection();
-			String sql = "select id from member where id = ?";
+			con = this.getConnection();
+			sql = "select * from member where id = ?";
 
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, id); // 첫 번째 '?' 자리에 id 값 바인딩
-
+			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 
-			if (rs.next()) { // 결과 행이 존재하면
+			if (rs.next()) {
 				String value = rs.getString("result");
-				// 문자열을 boolean 타입으로 변환하여 result 변수에 저장
 				result = Boolean.parseBoolean(value);
 			}
 
 		} catch (Exception e) {
-			System.out.println("idCheck 메소드 내부에서 오류!");
-			e.printStackTrace();
+			System.out.println("MemberDAO.overlappedId() 메소드 오류: "+e);
+            e.printStackTrace();
 		} finally {
 			ResourceClose();
 		}
+
 		return result;
 	}
 
@@ -93,13 +94,12 @@ public class MemberDao {
 		try {
 
 			con = getConnection();
-			String sql = "insert int member(id, pass, name, age, gender, address, email, tel, joinDate, kakaoId)" 
-			+ "values(?,?,?,?,?,?,?,?,sysdate,?)";
-			
+			String sql = "insert int member(id, pass, name, age, gender, address, email, tel, joinDate, kakaoId)"
+					+ "values(?,?,?,?,?,?,?,?,sysdate,?)";
+
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, vo.getId());
-			pstmt.setString(2, vo.getPass());			
-			
+			pstmt.setString(2, vo.getPass());
 
 		} catch (Exception e) {
 			System.out.println("insertMember 메소드 내부에서 오류!");
@@ -113,45 +113,45 @@ public class MemberDao {
 	// 로그인 시 아이디, 비밀번호 일치 여부
 	public int userCheck(String login_id, String login_pass) {
 		int check = -1;
-				
-		 try {
-             con = getConnection();          
-             String sql = "select pass from member where id=?";             
-             pstmt = con.prepareStatement(sql);
-             pstmt.setString(1, login_id);
-             
-             rs = pstmt.executeQuery();
-             
-             if(rs.next()) { 
-                 if(login_pass.equals(rs.getString("pass"))) {
-                     check = 1; 
-                 } else {
-                     check = 0; 
-                 }
-             } else { 
-                 check = -1; 
-             }
 
-        } catch (Exception e) {
-         
-            System.out.println("MemberDAO.userCheck() 메소드 오류: " + e);
-            e.printStackTrace();
-        } finally {           
-        	ResourceClose();
-        }		
+		try {
+			con = getConnection();
+			String sql = "select pass from member where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, login_id);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				if (login_pass.equals(rs.getString("pass"))) {
+					check = 1;
+				} else {
+					check = 0;
+				}
+			} else {
+				check = -1;
+			}
+
+		} catch (Exception e) {
+
+			System.out.println("MemberDAO.userCheck() 메소드 오류: " + e);
+			e.printStackTrace();
+		} finally {
+			ResourceClose();
+		}
 		return check;
 	}
-	
+
 	// 자원 해제
-	public void ResourceClose() {	
+	public void ResourceClose() {
 		try {
-			if(pstmt != null) {
+			if (pstmt != null) {
 				pstmt.close();
 			}
-			if(rs != null) {
+			if (rs != null) {
 				rs.close();
 			}
-			if(con != null) {
+			if (con != null) {
 				con.close();
 			}
 		} catch (Exception e) {

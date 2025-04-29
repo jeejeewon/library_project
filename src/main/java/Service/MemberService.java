@@ -42,7 +42,17 @@ public class MemberService {
 		return memberDao.userCheck(login_id, login_pass);
 	}
 
-	public String serviceJoinName(HttpServletRequest request) {
-		 return request.getParameter("center");
+	public String serviceJoin(HttpServletRequest request) {
+		return "members/join.jsp";
 	}
+
+	public String serviceJoinForm(HttpServletRequest request) {
+		return "members/joinForm.jsp";
+	}
+
+	public Boolean serviceOverLappedId(HttpServletRequest request) {
+		String id = request.getParameter("id");		
+		return memberDao.overlappedId(id);
+	}
+
 }

@@ -27,15 +27,13 @@ session.setAttribute("kakao_state", state);
 
 %>
 
-로그인페이지
+로그인 페이지
 
 <div id="loginForm">
-
 	<form action="<%=contextPath%>/member/loginPro.me" method="post">
 		<input type="text" id="id" name="id" placeholder="아이디" required autofocus>
 		<input type="password" id="pass" name="pass" placeholder="패스워드" required>
 		<input type="submit" value="로그인">
 	</form>
-
 	<a href="${kakaoAuthUrl}" class="block mt-4 text-center">카카오 로그인</a>
 </div>
