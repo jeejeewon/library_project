@@ -31,7 +31,7 @@ public class DbcpBean {
             
             // 3. DataSource 객체 찾기 (JNDI 이름: "jdbc/oracle")
             //    context.xml 에 설정된 name 값 ("jdbc/oracle")을 사용합니다.
-            ds = (DataSource) envContext.lookup("jdbc/MyAzuredb");
+            ds = (DataSource) envContext.lookup("jdbc/jspbeginner");
             System.out.println("DataSource lookup 성공!");
 
         } catch (NamingException e) {
