@@ -32,7 +32,7 @@ public class MemberDao {
 		String sql = "slect * from member order by joinDate desc";
 		try {
 
-			con = getConnection();
+			con = this.getConnection();
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery(); // 쿼리 결과 얻기
 
@@ -80,8 +80,8 @@ public class MemberDao {
 			}
 
 		} catch (Exception e) {
-			System.out.println("MemberDAO.overlappedId() 메소드 오류: "+e);
-            e.printStackTrace();
+			System.out.println("MemberDAO.overlappedId() 메소드 오류: " + e);
+			e.printStackTrace();
 		} finally {
 			ResourceClose();
 		}
@@ -93,13 +93,22 @@ public class MemberDao {
 	public void insertMember(MemberVo vo) {
 		try {
 
-			con = getConnection();
-			String sql = "insert int member(id, pass, name, age, gender, address, email, tel, joinDate, kakaoId)"
-					+ "values(?,?,?,?,?,?,?,?,sysdate,?)";
+			con = this.getConnection();
+			String sql = "insert into member(id, pass, name, gender, address, email, tel, joinDate, kakao_Id)"
+					+ "values(?,?,?,?,?,?,?,sysdate(),?)";
 
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, vo.getId());
 			pstmt.setString(2, vo.getPass());
+			pstmt.setString(3, vo.getName());
+			pstmt.setString(4, vo.getGender());
+			pstmt.setString(5, vo.getAddress());
+			pstmt.setString(6, vo.getEmail());
+			pstmt.setString(7, vo.getTel());
+			pstmt.setString(8, vo.getKakaoId());
+
+			// insert
+			pstmt.executeUpdate();
 
 		} catch (Exception e) {
 			System.out.println("insertMember 메소드 내부에서 오류!");
@@ -115,7 +124,7 @@ public class MemberDao {
 		int check = -1;
 
 		try {
-			con = getConnection();
+			con =this. getConnection();
 			String sql = "select pass from member where id=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, login_id);

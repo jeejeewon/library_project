@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Dao.MemberDao;
+import Vo.MemberVo;
 
 public class MemberService {
 	private MemberDao memberDao;
@@ -51,8 +52,22 @@ public class MemberService {
 	}
 
 	public Boolean serviceOverLappedId(HttpServletRequest request) {
-		String id = request.getParameter("id");		
+		String id = request.getParameter("id");
 		return memberDao.overlappedId(id);
+	}
+
+	public void serviceInsertMember(HttpServletRequest request) {
+		String user_id = request.getParameter("id");
+		String user_pass = request.getParameter("pass");
+		String user_name = request.getParameter("name");
+		String user_gender = request.getParameter("gender");
+		String user_address = request.getParameter("address");
+		String user_email = request.getParameter("email");
+		String user_tel = request.getParameter("tel");
+
+		// 추출한 정보로 MemberVo 객체 생성
+		MemberVo vo = new MemberVo(user_id, user_pass, user_name, user_gender, user_address, user_email, user_tel);
+		memberDao.insertMember(vo);
 	}
 
 }

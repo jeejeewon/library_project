@@ -221,40 +221,8 @@
     		
 			//====================================================================================================
 			
-			var hp = $("#hp");
-    		
-    		var hpValue = hp.val();
-    		
-    		var hpReg = RegExp(/^01[0179][0-9]{7,8}$/);
-    		
-    		var resultHp = hpReg.test(hpValue);
-    		
-    		if(!resultHp){
-    			
-    			$("#hpInput").text("휴대폰번호 형식이 올바르지 않습니다.").css("color","red");
-    			
-    			hp.focus();
-    			
-    			return false;
-    		}else{
-    			$("#hpInput").text("올바르게 입력되었습니다.").css("color","blue");
-    		}	
-    		  	  
+			    		  	  
     		//<form aciton="/member/joinPro.me">으로 회원 가입 요청!
    	    	$("form").submit();			
    	    	
 		}//check함수 끝 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	

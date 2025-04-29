@@ -11,7 +11,7 @@ joinForm.jsp
 
 <div id="joinForm">
 	<div class="inner">
-		<form action="<%=contextPath%>/member/JoinPro.me" method="post">
+		<form action="<%=contextPath%>/member/joinPro.me" method="post">
 
 			<div>
 				<label>아이디</label> <input type="text" id="id" name="id"
@@ -35,8 +35,8 @@ joinForm.jsp
 			</div>
 			<div>
 				<label>성별</label> 남성<input type="radio" class="gender" name="gender"
-					value="남"> 여성 <input type="radio" class="gender"
-					name="gender" value="여">
+					value="남성"> 여성 <input type="radio" class="gender"
+					name="gender" value="여성">
 			</div>
 			<div>
 				<label>이메일</label> <input type="email" id="email" name="email"
@@ -50,7 +50,7 @@ joinForm.jsp
 			</div>
 
 			<div class="btn_wrap">
-				<a href="#" onclick="check(); return false;" type="submit">가입하기</a>
+				<a href="#" onclick="check(); return false;" type="button">가입하기</a>
 			</div>
 		</form>
 	</div>

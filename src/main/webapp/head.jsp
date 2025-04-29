@@ -19,7 +19,7 @@
 						</c:when>
 						<c:otherwise>
 							<p class="item">환영합니다 ${sessionScope.id}님</p>
-							<a href="" class="item">마이페이지</a>
+							<a href="${contextPath}/member/mypage" class="item">마이페이지</a>
 							<a href="${contextPath}/member/logout.me" class="item">로그아웃</a>
 						</c:otherwise>
 					</c:choose>

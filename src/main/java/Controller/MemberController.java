@@ -57,6 +57,7 @@ public class MemberController extends HttpServlet {
 				nextPage = "/main.jsp";
 				break;
 
+			// 회원 가입 폼 요청
 			case "/join.me":
 				String joinForm = memberservice.serviceJoinForm(request);
 				request.setAttribute("center", joinForm);
@@ -79,6 +80,8 @@ public class MemberController extends HttpServlet {
 
 			// 회원 가입 처리 요청
 			case "/joinPro.me":
+				memberservice.serviceInsertMember(request);				
+				nextPage = "login";
 				break;
 
 			// 로그인 화면 요청
@@ -102,7 +105,7 @@ public class MemberController extends HttpServlet {
 				// 로그인 성공 (check == 1)
 				HttpSession session = request.getSession();
 				session.setAttribute("id", request.getParameter("id"));
-				nextPage = "/main.jsp";
+				nextPage = null;
 				break;
 
 			// 로그아웃 요청
@@ -113,7 +116,7 @@ public class MemberController extends HttpServlet {
 					session_.invalidate();
 				}
 				// 메인 화면으로 이동하도록 설정
-				nextPage = "/main.jsp";
+				nextPage = null;
 				break;
 
 			default:
@@ -125,6 +128,8 @@ public class MemberController extends HttpServlet {
 			if (nextPage != null) {
 				RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 				dispatch.forward(request, response); // 지정된 페이지로 포워딩
+			} else {
+				response.sendRedirect("view/main");
 			}
 
 		} catch (Exception e) {
