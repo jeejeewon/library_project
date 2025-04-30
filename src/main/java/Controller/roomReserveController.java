@@ -2,12 +2,15 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import Service.roomReserveService;
 
 //시설 예약 컨트롤러
 @WebServlet("/reserve/*")
@@ -34,7 +37,10 @@ public class roomReserveController extends HttpServlet{
 		System.out.println("doHandle() 호출됨! action = " + action);
 		
 		String nextPage = null;
-			
+		
+		//비즈니스 로직 처리할 Service 객체 생성
+		roomReserveService roomReserveService = new roomReserveService();		
+		
 		//[시설예약] 클릭시 보여줄 뷰
 		if(action.equals("/room")) {
 			
@@ -69,6 +75,25 @@ public class roomReserveController extends HttpServlet{
 			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");
 			
 			nextPage = "/main.jsp";	
+			
+		}else if(action.equals("/meetingRoomList")) {
+				
+		   String date = request.getParameter("Date");
+		   String start = request.getParameter("StartTime");
+		   String end = request.getParameter("EndTime");
+			
+			/*
+			 * System.out.println("선택날짜 : " + date); System.out.println("시작시간 : " + start);
+			 * System.out.println("종료시간 : " + end);
+			 */
+		   
+		   //예약가능한 미팅룸 리스트 가져오기
+		   List meetingRoomList = roomReserveService.MeetingRoomList(date, start, end);
+		   
+		   
+		   
+		   
+			return;
 		}
 		
 		
