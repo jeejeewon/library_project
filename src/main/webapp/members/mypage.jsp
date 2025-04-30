@@ -5,4 +5,9 @@
 mypage.jsp
 <div id="mypage">
 
+<div class="inner">
+
+
+</div>
+
 </div>
