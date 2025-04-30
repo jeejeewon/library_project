@@ -1,4 +1,4 @@
-package VO;
+package Vo;
 
 //시설 정보 저장할 VO
 public class libraryRoomVO {
