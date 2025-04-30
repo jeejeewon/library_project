@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
 <c:set var="center" value="${requestScope.center}" />
 <c:if test="${empty center}">
 	<c:set var="center" value="center.jsp" />
@@ -17,8 +15,8 @@
 <link href="${contextPath}/css/common.css" rel="stylesheet">
 <link href="${contextPath}/css/head.css" rel="stylesheet">
 <link href="${contextPath}/css/index.css" rel="stylesheet">
-<script src="${contextPath}/js/common.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="${contextPath}/js/common.js"></script>
 </head>
 <body>
 	<header id="header">

@@ -75,9 +75,9 @@ public class MemberDao {
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
-				String value = rs.getString("result");
-				result = Boolean.parseBoolean(value);
-			}
+				
+				result = true;
+			} 
 
 		} catch (Exception e) {
 			System.out.println("MemberDAO.overlappedId() 메소드 오류: " + e);

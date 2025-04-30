@@ -47,10 +47,6 @@ public class MemberService {
 		return "members/join.jsp";
 	}
 
-	public String serviceJoinForm(HttpServletRequest request) {
-		return "members/joinForm.jsp";
-	}
-
 	public Boolean serviceOverLappedId(HttpServletRequest request) {
 		String id = request.getParameter("id");
 		return memberDao.overlappedId(id);
@@ -68,6 +64,10 @@ public class MemberService {
 		// 추출한 정보로 MemberVo 객체 생성
 		MemberVo vo = new MemberVo(user_id, user_pass, user_name, user_gender, user_address, user_email, user_tel);
 		memberDao.insertMember(vo);
+	}
+
+	public String serviceMypage(HttpServletRequest request) {
+		return "members/mypage.jsp";		
 	}
 
 }
