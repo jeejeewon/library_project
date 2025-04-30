@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
@@ -49,7 +50,7 @@ public class boardController extends HttpServlet {
 		String action = request.getPathInfo();
 		System.out.println("action :" + action);
 
-
+/*-------------------------------------공지사항게시판---------------------------------------*/
 		// 요청주소 "/bbs/noticeList.do"
 		if (action.equals("/noticeList.do")) {
 
@@ -67,7 +68,29 @@ public class boardController extends HttpServlet {
 			
 		}
 		
+		// 요청주소 "/bbs/noticeWrite.do"
+		if(action.equals("/noticeWrite.do")) {//요청명이 noticeWrite.do이면 글쓰기 화면이 나타남
+			
+			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/noticeWrite.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+		}
 		
+		if(action.equals("/AddNotice.do")) {//요청명이 AddNotice.do이면 글쓰기 처리
+			
+			Map<String, String> writeMap = boardService.uploadFile(request, response);
+			
+			
+			
+			
+			// 전체글을 다시 DB에서 겅색하여 보여주기 위해 다음과 같은 주소를 저장
+			nextPage = "/bbs/noticeList.do";
+		}
+		
+		
+/*-------------------------------------문의게시판---------------------------------------*/		
 		// 요청주소 "/bbs/noticeList.do"
 		if (action.equals("/questionList.do")) {
 		

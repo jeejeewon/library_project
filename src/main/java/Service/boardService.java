@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import DAO.boardDAO;
 import VO.boardVO;
 
@@ -35,6 +38,12 @@ public class boardService {
 		
 		return boardDao.getquestionList();
 		
+	}
+
+	
+	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response) {
+		
+		return boardDao.uploadFile(request, response);
 	}
 	
 	

@@ -6,9 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.catalina.Context;
@@ -142,6 +145,13 @@ public class boardDAO {
 
 		return vector;
 	}
+
+	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response) {
+		// 5월1일 구현하기
+		return null;
+	}
+	
+	
 
 	
 

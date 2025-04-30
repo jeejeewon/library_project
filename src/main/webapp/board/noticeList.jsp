@@ -11,11 +11,13 @@
 request.setCharacterEncoding("UTF-8");
 %>
 
-
-<title>공지사항 리스트 - noticeLi</title>
+<html>
+<head>
+<title>공지사항 리스트 - noticeList.jsp</title>
 </head>
 <body>
 	<center>
+	    <a href="${contextPath}/bbs/noticeWrite.do">글쓰기</a>
 		<table align="center" border="1" width="80%">
 			<tr height="20" align="center" bgcolor="lightgray">
 				<td>No</td>

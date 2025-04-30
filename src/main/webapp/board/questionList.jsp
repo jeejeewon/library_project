@@ -11,8 +11,9 @@
 request.setCharacterEncoding("UTF-8");
 %>
 
-
-<title>공지사항 리스트 - noticeLi</title>
+<html>
+<head>
+<title>문의게시판 리스트 - questionList.jsp</title>
 <style type="text/css">
     .reply-row {
         display: none;
