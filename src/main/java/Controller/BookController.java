@@ -1,31 +1,25 @@
 package Controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import Service.BookService;
 import Vo.BookVo;
-import Vo.RentalVo;
 
-@WebServlet("/book/*")
+@WebServlet("/books/*")
 public class BookController extends HttpServlet {
 
     private BookService bookService;
 
     @Override
     public void init() throws ServletException {
-        // BookService 객체 초기화
+        // 서비스 객체 초기화
         bookService = new BookService();
-        System.out.println("BookController 초기화 : BookService 객체 생성 완료");
     }
 
     @Override
@@ -43,61 +37,57 @@ public class BookController extends HttpServlet {
     protected void doHandle(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 요청 처리 기본 설정
+        // 요청 및 응답 한글 처리
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        String action = request.getPathInfo(); // 요청 URL 분석
-        System.out.println("action : " + action);
+        // 요청 URI에서 /book 이후의 경로 추출
+        String action = request.getPathInfo();
+        System.out.println("요청한 2단계 주소: " + action); // 디버깅용
 
-        String nextPage = null; // 이동할 JSP 경로
+        String nextPage = null;
 
-        // 세션에서 로그인 아이디 확인
-        HttpSession session = request.getSession();
-        String id = (String) session.getAttribute("user_id");
-        boolean isMember = (id != null);
-
-        // 메인 페이지 이동
-        if (action == null || action.equals("/main")) {
+        // 메인화면 요청 처리 ("/Main")
+        if (action.equals("/Main")) {
             nextPage = "/main.jsp";
 
-        // center 영역 변경 요청
-        } else if (action.equals("/book")) {
-            String center = request.getParameter("center");
-            request.setAttribute("center", center);
-            nextPage = "/main.jsp";
-
-        // 전체 도서 목록 조회
+        // 전체 도서 목록
         } else if (action.equals("/bookList.do")) {
-            Vector<BookVo> vector = bookService.getAllBooks();
-            request.setAttribute("v", vector);
-            request.setAttribute("center", "/book/list.jsp");
+            Vector<BookVo> vector = bookService.getAllBooks(); // 전체 도서 불러오기
+            request.setAttribute("v", vector); // 도서 목록을 request에 담기
+            request.setAttribute("center", "/book/bookList.jsp"); // center 영역에 들어갈 jsp
             nextPage = "/main.jsp";
 
-        // 카테고리별 도서 목록 조회
+        // 카테고리별 도서 목록
         } else if (action.equals("/categoryList.do")) {
             String category = request.getParameter("category");
             Vector<BookVo> vector = bookService.getBooksByCategory(category);
             request.setAttribute("category", vector);
-            request.setAttribute("center", "/book/categorylist.jsp");
+            request.setAttribute("center", "/book/categoryList.jsp");
+            nextPage = "/main.jsp";            
+            
+        // 도서 검색 화면    
+        } else if (action.equals("/searchForm.do")) {
+            request.setAttribute("center", "/book/bookSearchForm.jsp");
             nextPage = "/main.jsp";
 
-        // 도서 검색
+        // 도서 검색 결과 화면
         } else if (action.equals("/bookSearch.do")) {
             String keyword = request.getParameter("keyword");
             Vector<BookVo> result = bookService.searchBooks(keyword);
+            request.setAttribute("keyword", keyword); // 검색어 유지
             request.setAttribute("v", result);
             request.setAttribute("center", "/book/bookSearch.jsp");
-            nextPage = "/main.jsp";
+            nextPage = "/main.jsp";        
 
-        // 신착 도서 조회
+        // 신착 도서
         } else if (action.equals("/newBook.do")) {
             Vector<BookVo> newBooks = bookService.getNewBooks();
             request.setAttribute("v", newBooks);
             request.setAttribute("center", "/book/newBooks.jsp");
             nextPage = "/main.jsp";
 
-        // 인기 도서 조회
+        // 인기 도서
         } else if (action.equals("/bestBook.do")) {
             Vector<BookVo> bestBooks = bookService.getBestBooks();
             request.setAttribute("v", bestBooks);
@@ -107,80 +97,43 @@ public class BookController extends HttpServlet {
         // 도서 상세 정보 조회
         } else if (action.equals("/bookInfo.do")) {
             int bookNo = Integer.parseInt(request.getParameter("bookNo"));
-            BookVo book = bookService.getBook(bookNo);
-            Vector<BookVo> relatedBooks = bookService.getBooksByCategory(book.getCategory());
+            BookVo book = bookService.getBook(bookNo); // 선택한 도서 정보
+            Vector<BookVo> relatedBooks = bookService.getBooksByCategory(book.getCategory()); // 같은 카테고리 추천
             request.setAttribute("book", book);
             request.setAttribute("relatedBooks", relatedBooks);
-            request.setAttribute("center", "/book/info.jsp");
+            request.setAttribute("center", "/book/bookInfo.jsp");
             nextPage = "/main.jsp";
 
-        // 도서 대여 화면
-        } else if (action.equals("/rentalBook.do")) {
-            if (!isMember) {
-                nextPage = "/member/login.jsp"; // 비회원이면 로그인
-            } else {
-                int bookNo = Integer.parseInt(request.getParameter("bookNo"));
-                BookVo book = bookService.getBook(bookNo);
-                request.setAttribute("book", book);
-                request.setAttribute("center", "/book/rentalForm.jsp");
-                nextPage = "/main.jsp";
-            }
-
-        // 도서 대여 확정
-        } else if (action.equals("/bookOrder.do")) {
-            if (!isMember) {
-                nextPage = "/member/login.jsp";
-            } else {
-                int bookNo = Integer.parseInt(request.getParameter("bookNo"));
-                bookService.rentBook(id, bookNo);
-                response.sendRedirect(request.getContextPath() + "/book/rentalResult.do");
-                return;
-            }
-
-        // 도서 대여 완료 결과
         } else if (action.equals("/rentalResult.do")) {
-            Vector<RentalVo> rentedBooks = bookService.getRentalListByUser(id);
-            request.setAttribute("rentalList", rentedBooks);
+            // TODO: 대여 결과 처리
             request.setAttribute("center", "/book/rentalResult.jsp");
             nextPage = "/main.jsp";
 
-        // 내 대여 상세 내역 조회
         } else if (action.equals("/bookRentalConfirm.do")) {
-            Vector<RentalVo> rentalDetails = bookService.getRentalDetailByUser(id);
-            request.setAttribute("rentalDetails", rentalDetails);
-            request.setAttribute("center", "/book/rentalConfirm.jsp");
+            // TODO: 내 대여 내역 확인
+            request.setAttribute("center", "/book/bookRentalConfirm.jsp");
             nextPage = "/main.jsp";
 
-        // 도서 등록 (관리자만 가능)
         } else if (action.equals("/addBook.do")) {
-            if (!"admin".equals(id)) {
-                nextPage = "/member/login.jsp";
-            } else {
-                bookService.addBookFromRequest(request);
-                response.sendRedirect(request.getContextPath() + "/book/bookList.do");
-                return;
-            }
+            // TODO: 도서 등록 처리
+            request.setAttribute("center", "/book/addBook.jsp");
+            nextPage = "/main.jsp";
 
-        // 도서 반납 처리 (관리자만 가능)
         } else if (action.equals("/returnBook.do")) {
-            if (!"admin".equals(id)) {
-                nextPage = "/member/login.jsp";
-            } else {
-                int rentNo = Integer.parseInt(request.getParameter("rentNo"));
-                int bookNo = Integer.parseInt(request.getParameter("bookNo"));
-                bookService.returnBook(rentNo, bookNo);
-                response.sendRedirect(request.getContextPath() + "/book/rentalResult.do");
-                return;
-            }
+            // TODO: 도서 반납 처리
+            request.setAttribute("center", "/book/returnBook.jsp");
+            nextPage = "/main.jsp";
+
+        } else {
+            // 예외 상황 시 에러 페이지로
+            request.setAttribute("errMsg", "존재하지 않는 요청입니다.");
+            request.setAttribute("center", "/error/error.jsp");
+            nextPage = "/main.jsp";
         }
 
-        // 최종 페이지 이동 (forward)
         if (nextPage != null) {
-            System.out.println("페이지 이동(forward) 처리: " + nextPage);
-            RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
-            dispatch.forward(request, response);
-        } else {
-            System.out.println("nextPage가 null입니다.");
+            RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
+            dispatcher.forward(request, response);
         }
     }
 }
