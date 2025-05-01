@@ -14,8 +14,6 @@
 
 #header .top #logo {
 	width: auto;
-	font-weight: 600;
-	font-size: 1.875rem;
 }
 
 #header .top #logo a {
@@ -35,6 +33,8 @@
 
 #header .top #login .inner .item {
 	font-size: 14px;
+	font-weight: 600;
+	color: #7c7c7c;
 }
 
 #header .header_wrap {
@@ -70,6 +70,10 @@
 	justify-content: center;
 }
 
+#header .menu>li span {
+	font-weight: 700;
+}
+
 #header .sub-menu {
 	position: absolute;
 	top: 60px;
@@ -80,11 +84,12 @@
 	border-bottom: 1px solid #dedede;
 	padding: 1rem 0;
 	z-index: 1;
-    display:none;
+	display: none;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
 }
 
 #footer {
-	border-top: 1px solid #dcdcdc;
+	border-top: 1px solid #dedede;
 	background: #272727;
 	color: #dcdcdc;
 	min-height: 150px;

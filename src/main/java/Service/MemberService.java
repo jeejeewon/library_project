@@ -38,7 +38,10 @@ public class MemberService {
 	public int serviceUserCheck(HttpServletRequest request) {
 		String login_id = request.getParameter("id");
 		String login_pass = request.getParameter("pass");
-
+		
+		String m_id = request.getParameter("m_id");
+		String m_pass = request.getParameter("m_pass");
+						
 		// MemberDAO의 userCheck 메소드를 호출하여 DB에서 아이디와 비밀번호 일치 여부
 		return memberDao.userCheck(login_id, login_pass);
 	}
@@ -69,5 +72,18 @@ public class MemberService {
 	public String serviceMypage(HttpServletRequest request) {
 		return "members/mypage.jsp";		
 	}
+
+	public String servicepassForm(HttpServletRequest request) {	
+		return "members/pass.jsp";	
+	}
+
+	public String serviceuserModify(HttpServletRequest request) {
+		return "members/modify.jsp";	
+	}
+
+	// 회원 정보 조회
+	public MemberVo getMember(String id) {
+		return memberDao.memberInfo(id);
+	}	
 
 }

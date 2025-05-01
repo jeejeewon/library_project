@@ -4,10 +4,11 @@
 <%@ page import="java.security.SecureRandom"%>
 <%@ page import="java.math.BigInteger"%>
 <%
+request.setCharacterEncoding("UTF-8");
 String contextPath = request.getContextPath();
 %>
 
-joinForm.jsp
+join.jsp
 <link href="<%=contextPath%>/css/members.css" rel="stylesheet">
 <div id="joinForm">
 	<div class="inner">
@@ -29,14 +30,14 @@ joinForm.jsp
 				<p id="nameInput"></p>
 			</div>
 			<div>
-				<label>주소</label> <input type="text" id="name" name="name"
-					placeholder="이름을 입력해주세요">
+				<label>주소</label> <input type="text" id="address" name="address"
+					placeholder="주소를 입력해주세요">
 				<p id="nameInput"></p>
 			</div>
 			<div>
-				<label>성별</label> 남성<input type="radio" class="gender" name="gender"
-					value="남성"> 여성 <input type="radio" class="gender"
-					name="gender" value="여성">
+				<label>성별</label>
+					남성 <input type="radio" class="gender" name="gender" value="남성" checked>
+					여성 <input type="radio"	class="gender" name="gender" value="여성">
 			</div>
 			<div>
 				<label>이메일</label> <input type="email" id="email" name="email"

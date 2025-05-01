@@ -1,41 +1,28 @@
+<%@page import="Vo.MemberVo"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<c:set var="myCenter" value="${requestScope.center}" />
 
-mypage.jsp
-<div id="mypage">
-	<div class="left_menu">
-		<div class="inner">
-			<p>마이페이지 홈</p>
-			<div class="menu_section">
-				<p>내 서재</p>
-				<ul>
-					<li>희망 도서</li>
-					<li>최근 조회한 도서</li>
-				</ul>
-			</div>
-			<div class="menu_section">
-				<p>내 정보</p>
-				<ul>
-					<li><a href="${contextPath}/member/modify">내 정보 관리</a></li>					
-					<li>내 서평 관리</li>
-					<li><a href="${contextPath}/reserve/reserveCheck">시설 예약 관리</a></li>
-					<li>1:1 문의</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+<%
+request.setCharacterEncoding("UTF-8");
+String contextPath = request.getContextPath();
+String id = (String) session.getAttribute("id"); // 세션에서 사용자 ID를 가져옴
+
+if (id == null) { // 로그인하지 않은 경우
+%>
+<script>
+	alert("로그인을 하셔야 접근 가능 합니다."); // 알림 창 표시
+	history.back(); // 이전 페이지로 이동
+</script>
+<%
+}
+%>
+
+<div id="myPageMain" class="mypage">
+	<jsp:include page="mypageMenu.jsp" />
 	<div class="page">
-		<div class="inner">
-			${sessionScope.id}님의 마이페이지
-			<%-- <c:if test="${empty myCenter}">				
-					
-			</c:if>
-			<c:otherwise>
-				
-			</c:otherwise> --%>
+		<div class="inner">		
+		마이페이지 기본 메인
 		</div>
 	</div>
 </div>

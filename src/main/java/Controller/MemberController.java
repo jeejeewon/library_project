@@ -13,15 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import Service.MemberService;
+import Vo.MemberVo;
 
 @WebServlet("/member/*")
 public class MemberController extends HttpServlet {
 
-	MemberService memberservice;
+	private MemberService memberservice;
+	private MemberVo memberVo;
 
 	@Override
 	public void init() throws ServletException {
 		memberservice = new MemberService();
+		memberVo = new MemberVo();
 	}
 
 	@Override
@@ -50,7 +53,7 @@ public class MemberController extends HttpServlet {
 		try {
 			switch (action) {
 
-			// 회원 가입 화면 요청
+			// 회원 가입 페이지 요청
 			case "/join":
 				String center = memberservice.serviceJoin(request);
 				request.setAttribute("center", center);
@@ -89,15 +92,16 @@ public class MemberController extends HttpServlet {
 				// 아이디 체크
 				int check = memberservice.serviceUserCheck(request);
 				if (check == 0) { // 비밀번호 틀림
-					out.println("<script>window.alert('비밀번호 틀림'); history.go(-1);</script>");
+					out.println("<script>window.alert('비밀번호가 틀렸습니다.'); history.go(-1);</script>");
 					return;
 				} else if (check == -1) {
-					out.println("<script>window.alert('아이디 틀림'); history.go(-1);</script>");
+					out.println("<script>window.alert('존재하지 않는 계정입니다.'); history.go(-1);</script>");
 					return;
 				}
 				// 로그인 성공 (check == 1)
 				HttpSession session = request.getSession();
 				session.setAttribute("id", request.getParameter("id"));
+
 				// 메인 화면으로 이동하도록 설정
 				nextPage = null;
 				break;
@@ -108,7 +112,7 @@ public class MemberController extends HttpServlet {
 				if (session_ != null) {
 					// 세션 무효화 (로그아웃 처리)
 					session_.invalidate();
-				}				
+				}
 				nextPage = null;
 				break;
 
@@ -117,6 +121,39 @@ public class MemberController extends HttpServlet {
 				String mypage = memberservice.serviceMypage(request);
 				request.setAttribute("center", mypage);
 				nextPage = "/main.jsp";
+				break;
+
+			// 본인 확인 요청
+			case "/modify":
+				String passPage = memberservice.servicepassForm(request);
+				request.setAttribute("center", passPage);
+				nextPage = "/main.jsp";
+				break;
+
+			// 본인 확인 처리 요청
+			case "/modify.me":
+				// 비밀번호 체크
+				int passCheck = memberservice.serviceUserCheck(request);
+				if (passCheck == 0) { // 비밀번호 틀림
+					out.println("<script>window.alert('비밀번호가 틀렸습니다.'); history.go(-1);</script>");
+					return;
+				} else if (passCheck == -1) {
+					out.println("<script>window.alert('로그인을 하셔야 접근 가능 합니다.'); history.go(-1)</script>");
+					return;
+				}
+
+				// 회원 정보 vo
+				memberVo = memberservice.getMember(request.getParameter("id"));
+				request.setAttribute("memberVo", memberVo);
+
+				String modify = memberservice.serviceuserModify(request);
+				request.setAttribute("center", modify);
+
+				nextPage = "/main.jsp";
+				break;
+
+			// 본인 확인 처리 요청
+			case "/modifyPro.me":
 				break;
 
 			default:

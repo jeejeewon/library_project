@@ -45,6 +45,7 @@ public class MemberDao {
 				vo.setAddress(rs.getString("adress"));
 				vo.setEmail(rs.getString("email"));
 				vo.setTel(rs.getString("tel"));
+				vo.setJoinDate(rs.getDate("joinDate"));
 				vo.setKakaoId(rs.getString("kakao_id")); // 카카오 ID 설정
 				memberList.add(vo);
 			}
@@ -75,9 +76,9 @@ public class MemberDao {
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
-				
+
 				result = true;
-			} 
+			}
 
 		} catch (Exception e) {
 			System.out.println("MemberDAO.overlappedId() 메소드 오류: " + e);
@@ -124,7 +125,7 @@ public class MemberDao {
 		int check = -1;
 
 		try {
-			con =this. getConnection();
+			con = this.getConnection();
 			String sql = "select pass from member where id=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, login_id);
@@ -149,6 +150,38 @@ public class MemberDao {
 			ResourceClose();
 		}
 		return check;
+	}
+
+	// 회원 수정 페이지
+	public MemberVo memberInfo(String id) {
+		MemberVo memberVo = null;
+		String sql = null;
+		try {
+			con = this.getConnection();
+
+			sql = "select * from member where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				memberVo = new MemberVo();
+				memberVo.setId(rs.getString("id"));
+				memberVo.setPass("********");
+				memberVo.setName(rs.getString("name"));
+				memberVo.setGender(rs.getString("gender"));
+				memberVo.setAddress(rs.getString("address"));
+				memberVo.setEmail(rs.getString("email"));
+				memberVo.setTel(rs.getString("tel"));
+				memberVo.setJoinDate(rs.getDate("joinDate"));
+				memberVo.setKakaoId(rs.getString("kakao_id"));
+			}
+		} catch (Exception e) {
+			System.out.println("MemberDao.memberInfo() 메소드 오류 : " + e);
+		} finally {
+			ResourceClose();
+		}
+		return memberVo;
 	}
 
 	// 자원 해제

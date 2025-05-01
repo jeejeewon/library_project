@@ -5,8 +5,8 @@
 <%@ page import="java.math.BigInteger"%>
 
 <%
+request.setCharacterEncoding("UTF-8"); 
 String contextPath = request.getContextPath();
-
 String serverName = request.getServerName();
 int serverPort = request.getServerPort();
 String scheme = request.getScheme();
