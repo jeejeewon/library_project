@@ -36,7 +36,7 @@ request.setCharacterEncoding("UTF-8");
 	display: none; /* 커스텀 라벨만 보이게 하려면 숨김 */
 }
 
-.form-title{
+.form-title {
 	display: flex;
 	justify-content: space-between;
 }
@@ -48,40 +48,38 @@ request.setCharacterEncoding("UTF-8");
 
 		글쓰기페이지입니다.
 
-		<form name="noticeWriteForm" method="post"
-			action="${contextPath}/bbs/noticeWrite.do"
-			enctype="multipart/form-data">
-
+		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/AddNotice.do" enctype="multipart/form-data">
+		
 			<div class="form-title">
 				<h2>공지사항 글쓰기</h2>
 				<div>
-				<input type="reset" value="취소">		
-				<input type="submit" value="등록">
+					<input type="reset" value="취소"> 
+					<input type="submit" value="등록">
 				</div>
 			</div>
+		
 			<table align="center" border="1">
-
 				<tr>
-					<td><input type="text" name="title" placeholder="제목을 입력하세요"
-						style="width: 100%;"></td>
-					<td><label for="file" class="file-upload-label">첨부파일
-							업로드</label> <span class="file-name" id="fileName">선택된 파일 없음</span> <input
-						type="file" name="file" id="file" class="file-input"></td>
+					<td>
+						<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;">
+					</td>
+					<td>
+						<label for="file" class="file-upload-label">첨부파일 업로드</label>
+						<span class="file-name" id="fileName">선택된 파일 없음</span> 
+						<input type="file" name="uploadFile" id="file" class="file-input">
+					</td>
 				</tr>
 				<tr>
-					<td colspan="2"><textarea name="content" rows="10" cols="50"
-							placeholder="내용을 입력하세요" style="width: 100%;"></textarea></td>
+					<td colspan="2"><textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;"></textarea></td>
 				</tr>
 				<tr>
-					<td colspan="2"><label for="bannerImage"
-						class="file-upload-label">배너이미지 업로드</label> <span
-						class="file-name" id="bannerFileName">선택된 파일 없음</span> <input
-						type="file" onchange="readURL(this)" name="bannerImage"
-						id="bannerImage" class="file-input">
-						<div id="bannerPreview"
-							style="display: inline-block; margin-left: 20px;"></div></td>
+					<td colspan="2">
+						<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
+						<span class="file-name" id="bannerFileName">선택된 파일 없음</span> 
+						<input type="file" onchange="readURL(this)" name="bannerImage" id="bannerImage" class="file-input">
+						<div id="bannerPreview" style="display: inline-block; margin-left: 20px;"></div>
+					</td>
 				</tr>
-
 			</table>
 
 		</form>

@@ -16,7 +16,7 @@ public class boardVO {
 	private String bannerImg;  //배너파일명
 	private Date date;  //게시글 작성일
 	private int views;  //게시글 조회수
-	private Boolean secret;  //게시글 공개 여부
+	private Boolean secret;  //게시글 공개 여부 (false :공개 , true:비공개)
 	private String reply;  //게시글 답변
 	
 	//기본생성자
