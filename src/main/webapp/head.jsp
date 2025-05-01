@@ -21,7 +21,7 @@
 						</c:when>
 						<c:otherwise>
 							<p class="item">환영합니다 ${sessionScope.id}님</p>
-							<a href="" class="item">마이페이지</a>
+							<a href="${contextPath}/member/mypage" class="item">마이페이지</a>
 							<a href="${contextPath}/member/logout.me" class="item">로그아웃</a>
 						</c:otherwise>
 					</c:choose>
@@ -29,12 +29,52 @@
 			</div>
 		</div>
 	</div>
-	<div class="menu">
-		<ul class="container">
-			<li><span>도서이용</span></li>
-			<li><a href="${contextPath}/info/mapinfo"><span>도서관안내</span></a></li>
-			<li><span>도서관소식</span></li>
-			<li><span>내 서재</span></li>
+	<div class="menu-wrap">
+		<ul class="container menu">
+			<li>
+			<span>도서이용</span>
+			<ul class="sub-menu">
+					<li>아직 없음~</li>			
+				</ul>
+			</li>			
+			<li>
+				<span>도서관안내</span>
+				<ul class="sub-menu">
+					<li><a href="${contextPath}/info/mapinfo">도서관소개</a></li>
+					<li><a href="${contextPath}/info/useinfo">이용안내</a></li>
+					<li><a href="${contextPath}/reserve/room">시설 예약</a></li>
+					<li><a href="${contextPath}/reserve/reserveStudy">독서실 예약</a></li>
+					<li><a href="${contextPath}/reserve/reserveMeeting">회의실 예약</a></li>
+					<li><a href="${contextPath}/info/map">오시는 길</a></li>
+				</ul>
+			</li>
+			<li>
+				<span>도서관소식</span>
+				<ul class="sub-menu">
+					<li>아직 없음~</li>			
+				</ul>
+			</li>
+			<li>
+			<span>내 서재</span>
+				<ul class="sub-menu">
+					<li>희망 도서</li>
+					<li>최근 조회한 도서</li>
+					<li>내 서평 관리</li>
+					<li><a href="${contextPath}/reserve/reserveCheck">시설 예약 관리</a></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
 </div>
+
+<script>
+	$(".menu>li").each(function() {
+		$(this).click(function() {
+			const idx = $(this).index();
+			$('.menu>li').removeClass('on');
+			$('.menu>li').eq(idx).addClass('on');
+			$('.sub-menu').hide();
+			$('.sub-menu').eq(idx).slideDown();
+		});
+	});
+</script>
