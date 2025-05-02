@@ -56,10 +56,11 @@
 				</p>
 			</div>
 			<p>▪ 미팅룸 선택</p>
-	        <div id="roomList">
-                 예약 가능한 미팅룸이 동적으로 추가될 자리
+	        <div id="roomList" style="margin-top:10px;">
+                 <p style="color: blue;">이용하실 날짜와 시간을 선택하면 예약 가능한 미팅룸이 나타납니다.</p>
              </div>   		
 	    </form>
+	    <br>
 		<button type="button" id="reserveBtn" >미팅룸 예약하기</button>	
 	</div>	
 </body>
@@ -120,14 +121,35 @@
             },
             success: function(data) {
             	
-            	//예약날짜를 선택하지 않았을 경우 알림창 띄우기
-                if (data.error) {
-                    alert(data.error); 
+            	//예약날짜를 선택하지 않았을 경우 알림 문구 보여주기
+                if (data.error) {                
+                	document.getElementById("roomList").innerHTML = "<p style='color: red;'>" + data.error + "</p>"; 
                     return;
+                }else { //예약날짜를 선택했을 경우 알림 문구 제거
+                	document.getElementById("roomList").innerHTML = ""; 
                 }
-           
-            	//서버페이지에서 반환받은 데이터를 동적으로 처리하는 곳
-            },
+            	
+                //예약 가능한 미팅룸이 없을 경우 알림 문구 보여주기
+            	if(data.length == 0){
+        			document.getElementById("roomList").innerHTML = "<p style='color: red;'>예약 가능한 미팅룸이 없습니다.</p>";	
+        		
+        		//예약가능한 미팅룸이 있을 경우 버튼 생성
+            	}else{
+            		
+                    data.forEach(room => {
+                       		
+                    		var roombtn = document.createElement("button");
+                    		roombtn.innerHTML = room.room_name;
+                    		roombtn.setAttribute("room_code", room.room_code);
+                    		roombtn.setAttribute("room_name", room.room_name);
+                    		
+                    		document.getElementById("roomList").appendChild(roombtn);	
+                    	   		
+                	}); 
+            	
+            	}//else
+            		
+            }, //success
             error: function(xhr, status, error) {
             	alert('서버 오류: ' + error);
             }

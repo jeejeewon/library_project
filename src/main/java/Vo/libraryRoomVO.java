@@ -11,8 +11,15 @@ public class libraryRoomVO {
 	
 	//기본생성자
 	public libraryRoomVO() {}
+
 	
-	
+	//예약가능한 미팅룸 조회시 사용할 생성자
+	public libraryRoomVO(String room_code, String room_name) {
+		this.room_code = room_code;
+		this.room_name = room_name;
+	}
+
+
 	//시설정보 저장할 생성자 (미팅룸)
 	public libraryRoomVO(String room_code, String room_name, int reserve_state) {
 		this.room_code = room_code;
