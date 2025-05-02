@@ -43,18 +43,11 @@ public class boardService {
 
 	public int addNotice(boardVO boardVO) {
 		System.out.println("BoardService - addNotice 호출됨 (제목: " + boardVO.getTitle() + ")");
-		// 단순히 DAO의 insertNewArticle 메소드를 호출하여 글 추가 작업을 위임합니다.
+		// 단순히 DAO의 insertBoard 메소드를 호출하여 글 추가 작업을 위임합니다.
 		// 필요하다면 여기서 데이터 유효성 검사 등을 추가할 수 있습니다.
 		// DAO로부터 추가된 글의 번호를 받아 그대로 Controller에게 반환합니다.
 		return boardDao.insertBoard(boardVO);
 	}
 	
-	
-	
-	
-	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response) {
-		
-		return boardDao.uploadFile(request, response);
-	}
 
 }

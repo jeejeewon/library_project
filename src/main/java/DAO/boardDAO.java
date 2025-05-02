@@ -219,12 +219,14 @@ public class boardDAO {
 			pstmt.setDate(9, date); //아홉번째 ?에 현재 날짜
 			pstmt.setBoolean(10, secret); //열번째 ?에 비공개 여부
 			
-			pstmt.executeUpdate(); //SQL문 실행
+			// 6. SQL 실행: INSERT, UPDATE, DELETE 문장은 executeUpdate() 메소드 사용
+			//   - executeUpdate()는 실행 결과로 영향을 받은 행(row)의 수를 반환 (여기서는 1이 반환되어야 정상)
+			pstmt.executeUpdate(); 
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DbcpBean.close(con, pstmt);
+			DbcpBean.close(con, pstmt); //자원해제
 		}
 		return boardId; //추가된 글의 번호를 리턴
 	}

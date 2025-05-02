@@ -66,7 +66,7 @@ request.setCharacterEncoding("UTF-8");
 					<td>
 						<label for="file" class="file-upload-label">첨부파일 업로드</label>
 						<span class="file-name" id="fileName">선택된 파일 없음</span> 
-						<input type="file" name="uploadFile" id="file" class="file-input">
+						<input type="file" name="file" id="file" class="file-input">
 					</td>
 				</tr>
 				<tr>
