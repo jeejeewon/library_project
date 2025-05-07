@@ -5,6 +5,25 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<style>
+		
+        .roombtn {
+			border: 0;
+			padding: 15px 25px;
+			display: inline-block;
+			text-align: center;
+			color: white;
+            border-radius: 10px;       
+            background-color: #9abf7f;
+            margin: 5px;
+        }
+        
+        /* 미팅룸 선택시 선택효과*/		
+		.selected-btn {
+            background-color: #758f62;      
+        }	
+	</style>
+
 </head>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -139,9 +158,11 @@
                     data.forEach(room => {
                        		
                     		var roombtn = document.createElement("button");
-                    		roombtn.innerHTML = room.room_name;
+                    		roombtn.innerHTML = room.room_name;                   
+                    		roombtn.setAttribute("class", "roombtn"); //클릭했을 경우 효과를 주기 위해 id 설정           		
                     		roombtn.setAttribute("room_code", room.room_code);
-                    		roombtn.setAttribute("room_name", room.room_name);
+                    		roombtn.setAttribute("room_name", room.room_name);         
+                    		roombtn.setAttribute("type", "button");
                     		
                     		document.getElementById("roomList").appendChild(roombtn);	
                     	   		
@@ -154,10 +175,52 @@
             	alert('서버 오류: ' + error);
             }
         });
+    }); //예약날짜와 시간 선택 시 예약 가능한 미팅룸을 동적으로 보여주는 함수
+
+</script>
+
+<script>
+
+	//사용자가 미팅룸을 클릭하였을때 선택되었다는 효과를 주는 함수
+	document.getElementById("roomList").addEventListener("click", event	=> {
+		if (event.target && event.target.classList.contains("roombtn")) {
+    	   document.querySelectorAll(".roombtn").forEach(btn => {
+    		   //버튼 효과 초기화
+               btn.classList.remove("selected-btn");
+           });
+    	   //클릭한 버튼에 효과 주기
+           event.target.classList.add("selected-btn");
+       }
     });
 	
-
-
+	
+	//미팅룸 선택후 예약하기 버튼 클릭 시
+	document. getElementById("reserveBtn").addEventListener("click", () => {
+        var selectedRoom = document.querySelector(".selected-btn");
+        if (!selectedRoom) { //선택된 미팅룸이 없을 경우
+            alert("미팅룸을 선택해주세요.");
+            return;
+        } 
+        
+        //사용자가 선택한 미팅룸 정보 가져오기
+        const reserveDate = document.getElementById("reserveDate").value;
+        const startTime = document.getElementById("StartTime").value;
+        const endTime = document.getElementById("EndTime").value;
+        const roomCode = selectedRoom.getAttribute("room_code");
+        const roomName = selectedRoom.getAttribute("room_name");
+        
+        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
+        //확인용 컨펌창 띄우기
+        if (confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +
+            "예약일자: " + reserveDate + "\n" +
+            "시작시간: " + startTime + "\n" +
+            "종료시간: " + endTime + "\n" +
+            "예약 미팅룸: " + roomName)) {
+           //예약하기 버튼 클릭 시 예약정보를 서버로 전송
+        }
+       
+           
+    });
 
 </script>
 
