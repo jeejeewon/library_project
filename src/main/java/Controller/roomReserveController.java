@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,40 +45,48 @@ public class roomReserveController extends HttpServlet{
 		roomReserveService roomReserveService = new roomReserveService();		
 		
 		//[시설예약] 클릭시 보여줄 뷰
-		if(action.equals("/room")) {
-			
-			request.setAttribute("center", "/libReserve/reserveRoom.jsp");
-			
+		if(action.equals("/room")) {			
+			request.setAttribute("center", "/libReserve/reserveRoom.jsp");			
 			nextPage = "/main.jsp";			
 				
 		//[ 도서관안내 ]-[ 시설예약 ]-[ 스터디룸 예약 ] 뷰	
-		}else if(action.equals("/reserveStudy")) {
-			
-			request.setAttribute("center", "/libReserve/reserveStudy.jsp");
-			
+		}else if(action.equals("/reserveStudy")) {			
+			request.setAttribute("center", "/libReserve/reserveStudy.jsp");			
 			nextPage = "/main.jsp";		
 			
 		//[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰	
-		}else if(action.equals("/reserveMeeting")) {
+		}else if(action.equals("/reserveMeeting")) {	
 			
-			request.setAttribute("center", "/libReserve/reserveMeeting.jsp");
+			//로그인한 사용자만 미팅룸 예약 가능
+			//로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			String userId = (String)session.getAttribute("id");
+//			System.out.println("userId : " + userId);
+
+			//로그인을 하지 않은 경우
+			if(userId == null || userId.equals("")) {
+				//로그인 페이지로 이동
+				response.setContentType("text/html;charset=utf-8");
+				out.println("<script>alert('로그인 후 이용 가능합니다.'); location.href='" + contextPath + "/member/login';</script>");
+				out.flush();
+				out.close();
+				return;
+			}
 			
+			request.setAttribute("center", "/libReserve/reserveMeeting.jsp");			
 			nextPage = "/main.jsp";	
 			
 		//[ 내서재 ]-[ 시설예약내역 ] 뷰	
-		}else if(action.equals("/reserveCheck")) {
-			
-			request.setAttribute("center", "/libReserve/reserveCheck.jsp");
-			
+		}else if(action.equals("/reserveCheck")) {			
+			request.setAttribute("center", "/libReserve/reserveCheck.jsp");			
 			nextPage = "/main.jsp";	
 			
 		//[ 관리자메뉴 ]-[ 시설예약관리 ] 뷰	
-		}else if(action.equals("/reserveAdmin")) {
-			
-			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");
-			
+		}else if(action.equals("/reserveAdmin")) {			
+			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");			
 			nextPage = "/main.jsp";	
-			
+		
+		//미팅룸 예약시 사용자가 선택한 날짜와 시간에 맞는 미팅룸 리스트를 ajax로 리턴
 		}else if(action.equals("/meetingRoomList")) {
 				
 		   String date = request.getParameter("Date");
@@ -96,21 +105,19 @@ public class roomReserveController extends HttpServlet{
 			    return;
 		   }
 		  			
-		   //1. DB에서 예약가능한 미팅룸 조회 (나중에 예약이 되어 있으면 상태값이 0으로 바뀔거임)
-		   //2. 예약가능한 미팅룸 리스트를 List로 받아오기
-		   //Service에서 비즈니스 로직 처리
+		   //DB에서 예약가능한 미팅룸 조회 
+		   //예약가능한 미팅룸 리스트를 List로 받아오기
 		   List roomList = roomReserveService.MeetingRoomList(date, start, end);
 		   
-		   System.out.println("예약가능한 미팅룸 리스트 : " + roomList);
+		   System.out.println("예약가능한 미팅룸 리스트 : " + roomList);		   
 		   
-		   
-		   //3. 받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
+		   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
 		   ObjectMapper objectMapper = new ObjectMapper(); 
 		   String json = objectMapper.writeValueAsString(roomList);
 		    
 		   System.out.println("JSON형식으로 변환된 데이터 : " + json);
 		   		   
-		   //4. JSON형식으로 변환된 데이터를 ajax로 리턴하기
+		   //JSON형식으로 변환된 데이터를 ajax로 리턴하기
 		   response.setContentType("application/json; charset=utf-8");
 
 		   //ajax로 반환
@@ -118,7 +125,30 @@ public class roomReserveController extends HttpServlet{
 		   out.flush();
 		   out.close();    
 		   return; //ajax로 리턴했으므로 다음 페이지로 포워딩할 필요 없음
-		   
+		  
+		//미팅룸 예약하기 버튼 클릭시 입력한 정보대로 예약 진행
+		}else if(action.equals("/meetingRoomReserve")) {
+			
+			System.out.println("meetingRoomReserve호출됨===============");
+			
+			//예약정보를 받아오기
+			String userId = request.getParameter("userID"); //예약자 아이디
+			String reserveDate = request.getParameter("reserveDate"); //예약날짜
+			String StartTime = request.getParameter("StartTime"); //예약 시작시간
+			String EndTime = request.getParameter("EndTime"); //예약 종료시간
+			String roomCode = request.getParameter("room_code"); //예약한 미팅룸
+			
+			System.out.println("예약자 아이디 : " + userId);
+			System.out.println("예약날짜 : " + reserveDate);
+			System.out.println("예약 시작시간 : " + StartTime);
+			System.out.println("예약 종료시간 : " + EndTime);
+			System.out.println("예약한 미팅룸 : " + roomCode);
+			
+			
+			
+			
+			//예약완료 후 예약내역 페이지로 이동
+			nextPage = "/reserve/reserveCheck";
 		}
 		
 		

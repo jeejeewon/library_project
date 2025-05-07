@@ -39,14 +39,17 @@
 		[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰
 	</div>	
 	<div align="center" style="margin-top: 50px;">
-		<form action="meetingRoomList" method="post" align="left" style="margin-left: 30%;">
-			<p>▪ 이용날짜</p>
+		<form action="<%=request.getContextPath()%>/reserve/meetingRoomReserve" method="post" align="left" style="margin-left: 30%;">
+			
+			<p>▪ 이용자정보</p>
+			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
 			<p>예약 가능 날짜는 현재 날짜 +3일 부터 1개월 +10일 까지 입니다.</p><br>
 			<div id="reserveTime">
 				<p>▪ 이용시간</p> 
 				<p>&nbsp;&nbsp;&nbsp;- 시작시간
- 					<select id="StartTime">
+ 					<select name="StartTime" id="StartTime">
 						<option value="10:00">10:00</option>
 						<option value="11:00">11:00</option>
 						<option value="12:00">12:00</option>
@@ -60,7 +63,7 @@
 					</select>
 				</p>
 				<p>&nbsp;&nbsp;&nbsp;- 종료시간
-					<select id="EndTime">
+					<select name="EndTime" id="EndTime">
 						<option value="11:00">11:00</option>
 						<option value="12:00">12:00</option>
 						<option value="13:00">13:00</option>
@@ -73,14 +76,14 @@
 						<option value="20:00">20:00</option>
 					</select>
 				</p>
-			</div>
+			</div><br>
 			<p>▪ 미팅룸 선택</p>
 	        <div id="roomList" style="margin-top:10px;">
                  <p style="color: blue;">이용하실 날짜와 시간을 선택하면 예약 가능한 미팅룸이 나타납니다.</p>
              </div>   		
+            <br>
+			<button type="submit" id="reserveBtn" >미팅룸 예약하기</button>	
 	    </form>
-	    <br>
-		<button type="button" id="reserveBtn" >미팅룸 예약하기</button>	
 	</div>	
 </body>
 
@@ -195,7 +198,7 @@
 	
 	
 	//미팅룸 선택후 예약하기 버튼 클릭 시
-	document. getElementById("reserveBtn").addEventListener("click", () => {
+	document. getElementById("reserveBtn").addEventListener("click", (event) => {
         var selectedRoom = document.querySelector(".selected-btn");
         if (!selectedRoom) { //선택된 미팅룸이 없을 경우
             alert("미팅룸을 선택해주세요.");
@@ -206,20 +209,17 @@
         const reserveDate = document.getElementById("reserveDate").value;
         const startTime = document.getElementById("StartTime").value;
         const endTime = document.getElementById("EndTime").value;
-        const roomCode = selectedRoom.getAttribute("room_code");
         const roomName = selectedRoom.getAttribute("room_name");
+        const roomCode = selectedRoom.getAttribute("room_code");
+        request.setAttribute("room_code", roomCode);
+
+       //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
+       //확인용 컨펌창 띄우기
+       const confirmResult = confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +       
+	            "- 이용일자 : " + reserveDate + "\n" +
+	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+	            "- 이용시설 : " + roomName);      
         
-        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
-        //확인용 컨펌창 띄우기
-        if (confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +
-            "예약일자: " + reserveDate + "\n" +
-            "시작시간: " + startTime + "\n" +
-            "종료시간: " + endTime + "\n" +
-            "예약 미팅룸: " + roomName)) {
-           //예약하기 버튼 클릭 시 예약정보를 서버로 전송
-        }
-       
-           
     });
 
 </script>
