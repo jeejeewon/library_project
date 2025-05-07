@@ -30,7 +30,7 @@ request.setCharacterEncoding("UTF-8");
 		    <c:forEach var="boardVo" items="${boardList}" varStatus="status">
                 <tr height="20" align="center">
                     <td>${status.count}</td>
-                    <td>${boardVo.title}</td>
+                    <td><a href="${contextPath}/bbs/noticeInfo.do?boardId=${boardVo.boardId}">${boardVo.title}</a></td>
                     <td>${boardVo.userId}</td>
                     <td>${boardVo.date}</td>
                     <td>${boardVo.views}</td>
