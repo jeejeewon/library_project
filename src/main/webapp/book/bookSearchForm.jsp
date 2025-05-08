@@ -10,43 +10,49 @@
 <title>도서 검색</title>
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
-    .book-search-form-container {
-        min-height: 80vh;
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .search-form-wrapper {
+        min-height: 90vh;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;  /* 상단 정렬 */
+        padding-top: 100px;       /* 위쪽 여백 추가 */
     }
 
     .search-form-box {
         text-align: center;
-        border: 1px solid #ddd;
-        padding: 40px 30px;
-        border-radius: 10px;
-        background-color: #fafafa;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
-    .search-form-box h2 {
-        font-size: 24px;
-        margin-bottom: 30px;
+    .search-form-box h1 {
+        font-size: 32px;
+        margin-bottom: 40px;
+        color: #333;
+    }
+
+    .search-form-box form {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
     }
 
     .search-form-box input[type="text"] {
-        width: 300px;
-        padding: 10px;
-        border-radius: 4px;
+        width: 500px;
+        padding: 16px;
+        font-size: 18px;
+        border-radius: 6px;
         border: 1px solid #ccc;
-        font-size: 14px;
     }
 
     .search-form-box button {
-        padding: 10px 16px;
-        margin-left: 8px;
+        padding: 16px 24px;
+        font-size: 16px;
         background-color: #4caf50;
         border: none;
         color: white;
-        border-radius: 4px;
-        font-size: 14px;
+        border-radius: 6px;
         cursor: pointer;
     }
 
@@ -57,11 +63,11 @@
 </head>
 <body>
 
-<div class="container book-search-form-container">
+<div class="container search-form-wrapper">
     <div class="search-form-box">
-        <h2>도서 검색</h2>
+        <h1>도서 검색</h1>
         <form action="<%= contextPath %>/books/bookSearch.do" method="get">
-            <input type="text" name="keyword" placeholder="도서명, 저자, 출판사 검색" required />
+            <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색" required />
             <button type="submit">검색</button>
         </form>
     </div>

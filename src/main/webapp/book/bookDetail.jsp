@@ -5,6 +5,7 @@
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     BookVo book = (BookVo) request.getAttribute("book");
+    String userId = (String) session.getAttribute("id");
 %>
 
 <!DOCTYPE html>
@@ -149,13 +150,19 @@
 
             <!-- 버튼 영역 -->
             <div class="button-group">
-                <a href="javascript:history.back();" class="btn">뒤로가기</a>
-                <a href="<%= contextPath %>/books/rentalBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-loan">대출하기</a>
-                <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-admin">관리자 기능</a>
-            </div>
-        </div>
-    </div>
+    			<a href="javascript:history.back();" class="btn">뒤로가기</a>
+    			
+    			<% if (userId != null) { %>
+       				<a href="<%= contextPath %>/books/rentalBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-loan">대여하기</a>
+        			<% if ("admin".equals(userId)) { %>
+            			<a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-admin">관리자기능</a>
+        			<% } %>
+   			    <% } else { %>
+        			<a href="<%= contextPath %>/member/login.jsp" class="btn btn-loan">대여하기</a>
+    			<% } %>
+   			</div>
+          </div>
+   	</div>
 </div>
-
 </body>
 </html>

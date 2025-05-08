@@ -60,15 +60,18 @@
         background-color: #fff;
     }
 
-    .book-card .title {
-        font-size: 14px;
-        font-weight: bold;
-        margin-bottom: 6px;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+	.book-card .title {
+	    font-size: 14px;
+	    font-weight: bold;
+	    margin-bottom: 6px;
+	    color: #333;
+	    display: -webkit-box;
+	    -webkit-line-clamp: 2;
+	    -webkit-box-orient: vertical;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    height: 38px;
+	}
 
     .book-card .author {
         font-size: 12px;
@@ -113,7 +116,7 @@
     <!-- 검색창 -->
 	<div class="search-box" style="text-align: right; margin-bottom: 30px; padding-right: 20px;">
 	    <form action="<%= contextPath %>/books/bookSearch.do" method="get" style="display: inline-block;">
-	        <input type="text" name="keyword" placeholder="도서명, 저자, 출판사 검색"
+	        <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색"
 	               style="width: 250px; padding: 6px; border: 1px solid #ccc; border-radius: 4px;" />
 	        <button type="submit"
 	                style="padding: 6px 12px; background-color: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer;">
