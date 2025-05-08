@@ -46,8 +46,6 @@ request.setCharacterEncoding("UTF-8");
 <body>
 	<center>
 
-		글쓰기페이지입니다.
-
 		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/AddNotice.do" enctype="multipart/form-data">
 		
 			<div class="form-title">

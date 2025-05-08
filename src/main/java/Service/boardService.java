@@ -40,7 +40,7 @@ public class boardService {
 		
 	}
 
-
+	// 공지사항 게시글 추가를 위한 메소드.
 	public int addNotice(boardVO boardVO) {
 		System.out.println("BoardService - addNotice 호출됨 (제목: " + boardVO.getTitle() + ")");
 		// 단순히 DAO의 insertBoard 메소드를 호출하여 글 추가 작업을 위임합니다.
@@ -52,18 +52,31 @@ public class boardService {
 	// 특정 글번호(boardId)를 받아 해당 글의 상세 정보를 조회하도록 DAO에게 요청하는 메소드.
 	public boardVO viewBoard(int boardId) {
 		System.out.println("BoardService - viewBoard 호출됨 (글번호: " + boardId + ")");
+		
+		// DAO에게 해당 글번호에 대한 상세 정보를 요청하기 전에 먼저,
+		// 해당 글 번호에 뷰 수를 1 증가키는 작업을 수행합니다.
+		boardDao.increaseViewCount(boardId);
+		
 		boardVO board = boardDao.selectBoard(boardId);
 		return board;
 	}
 
-
+	// 현재글 번호의 바로 앞 글 번호를 조회
 	public int getPreBoardId(int boardId) {
 		return boardDao.getPreBoardId(boardId);
 	}
 
-
+	// 현재글 번호의 바로 다음 글 번호를 조회
 	public int getNextBoardId(int boardId) {
 		return boardDao.getNextBoardId(boardId);
+	}
+
+	// 공지사항 게시글 수정을 위한 메소드
+	public void modifyNotice(boardVO modVO) {
+		System.out.println("BoardService - modifyNotice 호출됨 (글 번호: " + modVO.getBoardId() + ")");
+		// 단순히 DAO의 updateBoard 메소드를 호출하여 글 수정 작업을 위임합니다.
+		// 필요하다면 여기서 데이터 유효성 검사 등을 추가할 수 있습니다.
+		boardDao.updateBoard(modVO);
 	}
 	
 

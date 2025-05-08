@@ -168,9 +168,6 @@ request.setCharacterEncoding("UTF-8");
 
 <body>
 
-${requestScope.getPreBoardId}
-
-
 	<div class="center-wrapper">
 		<div class="paging">
 			<form action="<%=request.getContextPath()%>/bbs/noticeInfo.do" method="get">
@@ -181,7 +178,7 @@ ${requestScope.getPreBoardId}
 				<input type="hidden" name="boardId" value="${requestScope.getNextBoardId}">
 				<button type="submit">다음글</button>
 			</form>
-			<form action="/bbs/noticeList.do" method="get">
+			<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
 				<button type="submit">목록</button>
 			</form>
 		</div>
@@ -199,18 +196,27 @@ ${requestScope.getPreBoardId}
 
 		<div class="content-area">
 			<p>게시글 내용: ${board.content}</p>
-			<div class="file">
-				<a href="#">첨부파일</a><span>${board.file}</span>
-			</div>
+			<c:if test="${not empty board.file}"><!-- 첨부파일이 있을 경우에만 나타나도록 설정 -->
+				<div class="file">
+					<img src="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}" id="preview1" alt="첨부 이미지">
+					<a href="#">첨부파일</a><span>${board.file}</span>
+				</div>
+			</c:if>
+			<c:if test="${not empty board.bannerImg}"><!-- 배너이지미파일이 있을 경우에만 나타나도록 설정 -->
+				<div class="file">
+					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}" id="preview2" alt="배너 이미지">
+					<a href="#">배너이미지</a><span>${board.bannerImg}</span>
+				</div>
+			</c:if>
 		</div>
 
 		<div class="board-info-bottom">
 			<div class="board-info-bottom-left">
-				<a href="#">수정</a>
+				<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
 				<a href="#">삭제</a>
 			</div>
 			<div class="board-info-bottom-right">
-				<form action="/bbs/noticeList.do" method="get">
+				<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
 					<button type="submit">목록</button>
 				</form>
 				<button onclick="scrollToTop()">TOP</button>

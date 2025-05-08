@@ -231,7 +231,27 @@ public class boardDAO {
 		}
 		return boardId; //추가된 글의 번호를 리턴
 	}
-
+	
+	
+	
+	
+	
+	//뷰 수를 +1 증가시키는 메소드
+	public void increaseViewCount(int boardId) {
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "UPDATE board SET views = views + 1 WHERE board_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, boardId); // ?에 글 번호 설정
+			pstmt.executeUpdate(); //SQL 실행
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			
+		}
+			DbcpBean.close(con, pstmt);
+		}
 	
 	//주어진 글번호(boardId)에 해당하는 글을 DB에서 조회하여 boardVO객체에 담아서 리턴하는 메소드
 	public boardVO selectBoard(int boardId) {
@@ -342,6 +362,96 @@ public class boardDAO {
 		
 		return boardId; // 결과 없으면 0 반환
 	}
+	
+	//게시글 수정
+	public void updateBoard(boardVO modVO) {
+		
+		
+		
+		// boardVO객체에서 수정할 정보 꺼내기
+		int boardId = modVO.getBoardId(); // 수정할 글 번호
+		String title = modVO.getTitle(); // 수정된 제목
+		String content = modVO.getContent(); // 수정된 내용
+		String file = modVO.getFile(); // 수정된 첨부파일
+		String bannerImg = modVO.getBannerImg(); // 수정된 배너 이미지
+		System.out.println("boardDAO에서 updateBoard 호출됨. 글 수정 요청정보 - boardId: " + boardId + ", title: " + title + ", content: " + content + ", file: " + file + ", bannerImg: " + bannerImg);
+
+		try {
+			// 1. DB 연결
+			con = DbcpBean.getConnection();
+			
+			
+			
+			// 2. SQL문 작성
+			String sql = "UPDATE board SET title = ?, content = ?";
+			
+			// 만약 새로운 파일 이름이 있다면 (null도 아니고 빈 문자열도 아닌경우)
+			if(file != null && !file.isEmpty()) {
+				sql += ", file = ?";
+			}
+			
+			// 만약 새로운 배너 이름이 있다면 (null도 아니고 빈 문자열도 아닌경우)
+			if(bannerImg != null && !bannerImg.isEmpty()) {
+				sql += ", banner_img = ?";
+			}
+			
+			//마지막으로 WHERE 조건절 추가하기
+			sql += " WHERE board_id = ?";
+			
+			System.out.println("실행될 SQL 글 수정 : " + sql);
+			
+			
+			
+			// 3. PreparedStatement 객체 생성
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, title); // 첫번째 ?에 수정된 제목
+			pstmt.setString(2, content); // 두번째 ?에 수정된 내용
+			
+			// 만약 새로운 파일 이름이 있다면
+			if(file != null && !file.isEmpty()) {
+				pstmt.setString(3, file); // 세번째 ?에 수정된 첨부파일
+				
+				// 만약 새로운 배너 이름이 있다면
+				if(bannerImg != null && !bannerImg.isEmpty()) {
+					pstmt.setString(4, bannerImg); // 네번째 ?에 수정된 배너 이미지
+					pstmt.setInt(5, boardId); // 다섯번째 ?에 수정할 글 번호
+				}else {
+					// 배너를 수정하지 않는 경우, 네번째 ?는 글 번호가 됨
+					pstmt.setInt(4, boardId); // 네번째 ?에 수정할 글 번호
+				}
+				
+			}else {// 새로운 파일 이름이 없다면 (파일 수정을 안한 경우)
+				
+				// 파일은 수정 하지 않고 배너만 수정하는 경우
+				if(bannerImg != null && !bannerImg.isEmpty()) {
+					pstmt.setString(3, bannerImg); // 세번째 ?에 수정된 배너 이미지
+					pstmt.setInt(4, boardId); // 네번째 ?에 수정할 글 번호
+					
+				}else { // 파일과 배너 모두 수정하지 않는 경우
+					pstmt.setInt(3, boardId); // 세번째 ?에 수정할 글 번호
+				}
+			}
+			
+			
+			// 4. SQL 실행 (업데이트 실행)
+			int result = pstmt.executeUpdate();
+			System.out.println("UPDATE 실행 결과, 영향 받은 행의 수 : " + result);
+			
+			
+		} catch (SQLException e) {
+			System.err.println("오류 : updateBoard() 메소드 실행 중 오류 : " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			// 5. 자원 반납
+			DbcpBean.close(con, pstmt);
+		}
+		
+		
+		
+		
+	}
+
+	
 	
 	
 	
