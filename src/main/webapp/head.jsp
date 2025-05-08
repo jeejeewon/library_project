@@ -42,9 +42,7 @@
 				<ul class="sub-menu">
 					<li><a href="${contextPath}/info/mapinfo">도서관소개</a></li>
 					<li><a href="${contextPath}/info/useinfo">이용안내</a></li>
-					<li><a href="${contextPath}/reserve/room">시설 예약</a></li>
-					<li><a href="${contextPath}/reserve/reserveStudy">독서실 예약</a></li>
-					<li><a href="${contextPath}/reserve/reserveMeeting">회의실 예약</a></li>
+					<li><a href="${contextPath}/reserve/room">시설예약</a></li>
 					<li><a href="${contextPath}/info/map">오시는 길</a></li>
 				</ul>
 			</li>
