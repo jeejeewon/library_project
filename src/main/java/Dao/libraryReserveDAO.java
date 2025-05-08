@@ -9,6 +9,8 @@ import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import Vo.libraryReserveVO;
 import Vo.libraryRoomVO;
 
 //시설 예약 관련 DB 작업할 DAO
@@ -65,5 +67,53 @@ public class libraryReserveDAO {
 		return roomList; //조회된 List를 Service로 반환
 		
 	} //selectRoomList 메소드 끝
+
+	public void insertReserveRoom(libraryReserveVO vo) {
+		
+		System.out.println("insertReserveRoom DAO 호출됨===================");
+		
+		//예약번호 생성 (MA-0520-1314 형태 : 미팅룸코드-예약날짜-예약시작시간종료시간)
+		String num_room = vo.getReserve_room(); //예약한 미팅룸 코드 (예: meetingA)
+		String num_date = vo.getReserve_date().toString(); //예약날짜 (예: 2025-05-20)
+		
+		//미팅룸 코드에서 'MA' 추출
+		char first = num_room.charAt(0); //첫번째 문자
+		char last = num_room.charAt(num_room.length()-1); //마지막 문자
+		num_room = (first + "" + last).toUpperCase(); //첫번째 문자와 마지막 문자를 합쳐서 'MA'로 변경
+		
+		//예약날짜에서 '0520'만 추출
+		String[] datePart = num_date.split("-");
+		num_date = datePart[1] + datePart[2];
+		
+		//최종 예약번호
+		String reserve_num = num_room + "-" + num_date + "-" + vo.getReserve_start() + vo.getReserve_end();
+		
+		//DB에 예약정보 저장 쿼리문
+		String sql = "insert into room_reserve(reserve_num, reserve_room, reserve_id, reserve_name, reserve_date, reserve_start, reserve_end, reserve_time) " +
+					 "values(?, ?, ?, (select name from member where id = ? ), ?, ?, ?, sysdate())";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, reserve_num); //예약번호
+			pstmt.setString(2, vo.getReserve_room()); //예약한 미팅룸 코드
+			pstmt.setString(3, vo.getReserve_id()); //예약자 아이디
+			pstmt.setString(4, vo.getReserve_id()); //예약자 아이디
+			pstmt.setDate(5, vo.getReserve_date()); //예약날짜
+			pstmt.setInt(6, vo.getReserve_start()); //예약시작시간
+			pstmt.setInt(7, vo.getReserve_end()); //예약종료시간
+			
+			//쿼리문 실행
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			System.err.println("미팅룸 예약 실패" + e);
+			e.printStackTrace();			
+		}finally {
+			DbcpBean.close(con, pstmt); //DB 연결 해제
+		}		
+		
+	} //insertReserveRoom 메소드 끝
 
 }

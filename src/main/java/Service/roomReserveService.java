@@ -2,6 +2,7 @@ package Service;
 
 import java.util.List;
 import Dao.libraryReserveDAO;
+import Vo.libraryReserveVO;
 
 
 //시설 예약 관련 비즈니스 로직 처리 Service
@@ -17,6 +18,12 @@ public class roomReserveService {
 
 		return roomList; //조회된 List를 Controller로 반환
 		
+	}
+
+	public void insertReserveRoom(libraryReserveVO vo) {
+		
+		//DB에 예약정보 저장 명령
+		libraryReserveDAO.insertReserveRoom(vo);
 	}
 	
 	

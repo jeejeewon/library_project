@@ -39,7 +39,7 @@
 		[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰
 	</div>	
 	<div align="center" style="margin-top: 50px;">
-		<form action="<%=request.getContextPath()%>/reserve/meetingRoomReserve" method="post" align="left" style="margin-left: 30%;">
+		<form method="post" align="left" style="margin-left: 30%;">
 			
 			<p>▪ 이용자정보</p>
 			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
@@ -79,10 +79,10 @@
 			</div><br>
 			<p>▪ 미팅룸 선택</p>
 	        <div id="roomList" style="margin-top:10px;">
-                 <p style="color: blue;">이용하실 날짜와 시간을 선택하면 예약 가능한 미팅룸이 나타납니다.</p>
+                 <p style="color: blue;">이용하실 날짜와 시간을 선택하면 예약 가능한 미팅룸이 나타납니다.</p>              
              </div>   		
             <br>
-			<button type="submit" id="reserveBtn" >미팅룸 예약하기</button>	
+			<button type="button" id="reserveBtn" >미팅룸 예약하기</button>	
 	    </form>
 	</div>	
 </body>
@@ -211,16 +211,34 @@
         const endTime = document.getElementById("EndTime").value;
         const roomName = selectedRoom.getAttribute("room_name");
         const roomCode = selectedRoom.getAttribute("room_code");
-        request.setAttribute("room_code", roomCode);
-
+       
        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
        //확인용 컨펌창 띄우기
        const confirmResult = confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +       
 	            "- 이용일자 : " + reserveDate + "\n" +
 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
 	            "- 이용시설 : " + roomName);      
-        
-    });
+           
+      $.ajax({
+            url: "<%=request.getContextPath()%>/reserve/meetingRoomReserve",
+            type: "POST",
+            data: {
+                userID: document.getElementById("userID").value,
+                reserveDate: reserveDate,
+                StartTime: startTime,
+                EndTime: endTime,
+                roomCode: roomCode
+            },
+            success: function(response) {
+                alert("예약이 완료되었습니다.");
+                //예약이 완료되면 예약 확인 페이지로 이동
+                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+            },
+            error: function(xhr, status, error) {
+                alert("예약 실패: " + error);
+            }
+        });
+    }); //미팅룸 예약하기 버튼 클릭 시 실행되는 이벤트 함수
 
 </script>
 

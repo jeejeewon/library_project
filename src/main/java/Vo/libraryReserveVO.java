@@ -32,6 +32,18 @@ public class libraryReserveVO {
 		this.reserve_end = reserve_end;
 	}
 
+	
+	
+	//미팅룸 예약시 컨트롤러에서 DB에 값 넘길 때 사용할 생성자 (예약번호, 예약자명 제외 변수 초기화)
+	public libraryReserveVO(String reserve_room, String reserve_id, Date reserve_date, int reserve_start,
+			int reserve_end) {
+		this.reserve_room = reserve_room;
+		this.reserve_id = reserve_id;
+		this.reserve_date = reserve_date;
+		this.reserve_start = reserve_start;
+		this.reserve_end = reserve_end;
+	}
+
 
 	//미팅룸 예약시 사용할 생성자 (좌석번호 제외 변수 초기화)
 	public libraryReserveVO(String reserve_num, String reserve_room, String reserve_id, String reserve_name,
