@@ -61,14 +61,14 @@ public class boardService {
 		return board;
 	}
 
-	// 현재글 번호의 바로 앞 글 번호를 조회
-	public int getPreBoardId(int boardId) {
-		return boardDao.getPreBoardId(boardId);
+	// 이전 글 번호를 조회하는 메소드
+	public int getPreBoardId(int currentBoardId, int category) {
+	    return boardDao.getPreBoardId(currentBoardId, category); // DAO에 category 전달
 	}
 
-	// 현재글 번호의 바로 다음 글 번호를 조회
-	public int getNextBoardId(int boardId) {
-		return boardDao.getNextBoardId(boardId);
+	// 다음 글 번호를 조회하는 메소드
+	public int getNextBoardId(int currentBoardId, int category) {
+	    return boardDao.getNextBoardId(currentBoardId, category); // DAO에 category 전달
 	}
 
 	// 공지사항 게시글 수정을 위한 메소드

@@ -366,12 +366,19 @@ public class boardController extends HttpServlet {
 			}
 			
 			
-			// 조회된 글의 이전 글 번호
-			int getPreBoardId = boardService.getPreBoardId(boardId);
-			request.setAttribute("getPreBoardId", getPreBoardId);
+			// 컨트롤러에서 카테고리 값 받기 (기본값은 0으로 설정)
+			int category = 0; // 기본값
+			String categoryStr = request.getParameter("category");
+			if (categoryStr != null) {
+			    category = Integer.parseInt(categoryStr); // 카테고리 값이 있으면 파싱하여 사용
+			}
 			
-			// 조회된 글의 다음 글 번호
-			int getNextBoardId = boardService.getNextBoardId(boardId);
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBoardId(boardId, category);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBoardId(boardId, category);
 			request.setAttribute("getNextBoardId", getNextBoardId);
 			
 			

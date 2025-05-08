@@ -68,10 +68,48 @@ request.setCharacterEncoding("UTF-8");
 			color: #555;
 		}
 
+
+	    /* 첨부파일 영역 스타일 */
 		.file {
-			margin-top: 10px;
-			font-size: 14px;
-			color: #007bff;
+		    margin-top: 20px;
+		    padding: 15px;
+		    background-color: #f9f9f9;
+		    border-radius: 8px;
+		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		    display: flex;
+		    align-items: center;
+		    gap: 15px;
+		}
+		
+		.file img {
+		    max-width: 150px;
+		    border-radius: 8px;
+		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+		
+		.file a.download-link {
+		    font-size: 14px;
+		    color: white;
+		    background-color: #007bff;
+		    text-decoration: none;
+		    font-weight: bold;
+		    padding: 8px 16px;
+		    border-radius: 4px;
+		    display: inline-block;
+		    margin-left: 10px;
+		    transition: background-color 0.3s ease, color 0.3s ease;
+		    text-align: center;
+		}
+		
+		.file a.download-link:hover {
+		    background-color: #0056b3;
+		    color: #fff;
+		}
+		
+		.file span {
+		    font-size: 14px;
+		    color: #555;
+		    margin-left: 10px;
 		}
 
 		/* 페이징 버튼 */
@@ -170,14 +208,21 @@ request.setCharacterEncoding("UTF-8");
 
 	<div class="center-wrapper">
 		<div class="paging">
-			<form action="<%=request.getContextPath()%>/bbs/noticeInfo.do" method="get">
-				<input type="hidden" name="boardId" value="${requestScope.getPreBoardId}">
-				<button type="submit">이전글</button>
-			</form>
-			<form action="<%=request.getContextPath()%>/bbs/noticeInfo.do" method="get">
-				<input type="hidden" name="boardId" value="${requestScope.getNextBoardId}">
-				<button type="submit">다음글</button>
-			</form>
+		    <!-- 이전글 버튼 (이전글이 있을 경우만 표시) -->
+			<c:if test="${getPreBoardId != 0}">
+			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
+			        <input type="hidden" name="boardId" value="${getPreBoardId}">
+			        <button type="submit">이전글</button>
+			    </form>
+			</c:if>
+			
+			<!-- 다음글 버튼 (다음글이 있을 경우만 표시) -->
+			<c:if test="${getNextBoardId != 0}">
+			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
+			        <input type="hidden" name="boardId" value="${getNextBoardId}">
+			        <button type="submit">다음글</button>
+			    </form>
+			</c:if>
 			<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
 				<button type="submit">목록</button>
 			</form>
@@ -199,13 +244,13 @@ request.setCharacterEncoding("UTF-8");
 			<c:if test="${not empty board.file}"><!-- 첨부파일이 있을 경우에만 나타나도록 설정 -->
 				<div class="file">
 					<img src="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}" id="preview1" alt="첨부 이미지">
-					<a href="#">첨부파일</a><span>${board.file}</span>
+					<a href="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}" download class="download-link">첨부파일</a><span>${board.file}</span>
 				</div>
 			</c:if>
 			<c:if test="${not empty board.bannerImg}"><!-- 배너이지미파일이 있을 경우에만 나타나도록 설정 -->
 				<div class="file">
 					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}" id="preview2" alt="배너 이미지">
-					<a href="#">배너이미지</a><span>${board.bannerImg}</span>
+					<a href="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}" download class="download-link">배너이미지</a><span>${board.bannerImg}</span>
 				</div>
 			</c:if>
 		</div>

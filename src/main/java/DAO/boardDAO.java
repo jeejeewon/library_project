@@ -300,26 +300,26 @@ public class boardDAO {
 	
 	
 	
-	//현재 상세페이지의 바로 앞 글번호를 조회하여 리턴하는 메소드
-	public int getPreBoardId(int currentBoardId) {
-
-		int boardId = 0;
-		
-		try {
-			//1. DB 연결
-			con = DbcpBean.getConnection();
-			 // 2. SQL문 작성: 현재 글보다 작은 번호 중 가장 큰 것 1개
-	        String sql = "SELECT board_id FROM board WHERE board_id < ? ORDER BY board_id DESC LIMIT 1";
-	        // 3. PreparedStatement 생성 및 파라미터 설정
+	// 현재 상세페이지의 바로 앞 글 번호를 조회하여 리턴하는 메소드
+	public int getPreBoardId(int currentBoardId, int category) {
+	    int boardId = 0;
+	    
+	    try {
+	        // DB 연결
+	        con = DbcpBean.getConnection();
+	        // SQL문 작성: 현재 글보다 작은 번호 중 가장 큰 것 1개
+	        String sql = "SELECT board_id FROM board WHERE board_id < ? AND category = ? ORDER BY board_id DESC LIMIT 1";
+	        // PreparedStatement 생성 및 파라미터 설정
 	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, currentBoardId); // ?에 현재 글 번호 전달
-			//4. SQL 실행 및 결과 받기
-			rs = pstmt.executeQuery();
-			
-			if (rs.next()) {
+	        pstmt.setInt(1, currentBoardId); // 현재 글 번호 전달
+	        pstmt.setInt(2, category); // 카테고리 번호 전달
+	        // SQL 실행 및 결과 받기
+	        rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
 	            boardId = rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
 	        }
-
+	        
 	    } catch (SQLException e) {
 	        System.err.println("오류 : getPreBoardId() 메소드 실행 중 오류 : " + e.getMessage());
 	        e.printStackTrace();
@@ -330,37 +330,36 @@ public class boardDAO {
 
 	    return boardId; // 결과 없으면 0 반환
 	}
-	
-	
-	//현재 상세페이지의 바로 뒤 글번호를 조회하여 리턴하는 메소드
-	public int getNextBoardId(int currentBoardId) {
-		
-		int boardId = 0;
-		
-		try {
-			//1. DB 연결
-			con = DbcpBean.getConnection();
-			// 2. SQL문 작성: 현재 글보다 작은 번호 중 가장 큰 것 1개
-			String sql = "SELECT board_id FROM board WHERE board_id > ? ORDER BY board_id ASC LIMIT 1";
-			// 3. PreparedStatement 생성 및 파라미터 설정
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, currentBoardId); // ?에 현재 글 번호 전달
-			//4. SQL 실행 및 결과 받기
-			rs = pstmt.executeQuery();
-			
-			if (rs.next()) {
-				boardId = rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
-			}
-			
-		} catch (SQLException e) {
-			System.err.println("오류 : getPreBoardId() 메소드 실행 중 오류 : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			// 자원 반납
-			DbcpBean.close(con, pstmt, rs);
-		}
-		
-		return boardId; // 결과 없으면 0 반환
+
+	// 현재 상세페이지의 바로 뒤 글 번호를 조회하여 리턴하는 메소드
+	public int getNextBoardId(int currentBoardId, int category) {
+	    int boardId = 0;
+	    
+	    try {
+	        // DB 연결
+	        con = DbcpBean.getConnection();
+	        // SQL문 작성: 현재 글보다 작은 번호 중 가장 큰 것 1개
+	        String sql = "SELECT board_id FROM board WHERE board_id > ? AND category = ? ORDER BY board_id ASC LIMIT 1";
+	        // PreparedStatement 생성 및 파라미터 설정
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, currentBoardId); // 현재 글 번호 전달
+	        pstmt.setInt(2, category); // 카테고리 번호 전달
+	        // SQL 실행 및 결과 받기
+	        rs = pstmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            boardId = rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
+	        }
+	        
+	    } catch (SQLException e) {
+	        System.err.println("오류 : getNextBoardId() 메소드 실행 중 오류 : " + e.getMessage());
+	        e.printStackTrace();
+	    } finally {
+	        // 자원 반납
+	        DbcpBean.close(con, pstmt, rs);
+	    }
+
+	    return boardId; // 결과 없으면 0 반환
 	}
 	
 	//게시글 수정
