@@ -1,3 +1,38 @@
+/*
+
+기본 폰트색
+#424242
+
+회색
+#7c7c7c
+
+어두운 회색
+#40474d
+
+밝은 회색
+#dcdcdc;
+
+포인트 색
+#003c83
+
+border-color용 밝은 회색
+#dedede
+
+*/
+
+
+@import
+	url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css")
+	;
+
+:root {
+	--mainfont: "Pretendard Variable", Pretendard, -apple-system,
+		BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+		"Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic",
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+	--boldWeight: 400;
+}
+
 * {
 	outline: none;
 }
@@ -20,11 +55,41 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
 	border: 0;
 	font: inherit;
 	vertical-align: baseline;
-	list-style: none;	
+	list-style: none;
 }
 
-.container {
-	width: 100%;
-	max-width: 1400px;
-	margin: 0 auto;
+html, body {
+	font-family: var(--mainfont);
+	font-weight: var(--boldWeight);
+	line-height: 1.4;
+	word-break: break-all;
+	color: #424242;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	-font-smoothing: antialiased;
+	letter-spacing: -.3px;
+	font-size: 1rem;
+}
+
+input {
+	display: inline-block;
+	border: 1px solid #dedede;
+	background: #fff;
+	padding: 8px;
+	font-size: 13px;
+	line-height: 1.2em;
+	color: #424242;
+	border-radius: 3px;
+}
+
+input[type="submit"] {
+	background: #003c83;
+	border: 1px solid #003c83;
+	font-size: 12px;
+	padding: 8px 18px;
+	color: #fff;
+	cursor: pointer;
+	font-weight: 600;
 }

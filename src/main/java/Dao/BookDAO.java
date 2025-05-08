@@ -350,7 +350,7 @@ public class BookDAO {
 	    return result;
 	}
 	
-	// 모든 대여 목록 조회 (관리자용)
+	/* 모든 대여 목록 조회 (관리자용) */
 	public Vector<RentalVo> allRentals() {
 	    Vector<RentalVo> rentalList = new Vector<>();
 
