@@ -32,7 +32,10 @@
 			<li>
 			<span>도서이용</span>
 			<ul class="sub-menu">
-					<li>아직 없음~</li>			
+					<li><a href="${contextPath}/books/bookList.do">전체 도서</a></li>
+					<li><a href="${contextPath}/books/searchForm.do">도서 검색</a></li>
+					<li><a href="${contextPath}/books/newBooks.do">신착 도서</a></li>
+					<li><a href="${contextPath}/books/bestBooks.do">인기 도서</a></li>
 				</ul>
 			</li>			
 			<li>
