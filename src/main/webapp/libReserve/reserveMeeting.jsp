@@ -198,7 +198,7 @@
 	
 	
 	//미팅룸 선택후 예약하기 버튼 클릭 시
-	document. getElementById("reserveBtn").addEventListener("click", (event) => {
+	document.getElementById("reserveBtn").addEventListener("click", (event) => {
         var selectedRoom = document.querySelector(".selected-btn");
         if (!selectedRoom) { //선택된 미팅룸이 없을 경우
             alert("미팅룸을 선택해주세요.");

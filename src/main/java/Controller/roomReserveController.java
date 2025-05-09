@@ -193,6 +193,21 @@ public class roomReserveController extends HttpServlet{
 			
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";
+			
+		//시설 예약 삭제 	
+		}else if(action.equals("/deleteReserve")) {
+			
+			System.out.println("deleteReserve호출됨===============");
+			
+			String reserve_id = request.getParameter("reserve_id");
+			String reserve_num = request.getParameter("reserve_num");
+			
+			System.out.println("예약 아이디 : " + reserve_id);
+			System.out.println("예약 번호 : " + reserve_num);
+			
+			return;
+			
+			
 		}
 				
 		if(nextPage != null) {			

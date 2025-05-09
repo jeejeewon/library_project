@@ -152,7 +152,9 @@ public class libraryReserveDAO {
 			while(rs.next()) { //조회된 결과가 있을 경우 
 				
 				//DB에서 조회한 값을 VO 객체에 저장
-				libraryReserveVO reserveVO = new libraryReserveVO(rs.getString("reserve_room"), rs.getDate("reserve_date"), rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"));
+				libraryReserveVO reserveVO = new libraryReserveVO(rs.getString("reserve_num"), rs.getString("reserve_room"),  
+																  rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
+																  rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"));
 
 				boolean isFuture = reserveVO.getReserve_date().toLocalDate().isAfter(today); //예약날짜가 오늘 날짜보다 미래인지 확인
 				
@@ -175,7 +177,12 @@ public class libraryReserveDAO {
 			while(rs.next()) { //조회된 결과가 있을 경우 
 				
 				//DB에서 조회한 값을 VO 객체에 저장
-				libraryReserveVO reserveVO = new libraryReserveVO(rs.getString("reserve_room"), rs.getDate("reserve_date"), rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"));
+				libraryReserveVO reserveVO = new libraryReserveVO(rs.getString("reserve_num"), rs.getString("reserve_room"),  
+																  rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
+																  rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"));
+				
+				System.out.println("아이디 : " + rs.getString("reserve_id"));
+				System.out.println("예약번호 : " + rs.getString("reserve_num"));
 				
 				//예약정보를 List에 추가
 				reserveList.add(reserveVO);

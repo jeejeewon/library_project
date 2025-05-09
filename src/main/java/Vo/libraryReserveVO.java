@@ -54,8 +54,18 @@ public class libraryReserveVO {
 		this.reserve_time = reserve_time;
 	}
 	
-	
-	
+	//시설 예약 조회시 사용할 생성자
+	public libraryReserveVO(String reserve_num, String reserve_room, String reserve_id,
+			String reserve_name, Date reserve_date, int reserve_start, int reserve_end, Timestamp reserve_time) {
+		this.reserve_num = reserve_num;
+		this.reserve_room = reserve_room;
+		this.reserve_id = reserve_id;
+		this.reserve_name = reserve_name;
+		this.reserve_date = reserve_date;
+		this.reserve_start = reserve_start;
+		this.reserve_end = reserve_end;
+		this.reserve_time = reserve_time;
+	}
 
 	//getter, setter 메소드
 	public String getReserve_num() {
