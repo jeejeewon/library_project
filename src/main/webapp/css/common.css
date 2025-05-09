@@ -19,8 +19,6 @@ border-color용 밝은 회색
 #dedede
 
 */
-
-
 @import
 	url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css")
 	;
@@ -87,7 +85,6 @@ input {
 input[type="submit"] {
 	background: #003c83;
 	border: 1px solid #003c83;
-	font-size: 12px;
 	padding: 8px 18px;
 	color: #fff;
 	cursor: pointer;
