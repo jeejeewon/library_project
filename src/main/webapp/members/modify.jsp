@@ -13,18 +13,21 @@ MemberVo memberVo = (MemberVo) request.getAttribute("memberVo");
 %>
 
 <link href="<%=contextPath%>/css/members.css" rel="stylesheet">
+
+
 <div id="joinForm" class="mypage">
 	<jsp:include page="mypageMenu.jsp" />
 	<div class="join-form-wrap">
+		<div class="">
+			<a href="<%=contextPath%>/member/leave">탈퇴하기</a>
+		</div>
 		<div class="inner">
 			<form action="<%=contextPath%>/member/modifyPro.me" method="post">
-				<input type="hidden" name="id" id="id" value="<%=memberVo.getId()%>">
-				<input type="hidden" name="name" id="name"
-					value="<%=memberVo.getName()%>">
+				<input type="hidden" id="id" name="id" value="<%=memberVo.getId()%>">
 
 				<div>
 					<label>아이디</label> <input type="text" value="<%=memberVo.getId()%>"
-						disabled>
+						readonly="readonly">
 					<p id="idInput"></p>
 				</div>
 				<div>
@@ -33,27 +36,28 @@ MemberVo memberVo = (MemberVo) request.getAttribute("memberVo");
 					<p id="passInput"></p>
 				</div>
 				<div>
-					<label>이름</label> <input type="text"
-						value="<%=memberVo.getName()%>" disabled>
+					<label>이름</label> <input type="text" id="name" name="name"
+						value="<%=memberVo.getName()%>" readonly="readonly">
 					<p id="nameInput"></p>
 				</div>
 				<div>
-					<label>주소</label> <input type="text" value="<%=memberVo.getName()%>" disabled>
+					<label>주소</label> <input type="text" id="address" name="address"
+						value="<%=memberVo.getAddress()%>">
 					<p id="nameInput"></p>
 				</div>
 				<div>
-					<label>성별</label>
-					남성 <input type="radio" class="gender" name="gender" value="남성">
-					여성 <input type="radio"	class="gender" name="gender" value="여성">
+					<label>성별</label> 남성 <input type="radio" class="gender"
+						name="gender" value="남성"> 여성 <input type="radio"
+						class="gender" name="gender" value="여성">
 				</div>
 				<div>
 					<label>이메일</label> <input type="email" id="email" name="email"
-						placeholder="이메일을 입력해주세요" required>
+						value="<%=memberVo.getEmail()%>" required>
 					<p id="emailInput"></p>
 				</div>
 				<div>
 					<label>연락처</label> <input type="text" id="tel" name="tel"
-						placeholder="연락처를 입력해주세요" required>
+						value="<%=memberVo.getTel()%>" required>
 					<p id="telInput"></p>
 				</div>
 
@@ -65,4 +69,12 @@ MemberVo memberVo = (MemberVo) request.getAttribute("memberVo");
 	</div>
 </div>
 
-<script src="<%=contextPath%>/js/join.js"></script>
+<script src="<%=contextPath%>/js/modify.js"></script>
+<script>
+	$(".gender").each(function() {
+		if($(this).val() == "<%=memberVo.getGender()%>
+	") {
+			$(this).prop("checked", true);
+		}
+	});
+</script>

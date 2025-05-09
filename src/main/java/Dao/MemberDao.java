@@ -37,17 +37,17 @@ public class MemberDao {
 			rs = pstmt.executeQuery(); // 쿼리 결과 얻기
 
 			while (rs.next()) {
-				MemberVo vo = new MemberVo();
-				vo.setId(rs.getString("id"));
-				vo.setPass("********"); // 마스킹처리
-				vo.setName(rs.getString("name"));
-				vo.setGender(rs.getString("gender"));
-				vo.setAddress(rs.getString("adress"));
-				vo.setEmail(rs.getString("email"));
-				vo.setTel(rs.getString("tel"));
-				vo.setJoinDate(rs.getDate("joinDate"));
-				vo.setKakaoId(rs.getString("kakao_id")); // 카카오 ID 설정
-				memberList.add(vo);
+				MemberVo memberVo = new MemberVo();
+				memberVo.setId(rs.getString("id"));
+				memberVo.setPass("********"); // 마스킹처리
+				memberVo.setName(rs.getString("name"));
+				memberVo.setGender(rs.getString("gender"));
+				memberVo.setAddress(rs.getString("adress"));
+				memberVo.setEmail(rs.getString("email"));
+				memberVo.setTel(rs.getString("tel"));
+				memberVo.setJoinDate(rs.getDate("joinDate"));
+				memberVo.setKakaoId(rs.getString("kakao_id")); // 카카오 ID 설정
+				memberList.add(memberVo);
 			}
 
 		} catch (Exception e) {
@@ -152,7 +152,7 @@ public class MemberDao {
 		return check;
 	}
 
-	// 회원 수정 페이지
+	// 회원정보 수정에 불러올 vo
 	public MemberVo memberInfo(String id) {
 		MemberVo memberVo = null;
 		String sql = null;
@@ -182,6 +182,71 @@ public class MemberDao {
 			ResourceClose();
 		}
 		return memberVo;
+	}
+
+	// 회원정보 수정 요청
+	public int memUpdate(MemberVo memberVo) {
+		String sql = null;
+		int result = 0;
+		try {
+			con = this.getConnection();
+			sql = "update member set pass=?, gender=?, address=?, email=?, tel=? where id=?";
+
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberVo.getPass());
+			pstmt.setString(2, memberVo.getGender());
+			pstmt.setString(3, memberVo.getAddress());
+			pstmt.setString(4, memberVo.getEmail());
+			pstmt.setString(5, memberVo.getTel());
+			pstmt.setString(6, memberVo.getId());
+
+			System.out.println(memberVo.getPass());
+			System.out.println(memberVo.getGender());
+			System.out.println(memberVo.getAddress());
+			System.out.println(memberVo.getEmail());
+			System.out.println(memberVo.getTel());
+			System.out.println(memberVo.getId());
+
+			result = pstmt.executeUpdate(); // 성공할 경우 1
+
+		} catch (Exception e) {
+			System.out.println("MemberDao.memUpdate() 메소드 오류 : " + e);
+		} finally {
+			ResourceClose();
+		}
+		return result;
+	}
+
+	// 회원 탈퇴(삭제)
+	public String memDelete(String id) {
+
+		String sql = null;
+		String result = null;
+
+		try {
+			con = this.getConnection();
+
+			sql = "delete from member where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+
+			int val = pstmt.executeUpdate();
+
+			if (val == 1) {
+				result = "탈퇴성공";
+			} else {
+				result = "탈퇴실패";
+			}
+
+		} catch (Exception e) {
+			System.out.println("MemberDao.memDelete() 메소드 오류 : " + e);
+			e.printStackTrace();
+		} finally {
+			ResourceClose();
+		}
+
+		return result;
+
 	}
 
 	// 자원 해제

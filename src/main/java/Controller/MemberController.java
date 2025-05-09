@@ -50,6 +50,10 @@ public class MemberController extends HttpServlet {
 
 		String nextPage = null;
 
+		String result = null;
+		boolean resultBloolean = false;
+		int resultInt = 0;
+
 		try {
 			switch (action) {
 
@@ -62,11 +66,11 @@ public class MemberController extends HttpServlet {
 
 			// 아이디 중복 체크
 			case "/joinIdCheck.me":
-				boolean result = memberservice.serviceOverLappedId(request);
+				resultBloolean = memberservice.serviceOverLappedId(request);
 				// AJAX 응답을 위해 PrintWriter 얻기
 				out = response.getWriter();
 				// 결과를 클라이언트(JavaScript)로 전송
-				if (result) {
+				if (resultBloolean) {
 					out.write("not_usable");
 				} else {
 					out.write("usable");
@@ -92,10 +96,16 @@ public class MemberController extends HttpServlet {
 				// 아이디 체크
 				int check = memberservice.serviceUserCheck(request);
 				if (check == 0) { // 비밀번호 틀림
-					out.println("<script>window.alert('비밀번호가 틀렸습니다.'); history.go(-1);</script>");
+					out.println("<script>");
+					out.println("window.alert('비밀번호가 틀렸습니다.');");
+					out.println("history.go(-1);");
+					out.println("</script>");
 					return;
 				} else if (check == -1) {
-					out.println("<script>window.alert('존재하지 않는 계정입니다.'); history.go(-1);</script>");
+					out.println("<script>");
+					out.println("window.alert('존재하지 않는 계정입니다.');");
+					out.println("history.go(-1);");
+					out.println("</script>");
 					return;
 				}
 				// 로그인 성공 (check == 1)
@@ -135,10 +145,16 @@ public class MemberController extends HttpServlet {
 				// 비밀번호 체크
 				int passCheck = memberservice.serviceUserCheck(request);
 				if (passCheck == 0) { // 비밀번호 틀림
-					out.println("<script>window.alert('비밀번호가 틀렸습니다.'); history.go(-1);</script>");
+					out.println("<script>");
+					out.println("window.alert('비밀번호가 틀렸습니다.');");
+					out.println("history.go(-1);");
+					out.println("</script>");
 					return;
 				} else if (passCheck == -1) {
-					out.println("<script>window.alert('로그인을 하셔야 접근 가능 합니다.'); history.go(-1)</script>");
+					out.println("<script>");
+					out.println("window.alert('로그인을 하셔야 접근 가능 합니다.');");
+					out.println("history.go(-1);");
+					out.println("</script>");
 					return;
 				}
 
@@ -152,9 +168,38 @@ public class MemberController extends HttpServlet {
 				nextPage = "/main.jsp";
 				break;
 
-			// 본인 확인 처리 요청
+			// 회원 정보 수정 요청
 			case "/modifyPro.me":
+				resultInt = memberservice.serviceMemUpdate(request);
+
+				if (resultInt == 1) {
+					String mypageMain = memberservice.serviceMypage(request);
+					request.setAttribute("center", mypageMain);
+				} else {
+					out.println("<script>");
+					out.println("alert('회원 수정 불가합니다.');");
+					out.println("history.go(-1);");
+					out.println("</script>");
+					return;
+				}
+				nextPage = "/main.jsp";
 				break;
+
+			// 회원 탈퇴(삭제) 페이지
+			case "/leave":
+				String leave = memberservice.serviceleave(request);
+				request.setAttribute("center", leave);
+				nextPage = "/main.jsp";
+				break;
+
+			// 회원 탈퇴(삭제) 요청
+			case "/leave.me":					
+				result = memberservice.serviceMemDelete(request);				
+				out.println("<script>");
+				out.println("alert('"+result+"');");
+				out.println("location.href='"+request.getContextPath()+"/index.jsp'");	
+				out.println("</script>");
+				return;
 
 			default:
 				System.out.println("알 수 없는 요청: " + action);

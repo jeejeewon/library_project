@@ -3,6 +3,7 @@ package Service;
 import java.net.http.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,10 +39,10 @@ public class MemberService {
 	public int serviceUserCheck(HttpServletRequest request) {
 		String login_id = request.getParameter("id");
 		String login_pass = request.getParameter("pass");
-		
+
 		String m_id = request.getParameter("m_id");
 		String m_pass = request.getParameter("m_pass");
-						
+
 		// MemberDAO의 userCheck 메소드를 호출하여 DB에서 아이디와 비밀번호 일치 여부
 		return memberDao.userCheck(login_id, login_pass);
 	}
@@ -70,20 +71,54 @@ public class MemberService {
 	}
 
 	public String serviceMypage(HttpServletRequest request) {
-		return "members/mypage.jsp";		
+		return "members/mypage.jsp";
 	}
 
-	public String servicepassForm(HttpServletRequest request) {	
-		return "members/pass.jsp";	
+	public String servicepassForm(HttpServletRequest request) {
+		return "members/pass.jsp";
 	}
 
 	public String serviceuserModify(HttpServletRequest request) {
-		return "members/modify.jsp";	
+		return "members/modify.jsp";
+	}
+	
+	public String serviceleave(HttpServletRequest request) {
+		return "members/leave.jsp";
 	}
 
 	// 회원 정보 조회
 	public MemberVo getMember(String id) {
 		return memberDao.memberInfo(id);
-	}	
+	}
+
+	// 회원 정보 수정
+	public int serviceMemUpdate(HttpServletRequest request) {
+		MemberVo memberVo = new MemberVo();
+
+		memberVo.setId(request.getParameter("id"));
+		memberVo.setPass(request.getParameter("pass"));
+		memberVo.setName(request.getParameter("name"));
+		memberVo.setGender(request.getParameter("gender"));
+		memberVo.setAddress(request.getParameter("address"));
+		memberVo.setEmail(request.getParameter("email"));
+		memberVo.setTel(request.getParameter("tel"));
+		
+		return memberDao.memUpdate(memberVo);
+	}
+	
+	// 회원 탈퇴
+	public String serviceMemDelete(HttpServletRequest request) {
+		String id = request.getParameter("id");
+		
+		// 세션 삭제
+	    HttpSession session = request.getSession(false);
+	    if (session != null) {
+	        session.invalidate(); // 세션 무효화
+	    }
+		
+		return memberDao.memDelete(id);
+	}
+
+
 
 }

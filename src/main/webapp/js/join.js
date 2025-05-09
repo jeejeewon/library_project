@@ -126,7 +126,7 @@ $("#tel").focusout(function() {
 	var telVal = t.val();
 	var tReg = RegExp(/^0[0-9]{8,10}$/);
 	var rsTel = tReg.test(telVal);
-	
+
 	if (!rsTel) {
 		$("#telInput").text("전화번호 형식이 올바르지 않습니다.").css("color", "red");
 	} else {
@@ -145,7 +145,7 @@ function check() {
 		$("#agreeInput").text("약관에 동의해 주세요!").css("color", "red");
 		return false;
 	}
-	
+
 	//====================================================================================================
 
 	var id = $("#id");
@@ -166,7 +166,7 @@ function check() {
 	var passValue = pass.val();
 	var passReg = RegExp(/^[A-Za-z0-9_\-]{4,20}$/);
 	var resultPass = passReg.test(passValue);
-	
+
 	if (!resultPass) {
 		$("#passInput").text("한글,특수문자 없이 4글자 이상으로 작성해 주세요!").css("color", "red");
 		pass.focus();
@@ -211,7 +211,7 @@ function check() {
 	var gender = $(".gender:checked");
 	var genderValue = gender.val();
 	genderValue = $.trim(genderValue);
-	
+
 	if (genderValue == "") {
 
 		$("#genderInput").text("성별을 체크 해주세요.").css("color", "red");
@@ -225,7 +225,7 @@ function check() {
 	var emailValue = email.val();
 	var emailReg = /^\w{5,12}@[a-z]{2,10}[\.][a-z]{2,3}[\.]?[a-z]{0,2}$/;
 	var resultEmail = emailReg.test(emailValue);
-	
+
 	if (!resultEmail) {
 		$("#emailInput").text("이메일 형식이 올바르지 않습니다.").css("color", "red");
 		email.focus();
