@@ -207,9 +207,10 @@ request.setCharacterEncoding("UTF-8");
 <body>
 
 	<div class="center-wrapper">
+	
 		<div class="paging">
 		    <!-- 이전글 버튼 (이전글이 있을 경우만 표시) -->
-			<c:if test="${getPreBoardId != 0}">
+			<c:if test="${getPreBoardId > 0}">
 			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
 			        <input type="hidden" name="boardId" value="${getPreBoardId}">
 			        <button type="submit">이전글</button>
@@ -217,7 +218,7 @@ request.setCharacterEncoding("UTF-8");
 			</c:if>
 			
 			<!-- 다음글 버튼 (다음글이 있을 경우만 표시) -->
-			<c:if test="${getNextBoardId != 0}">
+			<c:if test="${getNextBoardId > 0}">
 			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
 			        <input type="hidden" name="boardId" value="${getNextBoardId}">
 			        <button type="submit">다음글</button>
@@ -243,14 +244,16 @@ request.setCharacterEncoding("UTF-8");
 			<p>게시글 내용: ${board.content}</p>
 			<c:if test="${not empty board.file}"><!-- 첨부파일이 있을 경우에만 나타나도록 설정 -->
 				<div class="file">
-					<img src="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}" id="preview1" alt="첨부 이미지">
-					<a href="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}" download class="download-link">첨부파일</a><span>${board.file}</span>
+					<img src="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}&type=file" id="preview1" alt="첨부 이미지">
+					<a href="${contextPath}/download.do?boardId=${board.boardId}&file=${board.file}&type=file" download class="download-link">첨부파일</a>
+					<span>${board.file}</span>
 				</div>
 			</c:if>
 			<c:if test="${not empty board.bannerImg}"><!-- 배너이지미파일이 있을 경우에만 나타나도록 설정 -->
 				<div class="file">
-					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}" id="preview2" alt="배너 이미지">
-					<a href="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}" download class="download-link">배너이미지</a><span>${board.bannerImg}</span>
+					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" id="preview2" alt="배너 이미지">
+					<a href="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" download class="download-link">배너이미지</a>
+					<span>${board.bannerImg}</span>
 				</div>
 			</c:if>
 		</div>

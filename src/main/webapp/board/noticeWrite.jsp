@@ -51,7 +51,7 @@ request.setCharacterEncoding("UTF-8");
 			<div class="form-title">
 				<h2>공지사항 글쓰기</h2>
 				<div>
-					<input type="reset" value="취소"> 
+					<input type="button" value="취소" onclick="history.back();">
 					<input type="submit" value="등록">
 				</div>
 			</div>

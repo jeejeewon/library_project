@@ -63,165 +63,105 @@ public class boardController extends HttpServlet {
 		}
 	}
 
-	// 파일 업로드 함수
-	// 글에 첨부할 파일을 저장할 위치를 상수로 선언
+	
+	
+	
+	
+	// 업로드 파일이 저장될 기본 경로 상수
 	public static final String BOARD_FILE_REPO = "C:\\workspace_libraryProject\\library_project\\src\\main\\webapp\\board\\board_file_repo";
 
-	// 파일 업로드 처리를 위한 메소드
+	// 파일 업로드 처리 메소드
 	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException, FileUploadException {
+	        throws ServletException, IOException, FileUploadException {
 
-		Map<String, String> uploadMap = new HashMap<String, String>();
-		String encoding = "utf-8";
+	    Map<String, String> uploadMap = new HashMap<>();
+	    String encoding = "utf-8";
 
-		// 1.
-		// 글쓰기를 할때 첨부한 파일을 저장할 폴더 경로에대해 파일 객체를 생성합니다
-		File currentDirPath = new File(BOARD_FILE_REPO); // 일반 첨부파일
+	    // 업로드할 파일을 임시로 저장할 폴더 생성
+	    File currentDirPath = new File(BOARD_FILE_REPO);
+	    File tempDir = new File(currentDirPath, "temp");
 
-		// 임시 파일 저장 경로 (`BOARD_FILE_REPO/temp`) 객체 생성
-		File tempDir = new File(currentDirPath, "temp");
+	    if (!tempDir.exists()) {
+	        tempDir.mkdirs();  // temp 폴더가 없으면 생성
+	    }
 
-		// 임시 디렉토리가 존재하지 않으면 생성
-		if (!tempDir.exists()) {
-			boolean created = tempDir.mkdirs();
-			System.out.println("임시 업로드 폴더 생성 (" + tempDir.getPath() + "): " + created); // 폴더 생성 로그
-		}
+	    // 파일 업로드 환경 설정
+	    DiskFileItemFactory factory = new DiskFileItemFactory();
+	    factory.setSizeThreshold(1024 * 1024 * 3); // 메모리에 저장할 파일 최대 크기: 3MB
+	    factory.setRepository(tempDir); // 3MB 초과 파일은 임시 폴더에 저장
 
-		// 2.파일업로드 처리 환경 설정
-		DiskFileItemFactory factory = new DiskFileItemFactory(); // 업로드 할 파일 데이터를 임시로 저장할 객체메모리 생성 // ▪
-																	// DiskFileItemFactory 클래스는 업로드할 파일을 메모리에 저장할 객체를
-																	// 생성하는 클래스입니다
-		factory.setSizeThreshold(1024 * 1024 * 3); // 3MB 파일업로드시 사용할 임시메모리 최대크기 3메가 바이트
-		factory.setRepository(tempDir); // 임시 메모리에 파일 업로드시, 지정한 3MB를 초과하는 파일은 지정한 경로에 저장 //참고 : DiskFileItemFactory 클래스는
-										// 업로드 파일의 크기가 지정한크리를 넘기 전까지는 파일데이터를 메모리에 저장하고, 지정한 크기를 넘기면 지정한 경로에 저장합니다.
+	    // 업로드 처리를 위한 객체 생성
+	    ServletFileUpload upload = new ServletFileUpload(factory);
+	    upload.setHeaderEncoding(encoding); // 한글 깨짐 방지를 위한 인코딩 설정
 
-		// 3. 실제 파일 업로드를 수행할 객체 생성
-		// 파일을 업로드할 메모리를 생성자쪽으로 전달받아 저장한 파일업로드를 처리할 객체를 생성합니다
-		// -ServletFileUpload 클래스는 업로드된 파일을 처리하는 메소드가 정의되어 있습니다
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		upload.setHeaderEncoding(encoding); // 한글 인코딩 설정. 폼 데이터와 일치시키는것이 좋다.
+	    try {
+	        // 업로드 요청 파싱 (폼 입력값과 파일이 모두 포함되어 있음)
+	        List items = upload.parseRequest(request);
 
-		// 4.요청(request) 파싱 및 개별 항목(FileItem) 처리
-		try {
-			// request에 담긴 파일업로드 요청을 처리하여 List형태로 변환합니다
-			// ▪ request에는 업로드할 파일에 대한 요청정보를 가지고있다.
-			// ▪ parseRequest() 메소드는 request에 담긴 파일업로드 요청을 처리하여 List형태로 변환하여 리턴합니다
-			List items = upload.parseRequest(request);
-			// 위에 items는 List형태로 변환된 파일업로드 요청을 담고 있습니다
-			// 파일업로드요청에는 일반적인 폼데이터와 파일업로드 요청이 섞여있습니다
+	        for (int i = 0; i < items.size(); i++) {
+	            FileItem fileItem = (FileItem) items.get(i);
 
-			// List형태로 변환된 파일업로드 요청을 반복문을 통해서 하나씩 꺼내서 처리합니다
-			// ArrayList 크기만큼 반복
-			for (int i = 0; i < items.size(); i++) {
+	            // 일반 입력 값 처리 (ex. 제목, 내용 등)
+	            if (fileItem.isFormField()) {
+	                uploadMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
+	            } else { // 파일 업로드 처리
+	                String fieldName = fileItem.getFieldName(); // input 태그 name 속성
+	                String originalFileName = fileItem.getName(); // 사용자가 올린 원본 파일 이름
+	                long fileSize = fileItem.getSize(); // 파일 크기
 
-				// 하나씩 꺼낸 파일업로드 요청을 FileItem 객체에 저장합니다
-				// ▪ FileItem 객체는 업로드된 파일에 대한 정보를 가지고 있습니다
-				FileItem fileItem = (FileItem) items.get(i);
+	                if (fileSize > 0) { // 파일이 존재하는 경우
+	                    String fileNameOnly = new File(originalFileName).getName(); // 경로 제거 후 파일명만 추출
 
-				// 파일업로드 요청이 아닌 일반적인 폼데이터인 경우
-				// 즉 DiskFileItemFactory 객체(업로드할 아이템 하나의 정보)가 파일 아이템이 아닐 경우.
-				// ▪ isFormField() 메소드는 업로드된 파일이 아닌 일반적인 폼데이터인 경우 true를 리턴합니다
-				// ▪ 일반적인 폼데이터란 게시판 제목, 내용, 작성자, 비밀번호 등과 같은 데이터입니다
-				if (fileItem.isFormField()) {
+	                    // 업로드된 파일을 임시 폴더에 저장
+	                    File uploadFile = new File(tempDir, fileNameOnly);
+	                    fileItem.write(uploadFile);
 
-					System.out.println(fileItem.getFieldName() + " : " + fileItem.getString(encoding));
-					// 위 encoding 매개변수는 한글이 깨지지 않도록 인코딩을 utf-8로 설정함
+	                    // 결과 맵에 파일 이름 저장 (이후 이동을 위해)
+	                    uploadMap.put(fieldName, fileNameOnly);
+	                } else { // 파일이 비어 있는 경우
+	                    uploadMap.put(fieldName, "");
+	                }
+	            }
+	        }
+	    } catch (FileUploadException e) {
+	        System.err.println("파일 업로드 실패: " + e.getMessage());
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        System.err.println("파일 처리 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	        throw new ServletException("파일 업로드 중 오류 발생", e);
+	    }
 
-					// noticeWrite.jsp에서 입력한 제목, 내용만 따로 HashMap에 저장합니다.
-					// ▪ HasMap은 key와 value로 이루어진 자료구조
-					// ▪ HashMap에 저장된 데이터의 예 : {title=제목, content=내용}
-					uploadMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
+	    return uploadMap; // 업로드된 데이터(제목, 내용, 파일명 등) 반환
+	}
 
-					// DiskFileItemFactory 객체(업로드할 아이템 하나의 정보)가 파일 아이템인 경우 업로드를 진행한다.
-				} else { // 파일업로드 요청 // 파일 필드(input type="file")인 경우
 
-					System.out.println("파라미터명:" + fileItem.getFieldName());
-					System.out.println("파일이름:" + fileItem.getName());
-					System.out.println("파일크기:" + fileItem.getSize() + "byte");
-
-					// 업로드할 파일의 파일이름을 저장소에 업로드하기
-					if (fileItem.getSize() > 0) {// 파일 크기가 0보다 크다면? 즉, 업로드할 파일이 존재한다면,
-
-						// 파일 이름에서 경로 정보 제거
-						String fileNameOnly = new File(fileItem.getName()).getName();
-
-						// 결과 Map에 파일 필드 이름과 (경로제외된)파일이름을 저장
-						// 나중에 이 파일 이름으로 임시 폴더의 파일을 찾아 최종위치로 이동시킨다
-						uploadMap.put(fileItem.getFieldName(), fileNameOnly);
-
-						// 업로드된 파일을 임시 디렉토리에 저장
-						File uploadFile = new File(tempDir, fileNameOnly);
-
-						fileItem.write(uploadFile);// 업로드할 파일을 임시 저장소에 업로드하기
-					} else { // 파일 크기가 0인 경우
-						uploadMap.put(fileItem.getFieldName(), ""); // 업로드된 파일이 없으므로 빈 문자열 저장
-					}
-				}
-			} // end for
-		} catch (FileUploadException e) {
-			System.err.println("오류: upload() 메소드 내 FileUploadException - " + e.getMessage());
-			e.printStackTrace();
-
-		} catch (Exception e) {
-			System.err.println("오류: upload() 메소드 내 일반 Exception - " + e.getMessage());
-			e.printStackTrace();
-
-			throw new ServletException("파일 업로드 중 오류 발생", e);
-		}
-
-		return uploadMap;
-		// uploadMap에는 업로드한 파일의 정보가 담겨있다.
-
-	}// end uploadFile()
-
-	
-	// 파일을 지정된 경로로 이동시키는 함수
+	// 임시 폴더의 파일을 실제 저장 폴더로 이동시키는 메소드
 	private void moveFileToDestination(String fileName, int boardId, String fileType) {
+	    if (fileName != null && !fileName.isEmpty()) {
 
-		// fileName이 null이 아니고 빈 문자열이 아닌지 확인
-		// 즉, 파일이 첨부되었는지 확인하는 조건
-		if (fileName != null && !fileName.isEmpty()) {
+	        // 임시 저장된 파일 위치
+	        File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + fileName);
 
-			// 임시 파일 경로 객체 생성
-			// BOARD_FILE_REPO는 파일이 저장되는 기본 경로입니다.
-			// "temp" 폴더는 사용자가 업로드한 파일이 임시로 저장되는 폴더입니다.
-			// fileName은 업로드된 파일의 이름입니다.
-			File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + fileName);
-			//File.separator는 파일 경로 구분자를 운영 체제에 맞게 자동으로 제공하는 상수입니다. 즉 윈도우에서는 "\"로, 리눅스에서는 "/"로 자동으로 변환됩니다.
+	        // 최종 저장 폴더 경로 (글 번호를 폴더 이름으로 사용)
+	        File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
 
-			// 최종 저장 폴더 경로 객체 생성 (글 번호 폴더)
-			// boardId는 새로 등록된 글의 번호입니다.
-			// BOARD_FILE_REPO + File.separator + boardId는 새로운 폴더 경로로, 새 글 번호를 가진 폴더로 파일을
-			// 이동시킵니다.
-			File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
+	        // 최종 폴더가 없다면 생성
+	        if (!destDir.exists()) {
+	            destDir.mkdirs();
+	        }
 
-			// 만약 최종 저장 폴더가 존재하지 않으면 새로 생성
-			// 폴더가 없다면, 새로운 폴더를 생성하여 파일을 저장할 공간을 마련합니다.
-			if (!destDir.exists()) {
-				destDir.mkdirs(); // 폴더가 없으면 새로 생성합니다.
-				System.out.println(fileType + " 저장 폴더가 생성되었습니다: " + destDir.getPath());
-			}
-
-			// 임시 파일이 실제로 존재하는지 확인 후 이동
-			// srcFile이 실제로 존재하는 파일인지 확인합니다.
-			if (srcFile.exists()) {
-				try {
-					// 파일을 임시 폴더에서 새 폴더로 이동
-					// FileUtils.moveFileToDirectory(srcFile, destDir, true) 는 파일을 destDir 폴더로 이동시키는
-					// 메소드입니다.
-					// 세 번째 파라미터 true는 파일이 이미 존재하면 덮어쓰도록 하는 옵션입니다.
-					FileUtils.moveFileToDirectory(srcFile, destDir, true);
-					System.out.println(fileType + " 파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath());
-				} catch (Exception e) {
-					// 만약 파일 이동 중에 에러가 발생하면 예외가 발생하고, 그 메시지를 출력합니다.
-					System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
-				}
-			} else {
-				// 임시 파일이 존재하지 않는 경우 오류 로그 출력
-				// 만약 srcFile이 존재하지 않으면, 파일을 찾을 수 없다는 오류 메시지를 출력합니다.
-				System.err.println("오류: 새 글 등록 중 임시 파일 찾기 실패: " + srcFile.getPath());
-			}
-		}
+	        // 파일이 실제로 존재한다면 이동 처리
+	        if (srcFile.exists()) {
+	            try {
+	                FileUtils.moveFileToDirectory(srcFile, destDir, true); // 파일 이동
+	            } catch (Exception e) {
+	                System.err.println("파일 이동 오류: " + e.getMessage());
+	            }
+	        } else {
+	            System.err.println("임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
+	        }
+	    }
 	}
 
 	
@@ -357,6 +297,10 @@ public class boardController extends HttpServlet {
 			// 글번호에 해당하는 게시글을 DB에서 조회
 			//boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
 			boardVO viewedBoard = boardService.viewBoard(boardId);
+		
+
+		
+			
 			System.out.println("Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));//조회 결과 로그
 			
 			//조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
@@ -446,7 +390,7 @@ public class boardController extends HttpServlet {
 		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
 		// 요청주소 "/bbs/noticeModify.do"
 		if (action.equals("/noticeModify.do")){
-			System.out.println("공지사항 글 수정 처리 시작...");
+			System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
 			
 			//파일 업로드를 포함한 수정된 폼 데이터 처리
 			// 수정 폼에서도 파일첨부가 가능하므로 uploadFile() 메소드를 호출
@@ -465,7 +409,9 @@ public class boardController extends HttpServlet {
 			String title = boardMap.get("title"); // 수정된 제목 추출
 			String content = boardMap.get("content"); // 수정된 내용 추출
 			String file = boardMap.get("file"); // 수정된 첨부파일 추출
+			String originalFileName = boardMap.get("originalFileName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일 삭제용)
 			String bannerImage = boardMap.get("bannerImage"); // 수정된 배너 이미지 추출
+			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일 삭제용)
 			System.out.println("추출된 수정 정보 : " + "boardId=" + boardId + ", title=" + title + ", content=" + content + ", file=" + file + ", bannerImage=" + bannerImage);
 			
 			// boardVO 객체에 수정된 정보 저장
@@ -489,17 +435,50 @@ public class boardController extends HttpServlet {
 			// 첨부파일 처리
 			// 수정된 첨부파일이 있는 경우 파일 이동
 			if (file != null && !file.isEmpty()) {
-				moveFileToDestination(file, boardId, "첨부파일");
+				// 새 파일을 임시 폴더(temp)에서 최종 폴더(글번호 폴더)로 이동
+				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);//임시 폴더에 저장된 파일
+				File destDir = new File(BOARD_FILE_REPO + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
+				
+				// 최종 폴더가 없다면 생성
+				if (!destDir.exists()) { destDir.mkdirs();}
+				// 임시 파일 존재 확인 후 이동
+				if (srcFile.exists()) {
+					FileUtils.moveFileToDirectory(srcFile, destDir, true); // 파일 이동
+					System.out.println("첨부파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath()); // 이동 완료 로그
+				}else {
+					System.out.println("오류 : 임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
+				}
+				
+			    // 기존 첨부파일 처리 : 
+				// 기존 파일이 있었고, 새로 첨부된 파일과 이름이 다른 경우에만 기존 파일 삭제
+			    if (originalFileName != null && !originalFileName.isEmpty() && !originalFileName.equals(file)) {
+			        File oldFile = new File(destDir, originalFileName);
+			        // 기존 파일이 존재하는 경우 삭제
+			        if (oldFile.exists()) {
+			            boolean deleted = oldFile.delete();
+			            System.out.println("기존 첨부 파일 삭제 ( " + oldFile.getPath() + " ) : " + deleted);//삭제 결과 로그
+			        }
+			    }
+
 			}
+			
 			// 수정된 배너 이미지가 있는 경우 파일 이동
 			if (bannerImage != null && !bannerImage.isEmpty()) {
-				moveFileToDestination(bannerImage, boardId, "배너 이미지");
+			    if (originalBannerName != null && !originalBannerName.isEmpty()) {
+			        File oldBanner = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
+			        if (oldBanner.exists()) {
+			            oldBanner.delete();
+			            System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
+			        }
+			    }
+
+			    moveFileToDestination(bannerImage, boardId, "배너 이미지");
 			}
 			
 			
-			// 기존 파일 처리 :
-			
-			
+			// 수정 후 상세페이지로 리디렉션
+			response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
+
 	
 			
 		}// end of noticeModify.do

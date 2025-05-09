@@ -317,7 +317,7 @@ public class boardDAO {
 	        rs = pstmt.executeQuery();
 	        
 	        if (rs.next()) {
-	            boardId = rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
+	           return rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
 	        }
 	        
 	    } catch (SQLException e) {
@@ -348,7 +348,7 @@ public class boardDAO {
 	        rs = pstmt.executeQuery();
 	        
 	        if (rs.next()) {
-	            boardId = rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
+	            return rs.getInt("board_id"); // 결과 있으면 board_id 꺼내기
 	        }
 	        
 	    } catch (SQLException e) {

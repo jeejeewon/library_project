@@ -48,15 +48,18 @@ request.setCharacterEncoding("UTF-8");
 
 
 		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/noticeModify.do" enctype="multipart/form-data">
+			
+			<input type="hidden" name="boardId" value="${board.boardId}">
 		
 			<div class="form-title">
 				<h2>공지사항 글 수정</h2>
 				<div>
-					<input type="reset" value="취소"> 
+					<button type="button" onclick="location.href='${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}'">취소</button>
 					<input type="submit" value="수정">
 				</div>
 			</div>
 		
+			
 			<table align="center" border="1">
 				<tr>
 					<td>
@@ -75,12 +78,14 @@ request.setCharacterEncoding("UTF-8");
         					</c:choose>
     					</span>
 						<!-- 첨부파일 삭제 버튼 (초기에는 숨김) -->
-						<button type="button" id="deleteFileBtn" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
+						<button type="button" id="deleteFileBtn" onclick="deleteFile('file', 'fileName', 'deleteFileBtn')" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
     					<input type="file" name="file" id="file" class="file-input">	
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2"><textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;"></textarea></td>
+					<td colspan="2">
+						<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -95,12 +100,13 @@ request.setCharacterEncoding("UTF-8");
             					</c:otherwise>
         					</c:choose>
     					</span>
-    					<button type="button" id="deleteBannerBtn" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
+    					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
+		                <button type="button" id="deleteBannerBtn" onclick="deleteFile('bannerImage', 'bannerFileName', 'deleteBannerBtn', 'bannerPreview')" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
     					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
     					
     					<div id="bannerPreview" style="display: inline-block; margin-left: 20px;">
         					<c:if test="${not empty board.bannerImg}">
-            					<img src="${contextPath}/upload/${board.bannerImg}" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
+            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
         					</c:if>
     					</div>
 					</td>
@@ -172,6 +178,9 @@ request.setCharacterEncoding("UTF-8");
 				};
 			}
 		}
+		document.getElementById('bannerImage').addEventListener('change', function () {
+			readURL(this);
+		});
 	</script>
 	
 </body>

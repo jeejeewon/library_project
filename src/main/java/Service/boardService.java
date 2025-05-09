@@ -53,13 +53,19 @@ public class boardService {
 	public boardVO viewBoard(int boardId) {
 		System.out.println("BoardService - viewBoard 호출됨 (글번호: " + boardId + ")");
 		
+		// 먼저 글이 실제로 존재하는지 확인
+	    boardVO board = boardDao.selectBoard(boardId);
 		// DAO에게 해당 글번호에 대한 상세 정보를 요청하기 전에 먼저,
 		// 해당 글 번호에 뷰 수를 1 증가키는 작업을 수행합니다.
-		boardDao.increaseViewCount(boardId);
+		// 존재하는 글일 경우에만 조회수 증가
+	    if (board != null) {
+	        boardDao.increaseViewCount(boardId);
+	    }
 		
-		boardVO board = boardDao.selectBoard(boardId);
 		return board;
 	}
+
+	
 
 	// 이전 글 번호를 조회하는 메소드
 	public int getPreBoardId(int currentBoardId, int category) {
