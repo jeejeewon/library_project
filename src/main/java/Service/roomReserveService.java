@@ -14,17 +14,30 @@ public class roomReserveService {
 	public List MeetingRoomList(String date, int start, int end) {
 		
 		//DB에서 예약 가능한 미팅룸 조회 명령
-		List roomList = libraryReserveDAO.selectRoomList(date, start, end);
+		List roomList = libraryReserveDAO.MeetingRoomList(date, start, end);
 
 		return roomList; //조회된 List를 Controller로 반환
 		
 	}
 
-	public void insertReserveRoom(libraryReserveVO vo) {
+	public void reserveMeetingRoom(libraryReserveVO vo) {
 		
 		//DB에 예약정보 저장 명령
-		libraryReserveDAO.insertReserveRoom(vo);
+		libraryReserveDAO.reserveMeetingRoom(vo);
 	}
+
+	public List<libraryReserveVO> selectReserveList(String userId) {
+
+		//DB에서 예약정보 조회 명령
+		List<libraryReserveVO> reserveList = libraryReserveDAO.selectReserveList(userId);
+		
+		
+		return reserveList;
+	}
+
+	
+
+
 	
 	
 

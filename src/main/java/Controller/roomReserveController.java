@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -80,8 +81,33 @@ public class roomReserveController extends HttpServlet{
 			nextPage = "/main.jsp";	
 			
 		//[ 내서재 ]-[ 시설예약내역 ] 뷰	
-		}else if(action.equals("/reserveCheck")) {			
-			request.setAttribute("center", "/libReserve/reserveCheck.jsp");			
+		}else if(action.equals("/reserveCheck")) {
+			
+			//로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			String userId = (String)session.getAttribute("id");
+			
+			if(userId == null || userId.equals("")) {
+				//로그인 페이지로 이동
+				response.setContentType("text/html;charset=utf-8");
+				out.println("<script>alert('로그인 후 이용 가능합니다.'); location.href='" + contextPath + "/member/login';</script>");
+				out.flush();
+				out.close();
+				return;
+			}
+			
+			//로그인한 사용자의 예약내역을 List로 받아오기
+			List<libraryReserveVO> reserveList = roomReserveService.selectReserveList(userId);
+			
+			System.out.println("예약내역 리스트 : " + reserveList);
+			
+			//List를 request에 바인딩
+			request.setAttribute("reserveList", reserveList);
+			
+			System.out.println("reserveList : " + reserveList);	
+			
+			request.setAttribute("center", "/libReserve/reserveCheck.jsp");				
+			
 			nextPage = "/main.jsp";	
 			
 		//[ 관리자메뉴 ]-[ 시설예약관리 ] 뷰	
@@ -163,7 +189,7 @@ public class roomReserveController extends HttpServlet{
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.insertReserveRoom(vo);
+			roomReserveService.reserveMeetingRoom(vo);
 			
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";

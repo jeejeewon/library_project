@@ -1,6 +1,7 @@
 package Vo;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 //시설 예약 정보를 저장할 VO
 public class libraryReserveVO {
@@ -13,27 +14,13 @@ public class libraryReserveVO {
 	private Date reserve_date;		//예약일자
 	private int reserve_start;		//예약시작시간
 	private int reserve_end;		//예약종료시간
+	private Timestamp reserve_time;		//예약시간
+	private boolean isFuture;	    //예약날짜가 미래인지 여부 (true:미래, false:현재)
 	
 	
 	//기본생성자
 	public libraryReserveVO() {}
 
-	
-	//스터디룸 예약시 사용할 생성자
-	public libraryReserveVO(String reserve_num, String reserve_room, int reserve_seat, String reserve_id,
-			String reserve_name, Date reserve_date, int reserve_start, int reserve_end) {
-		this.reserve_num = reserve_num;
-		this.reserve_room = reserve_room;
-		this.reserve_seat = reserve_seat;
-		this.reserve_id = reserve_id;
-		this.reserve_name = reserve_name;
-		this.reserve_date = reserve_date;
-		this.reserve_start = reserve_start;
-		this.reserve_end = reserve_end;
-	}
-
-	
-	
 	//미팅룸 예약시 컨트롤러에서 DB에 값 넘길 때 사용할 생성자 (예약번호, 예약자명 제외 변수 초기화)
 	public libraryReserveVO(String reserve_room, String reserve_id, Date reserve_date, int reserve_start,
 			int reserve_end) {
@@ -56,6 +43,18 @@ public class libraryReserveVO {
 		this.reserve_start = reserve_start;
 		this.reserve_end = reserve_end;
 	}
+	
+	//미팅룸 조회시 사용할 생성자
+	public libraryReserveVO(String reserve_room, Date reserve_date, int reserve_start, int reserve_end,
+			Timestamp reserve_time) {
+		this.reserve_room = reserve_room;
+		this.reserve_date = reserve_date;
+		this.reserve_start = reserve_start;
+		this.reserve_end = reserve_end;
+		this.reserve_time = reserve_time;
+	}
+	
+	
 	
 
 	//getter, setter 메소드
@@ -122,5 +121,23 @@ public class libraryReserveVO {
 	public void setReserve_end(int reserve_end) {
 		this.reserve_end = reserve_end;
 	}
+
+	public Timestamp getReserve_time() {
+		return reserve_time;
+	}
+
+	public void setReserve_time(Timestamp reserve_time) {
+		this.reserve_time = reserve_time;
+	}
+
+	public boolean getIsFuture() {
+		return isFuture;
+	}
+
+	public void setIsFuture(boolean isFuture) {
+		this.isFuture = isFuture;
+	}
+	
+
 		
 }
