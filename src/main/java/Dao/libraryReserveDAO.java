@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,9 +157,21 @@ public class libraryReserveDAO {
 																  rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
 																  rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"));
 
-				boolean isFuture = reserveVO.getReserve_date().toLocalDate().isAfter(today); //예약날짜가 오늘 날짜보다 미래인지 확인
+				//예약날짜가 오늘 날짜보다 미래인지 확인
+				LocalDate reserveDate = reserveVO.getReserve_date().toLocalDate(); 
 				
-				reserveVO.setIsFuture(isFuture); //예약날짜가 미래인지 여부를 VO 객체에 저장
+				int startHour = reserveVO.getReserve_start();
+				
+				LocalDateTime desiredDateTime = reserveDate.atTime(startHour, 0);
+				
+				//현재 날짜와 시간
+				LocalDateTime now = LocalDateTime.now();
+				
+				//비교
+				boolean isFuture = desiredDateTime.isAfter(now);				
+			
+				//예약날짜가 미래인지 여부를 VO 객체에 저장
+				reserveVO.setIsFuture(isFuture); 
 						
 				//예약정보를 List에 추가
 				reserveList.add(reserveVO);
