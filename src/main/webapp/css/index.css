@@ -34,6 +34,10 @@
 	padding-top: 10px;
 }
 
+#wrapper {
+	position: relative;
+}
+
 .ui-btn {
 	color: #808991;
 	background: white;
@@ -52,52 +56,83 @@
 	gap: 5px;
 }
 
-/* 마이페이지 */
-.mypage {
+/* 메인 */
+.main-search-wrap {
+	height: 600px;
+	position: relative;
+}
+
+.main-search-form {
+	height: 100%;
 	display: flex;
-	width: 100%;
-	padding: 2rem 0;
+	justify-content: center;
 }
 
-.mypage .left_menu {
-	width: 20%;
-	min-width: 235px;
-}
-
-.mypage .page {
-	width: 80%;
-}
-
-.mypage .menu-section {
-	color: #40474d;
-}
-
-.mypage .menu-section .menu-tit {
+.main-search-form .inner {
 	display: flex;
-	gap: 8px;
 	align-items: center;
-	padding-top: 1rem;
+	justify-content: center;
 }
 
-.mypage .menu-section {
-	border-bottom: 1px solid #dedede;
-	width: 60%;
-	padding-bottom: 10px;
-	font-weight: 600;
+.main-search-form form {
+	display: flex;
+	align-items: center;
 }
 
-.mypage .menu-section:nth-child(1) .menu-tit {
-	padding: 0;
-}
-
-.mypage .menu-section:last-child {
+.main-search-form input {
+	width: 900px;
+	height: 60px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	/* 	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px; */
+	padding: 0 2rem;
+	font-size: 1.250rem;
 	border: 0;
 }
 
-.mypage .menu-section ul {
-	padding-left: calc(1rem + 8px);
+.main-search-form button {
+	border: 0;
+	height: 60px;
+	border-top-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #003c83;
+	width: 80px;
+	padding: 0 5px 0 0;
+	cursor:pointer;
 }
 
-.mypage .menu-section ul li {
-	padding-top: 10px;
+.main-swiper-wrap {
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+	height: 100%;
+	top: 0;
+	width: 100%;
+}
+
+.main-swiper {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	text-align: center;
+	font-size: 18px;
+	background: #fff;
+	/* Center slide text vertically */
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
 }

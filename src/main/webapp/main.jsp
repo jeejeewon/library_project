@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <c:set var="center" value="${requestScope.center}" />
 <c:if test="${empty center}">
@@ -25,9 +25,7 @@
 		<jsp:include page="head.jsp" />
 	</header>
 	<div id="wrapper">
-		<div class="container">
-			<jsp:include page="${center}" />
-		</div>
+		<jsp:include page="${center}" />
 	</div>
 	<footer id="footer">
 		<jsp:include page="tail.jsp" />
