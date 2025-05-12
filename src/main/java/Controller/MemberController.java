@@ -193,12 +193,23 @@ public class MemberController extends HttpServlet {
 				break;
 
 			// 회원 탈퇴(삭제) 요청
-			case "/leave.me":					
-				result = memberservice.serviceMemDelete(request);				
+			case "/leave.me":
+				result = memberservice.serviceMemDelete(request);
 				out.println("<script>");
-				out.println("alert('"+result+"');");
-				out.println("location.href='"+request.getContextPath()+"/index.jsp'");	
+				out.println("alert('" + result + "');");
+				out.println("location.href='" + request.getContextPath() + "/index.jsp'");
 				out.println("</script>");
+				return;
+
+			// 카카오 로그인 요청
+			case "/kakaoCallback.me":
+				// 요청 파라미터에서 인증 코드(code)와 상태 토큰(state) 가져오기
+				String code = request.getParameter("code");
+				String state = request.getParameter("state");
+				// 세션에서 로그인 요청 시 저장했던 상태 토큰(kakao_state) 가져오기
+				HttpSession kakaoSession = request.getSession();
+				String sessionState = (String) kakaoSession.getAttribute("kakao_state");
+				
 				return;
 
 			default:
