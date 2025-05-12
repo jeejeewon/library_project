@@ -1,6 +1,6 @@
 package Service;
 
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -12,32 +12,24 @@ import DAO.boardDAO;
 import VO.boardVO;
 
 public class boardService {
-	
+
 	boardDAO boardDao;
-	
-	
+
 	public boardService() {
 		boardDao = new boardDAO();
 	}
 
-
 	public Vector<boardVO> getAllBoardList() {
 
 		return boardDao.getAllBoardList();
-		
-		
-	}
-	
-	public Vector<boardVO> getNoticeList() {
 
-		return boardDao.getNoticeList();
-		
 	}
-	
-	public Vector<boardVO> getquestionList() {
-		
-		return boardDao.getquestionList();
-		
+
+	// 게시글 리스트를 불러오는 메소드
+	public Vector<boardVO> getBoardList(int category) {
+
+		return boardDao.getBoardList(category);
+
 	}
 
 	// 공지사항 게시글 추가를 위한 메소드.
@@ -52,29 +44,27 @@ public class boardService {
 	// 특정 글번호(boardId)를 받아 해당 글의 상세 정보를 조회하도록 DAO에게 요청하는 메소드.
 	public boardVO viewBoard(int boardId) {
 		System.out.println("BoardService - viewBoard 호출됨 (글번호: " + boardId + ")");
-		
+
 		// 먼저 글이 실제로 존재하는지 확인
-	    boardVO board = boardDao.selectBoard(boardId);
+		boardVO board = boardDao.selectBoard(boardId);
 		// DAO에게 해당 글번호에 대한 상세 정보를 요청하기 전에 먼저,
 		// 해당 글 번호에 뷰 수를 1 증가키는 작업을 수행합니다.
 		// 존재하는 글일 경우에만 조회수 증가
-	    if (board != null) {
-	        boardDao.increaseViewCount(boardId);
-	    }
-		
+		if (board != null) {
+			boardDao.increaseViewCount(boardId);
+		}
+
 		return board;
 	}
 
-	
-
 	// 이전 글 번호를 조회하는 메소드
 	public int getPreBoardId(int currentBoardId, int category) {
-	    return boardDao.getPreBoardId(currentBoardId, category); // DAO에 category 전달
+		return boardDao.getPreBoardId(currentBoardId, category); // DAO에 category 전달
 	}
 
 	// 다음 글 번호를 조회하는 메소드
 	public int getNextBoardId(int currentBoardId, int category) {
-	    return boardDao.getNextBoardId(currentBoardId, category); // DAO에 category 전달
+		return boardDao.getNextBoardId(currentBoardId, category); // DAO에 category 전달
 	}
 
 	// 공지사항 게시글 수정을 위한 메소드
@@ -84,6 +74,18 @@ public class boardService {
 		// 필요하다면 여기서 데이터 유효성 검사 등을 추가할 수 있습니다.
 		boardDao.updateBoard(modVO);
 	}
-	
+
+	// 글 삭제 메소드
+	public int removeBoard(int boardID) {
+		System.out.println("boardService - removeBoard 호출됨 (글번호 :" + boardID + ")");
+		
+		// 글 삭제 작업을 dao에게 요청
+		boardDao.deletBoard(boardID);
+		System.out.println("boardService - 글 삭제 작업 완료 (DB)");
+
+		// 삭제된 글ID 반환
+		return boardID;
+
+	}
 
 }

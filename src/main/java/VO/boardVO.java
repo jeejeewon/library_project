@@ -1,6 +1,6 @@
 package VO;
 
-import java.sql.Date;
+import java.sql.Timestamp;  // 수정: java.security.Timestamp -> java.sql.Timestamp
 
 //게시판테이블에서 조회해온 데이터를 저장할 VO
 public class boardVO {
@@ -14,7 +14,7 @@ public class boardVO {
 	private int bookNo;  //도서번호
 	private String file;  //첨부파일명
 	private String bannerImg;  //배너파일명
-	private Date date;  //게시글 작성일
+	private Timestamp createdAt;  //게시글 작성일 (DATETIME)
 	private int views;  //게시글 조회수
 	private Boolean secret;  //게시글 공개 여부 (false :공개 , true:비공개)
 	private String reply;  //게시글 답변
@@ -23,7 +23,7 @@ public class boardVO {
 	public boardVO() {}
 	
 	//모든 게시판정보 받아서 boardVO객체를 만드는 생성자
-	public boardVO(int boardId, int category, String title, String content, String userId, int bookNo, String file, String bannerImg, Date date, int views, Boolean secret, String reply) {
+	public boardVO(int boardId, int category, String title, String content, String userId, int bookNo, String file, String bannerImg, Timestamp createdAt , int views, Boolean secret, String reply) {
 		
 		super();
 		this.boardId = boardId;
@@ -34,7 +34,7 @@ public class boardVO {
 		this.bookNo = bookNo;
 		this.file = file;
 		this.bannerImg = bannerImg;
-		this.date = date;
+		this.createdAt  = createdAt ;
 		this.views = views;
 		this.secret = secret;
 		this.reply = reply;
@@ -105,13 +105,14 @@ public class boardVO {
 		this.bannerImg = bannerImg;
 	}
 
-	public Date getDate() {
-		return date;
-	}
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+
+    }
 
 	public int getViews() {
 		return views;
@@ -136,6 +137,4 @@ public class boardVO {
 	public void setReply(String reply) {
 		this.reply = reply;
 	}
-	
-	
 }

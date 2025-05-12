@@ -19,25 +19,33 @@ request.setCharacterEncoding("UTF-8");
 	<center>
 	    <a href="${contextPath}/bbs/noticeWrite.do">글쓰기</a>
 		<table align="center" border="1" width="80%">
-			<tr height="20" align="center" bgcolor="lightgray">
-				<td>No</td>
-				<td>제목</td>
-				<td>작성자</td>
-				<td>작성일</td>
-				<td>조회수</td>
-				<td>첨부파일</td>
-			</tr>
-		    <c:forEach var="boardVo" items="${boardList}" varStatus="status">
-                <tr height="20" align="center">
-                    <td>${status.count}</td>
-                    <td><a href="${contextPath}/bbs/noticeInfo.do?boardId=${boardVo.boardId}">${boardVo.title}</a></td>
-                    <td>${boardVo.userId}</td>
-                    <td>${boardVo.date}</td>
-                    <td>${boardVo.views}</td>
-                    <td>${boardVo.file}</td>
-                </tr>
-             </c:forEach>
-		</table>
+	<tr height="20" align="center" bgcolor="lightgray">
+		<td>No</td>
+		<td>제목</td>
+		<td>작성자</td>
+		<td>작성일</td>
+		<td>조회수</td>
+		<td>첨부파일</td>
+	</tr>
+	
+	<c:if test="${empty boardList}">
+		<tr>
+			<td colspan="6" align="center">📭 등록된 공지사항이 없습니다.</td>
+		</tr>
+	</c:if>
+
+	<c:forEach var="boardVo" items="${boardList}" varStatus="status">
+		<tr height="20" align="center">
+			<td>${status.count}</td>
+			<td><a href="${contextPath}/bbs/noticeInfo.do?boardId=${boardVo.boardId}">${boardVo.title}</a></td>
+			<td>${boardVo.userId}</td>
+			<td><fmt:formatDate value="${boardVo.createdAt}" pattern="yyyy-MM-dd" /></td>
+			<td>${boardVo.views}</td>
+			<td>${boardVo.file}</td>
+		</tr>
+	</c:forEach>
+</table>
+
 	</center>
 </body>
 </html>
