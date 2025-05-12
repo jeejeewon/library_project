@@ -62,6 +62,7 @@ public class BookDAO {
                 book.setIsbn(rs.getString("isbn"));
                 book.setCategory(rs.getString("category"));
                 book.setRentalState(rs.getInt("rental_state"));
+                book.setRentCount(rs.getInt("rent_count"));
                 book.setThumbnail(rs.getString("thumbnail"));
                 book.setRegDate(rs.getTimestamp("reg_date"));
                 book.setModDate(rs.getTimestamp("mod_date"));
@@ -227,14 +228,15 @@ public class BookDAO {
         return rental;
     }
     
+    /* 내 대여 내역 확인 */
 	public Vector<RentalVo> myRentals(String userId) {
 	    Vector<RentalVo> rentalList = new Vector<>();
 
-	    String sql = "select r.rent_no, r.book_no, b.title, b.thumbnail, "
-	               + "r.start_date, r.return_due, r.return_date, r.return_state "
-	               + "from rental_book r " 
+	    String sql = "select r.rent_no, r.book_no, r.user_id, b.title, b.author, b.thumbnail, "
+	    		   + "r.start_date, r.return_due, r.return_date, r.return_state "
+	               + "from rental_book r "
 	               + "join book b on r.book_no = b.book_no "
-	               + "where r.user_id = ? " 
+	               + "where r.user_id = ? "
 	               + "order by r.start_date desc";
 
 	    try {
@@ -348,6 +350,42 @@ public class BookDAO {
 	    }
 
 	    return result;
+	}
+	
+	/* 반납 대기 목록 */
+	public Vector<RentalVo> pendingRentals() {
+	    Vector<RentalVo> list = new Vector<>();
+	    String sql = "select r.rent_no, r.book_no, b.title, b.thumbnail, r.start_date, r.return_due "
+	               + "from rental_book r join book b on r.book_no = b.book_no "
+	               + "where r.return_state = 0 "
+	               + "order by r.start_date asc";
+
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            RentalVo rental = new RentalVo();
+	            rental.setRentNo(rs.getInt("rent_no"));
+	            rental.setBookNo(rs.getInt("book_no"));
+	            rental.setStartDate(rs.getTimestamp("start_date"));
+	            rental.setReturnDue(rs.getTimestamp("return_due"));
+	            rental.setReturnState(0); // 모두 미반납
+	            // Book 정보 세팅
+	            BookVo book = new BookVo();
+	            book.setBookNo(rs.getInt("book_no"));
+	            book.setTitle(rs.getString("title"));
+	            book.setThumbnail(rs.getString("thumbnail"));
+	            rental.setBook(book);
+
+	            list.add(rental);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(con, pstmt, rs);
+	    }
+	    return list;
 	}
 	
 	/* 모든 대여 목록 조회 (관리자용) */

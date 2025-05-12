@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="Vo.BookVo, java.util.*" %>
 
 <%
@@ -25,13 +26,13 @@
     .book-title {
         font-size: 22px;
         font-weight: bold;
-        margin-bottom: 30px;
+        margin-bottom: 50px;
         text-align: center;
     }
 
     .book-container {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 30px;
         justify-content: center;
     }
@@ -101,7 +102,7 @@
     <div class="book-container">
         <% for (BookVo book : bookList) { %>
         <div class="book-card">
-            <a href="<%= contextPath %>/books/bookInfo.do?bookNo=<%= book.getBookNo() %>">
+            <a href="<%= contextPath %>/books/bookDetail.do?bookNo=<%= book.getBookNo() %>">
                 <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
                      onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" />
             </a>

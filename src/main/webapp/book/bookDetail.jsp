@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="Vo.BookVo, java.util.*" %>
 
 <%
@@ -134,6 +135,7 @@
             <div class="meta">출판사: <%= book.getPublisher() %> (<%= book.getPublishYear() %>)</div>
             <div class="meta">ISBN: <%= book.getIsbn() %></div>
             <div class="meta">분류: <%= book.getCategory() %></div>
+            <div class="meta">대여수: <%= book.getRentCount() %></div>
 
             <div class="rental-state <%= book.getRentalState() != 0 ? "unavailable" : "" %>">
                 <%
@@ -150,7 +152,7 @@
 
             <!-- 버튼 영역 -->
             <div class="button-group">
-    			<a href="javascript:history.back();" class="btn">뒤로가기</a>
+    			<a href="javascript:history.back();" class="btn">목록으로</a>
     			
     			<% if (userId != null) { %>
        				<a href="<%= contextPath %>/books/rentalBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-loan">대여하기</a>

@@ -1,5 +1,6 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="java.util.*, Vo.BookVo" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="Vo.BookVo, java.util.*" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -22,12 +23,12 @@
         font-size: 24px;
         font-weight: bold;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 50px;
     }
 
     .book-container {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 가로 4칸 */
+        grid-template-columns: repeat(5, 1fr); /* 가로 5칸 */
         gap: 30px;
     }
 
@@ -114,7 +115,7 @@
 <div class="container book-section">
 
     <!-- 검색창 -->
-	<div class="search-box" style="text-align: right; margin-bottom: 30px; padding-right: 20px;">
+	<div class="search-box" style="text-align: right; margin-bottom: 20px; padding-right: 20px;">
 	    <form action="<%= contextPath %>/books/bookSearch.do" method="get" style="display: inline-block;">
 	        <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색"
 	               style="width: 250px; padding: 6px; border: 1px solid #ccc; border-radius: 4px;" />
@@ -137,7 +138,7 @@
         for (BookVo book : bookList) {
         %>
         <div class="book-card">
-            <a href="<%= contextPath %>/books/bookInfo.do?bookNo=<%= book.getBookNo() %>">
+            <a href="<%= contextPath %>/books/bookDetail.do?bookNo=<%= book.getBookNo() %>">
                 <img src="<%= contextPath + "/" + book.getThumbnail() %>"
                      onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
             </a>

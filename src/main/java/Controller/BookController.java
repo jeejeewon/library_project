@@ -108,7 +108,7 @@ public class BookController extends HttpServlet {
             //미로그인 상태에서 대여 시도 했다면
             if (userId == null) {
                 // 로그인 안했으면 로그인 페이지로 리다이렉트
-                response.sendRedirect(request.getContextPath() + "/member/login.jsp");
+                response.sendRedirect(request.getContextPath() + "/members/login.jsp");
                 return; // 더 이상 진행하지 않음
             }
 
@@ -136,7 +136,7 @@ public class BookController extends HttpServlet {
 
             if (userId == null) {
                 // 로그인 안 했으면 로그인 페이지로
-                response.sendRedirect(request.getContextPath() + "/member/login.jsp");
+                response.sendRedirect(request.getContextPath() + "/members/login.jsp");
                 return;
             }
 
@@ -146,6 +146,20 @@ public class BookController extends HttpServlet {
             request.setAttribute("rentals", myRentals);
             request.setAttribute("center", "/book/rentalConfirm.jsp");
             nextPage = "/main.jsp";
+        
+        // 관리자 전용 화면
+        } else if (action.equals("/editBook.do")) {
+
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("id");
+
+            if (userId == null || !"admin".equals(userId)) {
+                response.sendRedirect(request.getContextPath() + "/member/login.jsp");
+                return;
+            }
+
+            request.setAttribute("center", "/book/editBook.jsp");
+            nextPage = "/main.jsp";
 
         // 도서 등록 및 수정 관리자만
         }  else if (action.equals("/addBook.do")) {
@@ -154,7 +168,7 @@ public class BookController extends HttpServlet {
             String userId = (String) session.getAttribute("id");
 
             if (userId == null || !userId.equals("admin")) {
-                response.sendRedirect(request.getContextPath() + "/member/login.jsp");
+                response.sendRedirect(request.getContextPath() + "/members/login.jsp");
                 return;
             }
 
@@ -167,27 +181,59 @@ public class BookController extends HttpServlet {
             request.setAttribute("center", "/book/addBook.jsp");
             nextPage = "/main.jsp";
 
-        // 도서 반납 처리 관리자만
+         // 관리자용 전체 대여 목록 보기
+        } else if (action.equals("/allRental.do")) {
+
+            // 관리자 확인 (id가 admin인지)
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("id");
+
+            if (userId == null || !"admin".equals(userId)) {
+                response.sendRedirect(request.getContextPath() + "/members/login.jsp");
+                return;
+            }
+
+            // 전체 대여 내역 가져오기 (BookService에서 제공)
+            Vector<RentalVo> rentalList = bookService.allRentals();
+            request.setAttribute("rentalList", rentalList);
+            request.setAttribute("center", "/book/allRentalList.jsp");
+            nextPage = "/main.jsp";
+
+        // 반납 처리(관리자)    
         } else if (action.equals("/returnBook.do")) {
 
             HttpSession session = request.getSession();
             String userId = (String) session.getAttribute("id");
 
-            if (userId == null || !userId.equals("admin")) {
-                response.sendRedirect(request.getContextPath() + "/member/login.jsp");
+            if (userId == null || !"admin".equals(userId)) {
+                response.sendRedirect(request.getContextPath() + "/members/login.jsp");
                 return;
             }
 
-            if (request.getMethod().equalsIgnoreCase("POST")) {
-                int rentNo = Integer.parseInt(request.getParameter("rentNo"));
-                boolean result = bookService.returnBook(rentNo);
-                request.setAttribute("message", result ? "반납 완료!" : "반납 실패!");
+            String rentNoStr = request.getParameter("rentNo");
+            if (rentNoStr != null) {
+                int rentNo = 0;
+                try {
+                    rentNo = Integer.parseInt(rentNoStr);
+                } catch (NumberFormatException e) {
+                    rentNo = 0;
+                }
+
+                if (rentNo > 0) {
+                    boolean success = bookService.returnBook(rentNo);
+                    if (success) {
+                        request.setAttribute("message", "반납 처리가 완료되었습니다.");
+                    } else {
+                        request.setAttribute("message", "반납 처리에 실패했습니다.");
+                    }
+                }
             }
 
-            request.setAttribute("rentalList", bookService.allRentals());
+            Vector<RentalVo> pendingReturns = bookService.pendingRentals(); // return_state = 0 목록
+            request.setAttribute("pendingList", pendingReturns);
             request.setAttribute("center", "/book/returnBook.jsp");
             nextPage = "/main.jsp";
-            
+        
             
         } else {
             // 예외 상황 시 에러 페이지로

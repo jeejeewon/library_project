@@ -62,7 +62,7 @@ public class BookService {
         book.setTitle(request.getParameter("title"));
         book.setAuthor(request.getParameter("author"));
         book.setPublisher(request.getParameter("publisher"));
-        book.setPublishYear(request.getParameter("publishYear"));
+        book.setPublishYear(parseIntOrZero(request.getParameter("publishYear")));
         book.setCategory(request.getParameter("category"));
         book.setBookInfo(request.getParameter("bookInfo"));
         book.setIsbn(request.getParameter("isbn"));
@@ -75,10 +75,24 @@ public class BookService {
             return bookDao.insertBook(book);
         }
     }
+    
+    // 문자열을 숫자로 변환, 실패하면 0 반환
+    private int parseIntOrZero(String value) {
+        try {
+            return Integer.parseInt(value);  // 정상적으로 숫자 변환 성공
+        } catch (NumberFormatException e) {
+            return 0;  // 숫자로 변환 안 되면 0 리턴
+        }
+    }
 
 	// 반납 처리
     public boolean returnBook(int rentNo) {
         return bookDao.returnBook(rentNo);
+    }
+    
+    // 반납 대기
+    public Vector<RentalVo> pendingRentals() {
+        return bookDao.pendingRentals();
     }
 
     // 모든 대여 목록 (관리자용)

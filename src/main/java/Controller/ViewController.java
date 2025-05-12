@@ -31,7 +31,7 @@ public class ViewController extends HttpServlet {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=utf-8");
-		PrintWriter pw = response.getWriter();
+		PrintWriter out = response.getWriter();
 		String action = request.getPathInfo();
 		
 		System.out.println(action);
