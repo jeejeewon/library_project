@@ -176,12 +176,51 @@ public class boardController extends HttpServlet {
 		// 공지사항 게시판 조회하기
 		// 요청주소 "/bbs/noticeList.do"
 		if (action.equals("/noticeList.do")) {
+			
+			
+			
+			// 검색어와 검색타입 받기
+			String searchType = request.getParameter("searchType");
+			String searchKeyword = request.getParameter("searchKeyword");
+			
+			// 기본값 설정 (검색어가 없으면 빈 문자열, 검색 타입이 없으면 제목 검색)
+			if (searchType == null) searchType = "title";
+			if (searchKeyword == null) searchKeyword = "";
 
-			// 카테고리 0번(공지사항)의 정보 불러오기
-			boardList = boardService.getBoardList(0);
-
-			// 조회된 목록을 request에 "boardList"라는 이름으로 저장하기
-			request.setAttribute("boardList", boardList);
+			
+		
+			
+			
+			// URL 쿼리 파라미터(?section=...&pageNum=...)로 전달된 섹션(페이지 그룹) 번호와 페이지 번호를 읽어옵니다.
+			String sectionParam = request.getParameter("section");
+			String pageNumParam = request.getParameter("pageNum");
+			
+			//파라미터 값이 없거나 비어있는경우에 기본값을 1로 설정
+			int section = Integer.parseInt(sectionParam == null || sectionParam.isEmpty() ? "1" : sectionParam);
+			int pageNum = Integer.parseInt(pageNumParam == null || pageNumParam.isEmpty() ? "1" : pageNumParam);
+			
+			
+			// 카테고리 설정 (현재 공지사항이므로 0번으로 설정함)
+			int category = 0; // 카테고리 0번 (공지사항)
+			
+			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			
+			//페이징된 게시글 목록과 페이징정보 추출하기
+			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
+			int totalPage = (int) resultMap.get("totalPage"); // 총 페이지 수
+			int totalSection = (int) resultMap.get("totalSection"); //총 섹션 수
+			int totalBoardCount = (int) resultMap.get("totalBoardCount"); //총 게시글 수
+			
+			//정보들을 request에 저장하기
+		    request.setAttribute("searchKeyword", searchKeyword);
+		    request.setAttribute("searchType", searchType);
+		    request.setAttribute("boardList", boardList);
+		    request.setAttribute("totalPage", totalPage);
+		    request.setAttribute("totalSection", totalSection);
+		    request.setAttribute("totalBoardCount", totalBoardCount);
+		    request.setAttribute("section", section);
+		    request.setAttribute("pageNum", pageNum);
 
 			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
 			request.setAttribute("center", "board/noticeList.jsp");
@@ -208,17 +247,6 @@ public class boardController extends HttpServlet {
 		// DB에 새글 추가 작업을 수행
 		if (action.equals("/AddNotice.do")) {// 요청명이 AddNotice.do이면 글쓰기 처리
 
-			// 추가한 새글 번호를 반환받아 저장할 변수
-			// 반환 받는 이유는? 글번호 폴더를 생성하기 위함입니다.
-//			int boardNO = 0;
-
-			// uploadFile()메소드를 호출해 글쓰기 화면에서 첨부하여 전송된 글관련정보를
-			// HashMap에 key/value 쌍으로 저장합니다.
-			// 그런후....
-			// 글입력시 추가적으로 업로드할 파일을 선택하여 글쓰기 요청을 헀다면
-			// 업로드할 파일명, 입력한 글제목, 입력한 글내용을 key/value형태의 값들로 저장되어 있는 HashMap을 리턴받는다.
-			// 그렇지 않을 경우에는??
-			// 업로드할 파일명을 제외한 입력한 글제목, 입력한 글내용을 key/value형태의 값들로 저장되어 있는 HashMap을 리턴받는다
 			Map<String, String> boardMap = uploadFile(request, response);
 
 			// HashMap에 저장된 글정보들을 다시 꺼내옵니다.
@@ -227,13 +255,7 @@ public class boardController extends HttpServlet {
 			String file = boardMap.get("file");
 			String bannerImage = boardMap.get("bannerImage");
 
-			/*
-			 * 
-			 * private Boolean secret; //게시글 공개 여부 private String reply; //게시글 답변
-			 */
-
 			// DB에 추가하기 위해 사용자가 입력한 글정보+업로드할 파일명을 ArticleVO객체의 각변수에 저장
-//			boardVO.setBoardId(boardNO);//추가할 새글의 글번호 -->  DAO에서 getMaxBoardId() 메소드를 호출하여 DB에 저장된 가장 최신 글번호를 검색해서 제공받아 저장할것임
 			boardVO.setCategory(0);// 추가할 새글의 카테고리번호를 0으로 지정해서 공지사항으로 지정
 			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
 			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
@@ -242,7 +264,6 @@ public class boardController extends HttpServlet {
 			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
-			// currentTimeMillis() 메소드는 현재시간을 밀리세컨드로 리턴합니다 //나타나는형식 : 2023-10-12 17:00:00.0
 			boardVO.setViews(0);// 조회수는 0으로 지정. 나중에 방문시 조회수 증가시켜야함
 			boardVO.setSecret(false);// 비밀글 여부는 false로 지정 (false :공개 , true:비공개)
 
@@ -544,33 +565,22 @@ public class boardController extends HttpServlet {
 		// 문의게시판 조회하기
 		// 요청주소 "/bbs/noticeList.do"
 		if (action.equals("/questionList.do")) {
-
-			// 조회된 게시판을
-			boardList = boardService.getBoardList(1);
-
-			// 조회된 목록을 request에 "boardList"라는 이름으로 저장하기
-			request.setAttribute("boardList", boardList);
-
-			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
-			request.setAttribute("center", "board/questionList.jsp");
-
-			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
-			nextPage = "/main.jsp";
-
+			
+			
 		}
-
-		// nextPage변수에 값이 할당된 경우(즉, 직접 응답하지 않고 JSP(VIEW)로 포워딩 해야하는 경우)
-		if (nextPage != null) {
-			// 1. RequestDispatcher객체를 얻어옵니다
-			// - request.getRequestDispatcher(경로): 지정된 경로의 JSP 페이지로 요청을 전달할 수 있는 객체를 생성합니다.
-			RequestDispatcher dispatche = request.getRequestDispatcher(nextPage);
-
-			// 2. forward()메소드를 호출하여 현재 요청(request)과 응답(response)객체를
-			// nextPage변수에 저장한 JSP페이지로 전달합니다.
-			// - 제어권이 해당 JSP페이지로 완전히 넘어 갑니다.
-			dispatche.forward(request, response);
-
-		}
+		
+		
+		
+		if (nextPage != null) {          
+            RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);            
+            dispatch.forward(request, response);
+        } else {           
+            System.out.println("nextPage가 null입니다. (아마도 pw.print로 직접 응답 처리됨)" );
+        }
+		
+		
+		
+		
 	}// end of doHandle()
 
 }// end class

@@ -1,6 +1,7 @@
 package Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -19,18 +20,39 @@ public class boardService {
 		boardDao = new boardDAO();
 	}
 
-	public Vector<boardVO> getAllBoardList() {
+	// 페이징된 게시글 목록과 관련 정보를 반환하는 메소드
+	public Map<String, Object> getBoardList(int category, int section, int pageNum, String searchKeyword, String searchType) {
+		
+		// 한 페이지에 보여줄 게시글의 수
+		int pageSize = 10;
+		
+		// 섹션(section)마다 보여줄 페이지 수 (한 섹션에 5개의 페이지번호)
+		int sectionSize = 5;
+		
+		// 페이지 번호에 따른 시작 게시글 번호 (LIMIT의 시작 번호)
+		int startRow = (pageNum - 1) * pageSize;
+		int endRow = startRow + pageSize;
+		
+		// DAO를 통해 페이징된 게시글 목록을 가져오기
+		List<boardVO> boardList = boardDao.getBoardList(category, startRow, endRow, searchKeyword, searchType);
+		
+	    // 전체 게시글 수를 계산하여 전체 페이지 수 구하기
+	    int totalBoardCount = boardDao.getTotalBoardCount(category, searchKeyword, searchType); // 전체 게시글 수
+	    int totalPage = (int) Math.ceil(totalBoardCount / (double) pageSize);
+	    int totalSection = (int) Math.ceil(totalPage / (double) sectionSize);
 
-		return boardDao.getAllBoardList();
-
+	    // 결과를 Map에 담아서 반환
+	    Map<String, Object> resultMap = new HashMap<>();
+	    resultMap.put("boardList", boardList);
+	    resultMap.put("totalPage", totalPage);
+	    resultMap.put("totalSection", totalSection);
+	    resultMap.put("totalBoardCount", totalBoardCount);
+	    
+	    return resultMap;
 	}
 
-	// 게시글 리스트를 불러오는 메소드
-	public Vector<boardVO> getBoardList(int category) {
 
-		return boardDao.getBoardList(category);
-
-	}
+	
 
 	// 공지사항 게시글 추가를 위한 메소드.
 	public int addNotice(boardVO boardVO) {
@@ -88,4 +110,5 @@ public class boardService {
 
 	}
 
+	
 }
