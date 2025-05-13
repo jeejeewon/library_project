@@ -16,6 +16,7 @@
             border-radius: 10px;       
             background-color: #9abf7f;
             margin: 5px;
+            cursor: pointer; 
         }
         
         /* 미팅룸 선택시 선택효과*/		
@@ -45,7 +46,7 @@
 			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
 			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
-			<p>예약 가능 날짜는 현재 날짜 +3일 부터 1개월 +10일 까지 입니다.</p><br>
+			<p>예약은 현재 날짜 +3일 부터 1개월까지만 가능합니다.</p><br>
 			<div id="reserveTime">
 				<p>▪ 이용시간</p> 
 				<p>&nbsp;&nbsp;&nbsp;- 시작시간
@@ -91,10 +92,10 @@
 <script>
 
 	//날짜선택 위젯 초기화
-	$( function() {
+	$(function() {
 	  $( "#reserveDate" ).datepicker({  
 	  	minDate: +3, // 현재 날짜 +3일
-	  	maxDate: "+1M +10D", // 최대 1개월 +10일
+	  	maxDate: "+1M", // 최대 1개월
 	  	dateFormat: "yy/mm/dd"}); // 날짜 포맷 설정
 	} );
 	

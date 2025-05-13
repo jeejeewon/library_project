@@ -52,11 +52,30 @@ public class roomReserveController extends HttpServlet{
 		if(action.equals("/room")) {			
 			request.setAttribute("center", "/libReserve/reserveRoom.jsp");			
 			nextPage = "/main.jsp";			
-				
+			
+			
 		//[ 도서관안내 ]-[ 시설예약 ]-[ 스터디룸 예약 ] 뷰	
-		}else if(action.equals("/reserveStudy")) {			
+		}else if(action.equals("/reserveStudy")) {		
+			
+			//로그인한 사용자만 스터디룸 예약 가능
+			//로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			String userId = (String)session.getAttribute("id");
+//			System.out.println("userId : " + userId);
+
+			//로그인을 하지 않은 경우
+			if(userId == null || userId.equals("")) {
+				//로그인 페이지로 이동
+				response.setContentType("text/html;charset=utf-8");
+				out.println("<script>alert('로그인 후 이용 가능합니다.'); location.href='" + contextPath + "/member/login';</script>");
+				out.flush();
+				out.close();
+				return;
+			}			
+					
 			request.setAttribute("center", "/libReserve/reserveStudy.jsp");			
 			nextPage = "/main.jsp";		
+			
 			
 		//[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰	
 		}else if(action.equals("/reserveMeeting")) {	
@@ -79,6 +98,7 @@ public class roomReserveController extends HttpServlet{
 			
 			request.setAttribute("center", "/libReserve/reserveMeeting.jsp");			
 			nextPage = "/main.jsp";	
+			
 			
 		//[ 내서재 ]-[ 시설예약내역 ] 뷰	
 		}else if(action.equals("/reserveCheck")) {
@@ -110,11 +130,13 @@ public class roomReserveController extends HttpServlet{
 			
 			nextPage = "/main.jsp";	
 			
+			
 		//[ 관리자메뉴 ]-[ 시설예약관리 ] 뷰	
 		}else if(action.equals("/reserveAdmin")) {			
 			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");			
 			nextPage = "/main.jsp";	
 		
+			
 		//미팅룸 예약시 사용자가 선택한 날짜와 시간에 맞는 미팅룸 리스트를 ajax로 리턴
 		}else if(action.equals("/meetingRoomList")) {
 				
@@ -122,7 +144,8 @@ public class roomReserveController extends HttpServlet{
 		   int start = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //문자열로 받아온 시작시간을 int형으로 변환
 		   int end = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //문자열로 받아온 종료시간을 int형으로 변환
 				
-		   System.out.println("선택날짜 : " + date); System.out.println("시작시간 : " + start);
+		   System.out.println("선택날짜 : " + date); 
+		   System.out.println("시작시간 : " + start);
 		   System.out.println("종료시간 : " + end);
 		   
 		   //예약날짜를 선택하지 않았을 경우
@@ -155,6 +178,7 @@ public class roomReserveController extends HttpServlet{
 		   out.close();    
 		   return; //ajax로 리턴했으므로 다음 페이지로 포워딩할 필요 없음
 		  
+		   
 		//미팅룸 예약하기 버튼 클릭시 입력한 정보대로 예약 진행
 		}else if(action.equals("/meetingRoomReserve")) {
 			
@@ -194,22 +218,79 @@ public class roomReserveController extends HttpServlet{
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";
 			
+			
 		//시설 예약 삭제 	
 		}else if(action.equals("/deleteReserve")) {
 			
 			System.out.println("deleteReserve호출됨===============");
 			
+			//삭제할 예약 내역의 예약아이디와 예약번호 값 가져오기
 			String reserve_id = request.getParameter("reserve_id");
 			String reserve_num = request.getParameter("reserve_num");
 			
-			System.out.println("예약 아이디 : " + reserve_id);
-			System.out.println("예약 번호 : " + reserve_num);
+			System.out.println("삭제 예약 아이디 : " + reserve_id);
+			System.out.println("삭제 예약 번호 : " + reserve_num);
 			
+			//아이디와 예약번호를 service로 넘겨서 비즈니스 로직 처리
+			roomReserveService.deleteReserve(reserve_id, reserve_num);
+
 			return;
+		
 			
+		//시설 예약 수정
+		}else if(action.equals("/updateReserve")) {
 			
-		}
+			System.out.println("updateReserve호출됨===============");
+			
+			//수정할 예약 내역의 예약아이디와 예약번호 값 가져오기
+			String reserve_id = request.getParameter("reserve_id");
+			String reserve_num = request.getParameter("reserve_num");
+			
+			System.out.println("수정 예약 아이디 : " + reserve_id);
+			System.out.println("수정 예약 번호 : " + reserve_num);
 				
+			return;	
+			
+			
+		//스터디룸 실시간 좌석 현황	
+		}else if(action.equals("/studyRoomList")) {
+			
+			System.out.println("studyRoomList호출됨===============");
+			
+			String date = request.getParameter("Date");
+			int start = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //문자열로 받아온 시작시간을 int형으로 변환
+			int end = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //문자열로 받아온 종료시간을 int형으로 변환
+			String studyRoom = request.getParameter("studyRoom");
+			
+			System.out.println("선택날짜 : " + date); 
+			System.out.println("시작시간 : " + start);
+			System.out.println("종료시간 : " + end);						
+			System.out.println("선택한 스터디룸 : " + studyRoom);	
+			
+		   //DB에서 실시간 좌석 현황 조회
+		   //실시간 좌석 현황을 리스트를 List로 받아오기
+		   List seatList = roomReserveService.studySeatList(date, start, end, studyRoom);
+		   
+		   System.out.println("예약가능한 미팅룸 리스트 : " + seatList);		   
+		   
+		   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
+		   ObjectMapper objectMapper = new ObjectMapper(); 
+		   String json = objectMapper.writeValueAsString(seatList);
+		    
+		   System.out.println("JSON형식으로 변환된 데이터 : " + json);
+		   		   
+		   //JSON형식으로 변환된 데이터를 ajax로 리턴하기
+		   response.setContentType("application/json; charset=utf-8");
+
+		   //ajax로 반환
+		   out.write(json); //ajax로 JSON형식으로 변환된 데이터 리턴
+		   out.flush();
+		   out.close();    		
+			
+			return; //ajax로 리턴
+		}
+		
+	
 		if(nextPage != null) {			
 			System.out.println("포워딩 실행 : " + nextPage);
 			request.getRequestDispatcher(nextPage).forward(request, response);			

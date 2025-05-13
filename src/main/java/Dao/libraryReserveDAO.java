@@ -45,8 +45,8 @@ public class libraryReserveDAO {
 			con = DbcpBean.getConnection();
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, date); //예약날짜
-			pstmt.setInt(2, end); //예약시작시간
-			pstmt.setInt(3, start); //예약종료시간
+			pstmt.setInt(2, end); 	  //예약종료시간
+			pstmt.setInt(3, start);   //예약시작시간
 			
 			//조회된 결과를 ResultSet 객체에 저장
 			rs = pstmt.executeQuery();
@@ -134,7 +134,7 @@ public class libraryReserveDAO {
 		
 		//예약정보 조회 쿼리문(과거예약정보)
 		String sql2 = "select * from room_reserve where reserve_id = ? "
-					+ "and reserve_date + interval reserve_end hour < sysdate() "
+					+ "and reserve_date + interval reserve_start hour < sysdate() "
 					+ "order by reserve_date desc";
 		
 		//오늘날짜를 기준으로 미래/과거 예약정보를 구분하기 위해 오늘 날짜를 가져옴
@@ -212,5 +212,75 @@ public class libraryReserveDAO {
 		return reserveList; //조회된 List를 Service로 반환
 		
 	}//selectReserveList 메소드 끝
+
+
+	//예약 정보를 DB에서 삭제하는 메소드
+	public void deleteReserve(String reserve_id, String reserve_num) {
+		
+		String sql = "delete from room_reserve where reserve_id = ? and reserve_num = ?";
+		
+		try {
+			con = DbcpBean.getConnection();
+			
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, reserve_id);
+			pstmt.setString(2, reserve_num);
+			
+			pstmt.executeUpdate();
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt);
+		}		
+		
+	}//deleteReserve 메소드 끝
+
+
+	public List studySeatList(String date, int start, int end, String studyRoom) {
+		
+		//DB에서 조회한 값을 저장할 List 객체 생성
+		List seatList = new ArrayList();
+		
+		//DB에서 실시간 좌석 현황 조회 쿼리문
+		String sql = "select reserve_seat "
+				   + "from room_reserve "
+				   + "where reserve_date = ? "
+				   + "and reserve_start < ? "
+				   + "and reserve_end > ? "
+				   + "and reserve_room like ?";
+		
+		try {
+			con = DbcpBean.getConnection();			
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, date); 	   //예약날짜
+			pstmt.setInt(2, end); 		   //예약종료시간
+			pstmt.setInt(3, start); 	   //예약시작시간
+			pstmt.setString(4, studyRoom + "%"); //선택한 스터디룸
+			
+			//조회된 결과를 ResultSet 객체에 저장
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) { //조회된 결과가 있을 경우 				
+				
+				//DB에서 조회한 값을 VO 객체에 저장
+				libraryRoomVO = new libraryRoomVO();
+				libraryRoomVO.setSeat_num(rs.getInt("reserve_seat"));
+				
+				//vo 객체에 저장된 값을 List에 추가
+				seatList.add(libraryRoomVO);				
+			}					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		return seatList;
+	}//studySeatList 메소드 끝
+
+	
+
 
 }

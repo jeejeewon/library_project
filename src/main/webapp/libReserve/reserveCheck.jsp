@@ -68,12 +68,15 @@
             	<c:if test="${vo.isFuture}">
 	                <tr align="center">
 				        <td>${vo.reserve_date}</td>
-	                    <td>${vo.reserve_room}</td>
+	                    <td class="roomType">${vo.reserve_room}</td>
 	                    <td>${vo.reserve_start}:00 ~ ${vo.reserve_end}:00</td>    
 		                <c:if test="${vo.isFuture}">
 	                    	<td>
-		                    	<a href="#" style="text-decoration: none;">수정</a> &nbsp;
-		                    	<a href="#" style="text-decoration: none;" class="deleteBtn" data-reserve-id="${vo.reserve_id}" data-reserve-num="${vo.reserve_num}">삭제</a>
+		                    	<a href="#" style="text-decoration: none; color: blue;" class="updateBtn" 
+		                    	data-reserve-id="${vo.reserve_id}" data-reserve-num="${vo.reserve_num}" data-room-type="${vo.reserve_room}">수정</a> &nbsp;
+		                    	
+		                    	<a href="#" style="text-decoration: none; color: red;" class="deleteBtn" 
+		                    	data-reserve-id="${vo.reserve_id}" data-reserve-num="${vo.reserve_num}">삭제</a>
 	                    	</td>
 	                	</c:if>
 	                	<td>
@@ -88,11 +91,10 @@
 </body>
 <script>
 	
+	//예약 삭제 버튼을 눌렀을 경우 실행되는 함수
 	document.querySelectorAll(".deleteBtn").forEach(button => {
 	    button.addEventListener("click", function(event) {
-	        event.preventDefault(); // 링크 기본 동작 방지
-	        
-	        alert("삭제버튼 클릭됨");
+	        event.preventDefault(); // 링크 기본 동작 방지	       
 	
 	        // 클릭한 버튼의 데이터 속성 가져오기
 	        const reserveId = this.getAttribute("data-reserve-id");
