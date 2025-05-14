@@ -8,7 +8,7 @@
 	<style>	
 	    table {
 	      border-collapse: collapse;
-	      width: 40%;
+	      width: 500px;
 	      height: 200px;
 	      align-items: center;
 	      margin-top: 20px;
@@ -52,13 +52,13 @@
 			text-align: center;
 			color: white;
             border-radius: 10px;       
-            background-color: #9abf7f;
+            background-color: #64b1cc;
             margin: 5px;
             cursor: pointer; 
 	    }
 	    /* 스터디룸 선택시 선택효과*/		
 		.selected-btn {
-            background-color: #758f62;      
+            background-color: #156c8a;      
         }
         /* 예약된 좌석 효과*/
         .seat-btn.reserved {
@@ -66,6 +66,12 @@
 			color: white;
 			cursor: not-allowed;
 		}		    
+		
+		#reserveBtn{
+			margin-top: 20px;
+			margin-bottom: 50px;
+			margin-left: 15%;
+		}
 	</style>
 	
 
@@ -207,7 +213,7 @@
 				</div>     
              </div>   		
             <br>
-			<button type="button" id="reserveBtn" >스터디룸 예약하기</button>	
+			<button type="button" id="reserveBtn">스터디룸 예약하기</button>	
 	    </form>
 	</div>	
 </body>
@@ -379,7 +385,7 @@
                 
             	data.forEach(seat => {
             		//예약된 좌석이 있을 경우 해당 좌석 class 추가하는 함수 호출
-            		reservedSeat(seat.seat_num)     		
+            		reservedSeat(seat.reserveSeat)     		
             	});
             	
             }, //success
@@ -400,6 +406,59 @@
 	  });
 	}
     
+	document.getElementById("reserveBtn").addEventListener("click", (event) => {
+		
+		//사용자가 선택한 스터디룸 정보 가져오기
+        const reserveDate = document.getElementById("reserveDate").value;
+        const startTime = document.getElementById("StartTime").value;
+        const endTime = document.getElementById("EndTime").value;
+        const roomName = document.querySelector(".selected-btn").innerText;
+        const roomCode = document.querySelector(".selected-btn").value;
+        const selectedSeat = document.querySelector(".selected-seat-btn");        
+        if (!selectedSeat) { //선택된 좌석이 없을 경우
+            alert("이용할 좌석을 선택해주세요.");
+            return;
+        }           
+        const seat = selectedSeat.dataset.seat;
+              
+        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
+        //확인용 컨펌창 띄우기
+        const confirmResult = confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +       
+ 	            "- 이용일자 : " + reserveDate + "\n" +
+ 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+ 	            "- 이용시설 : " + roomName + "\n" +
+ 	            "- 이용좌석 : " + seat);      
+        
+        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+        if(!confirmResult){return;}
+        
+        $.ajax({
+        	url: "<%=request.getContextPath()%>/reserve/studyRoomReserve",
+            type: "POST",
+            data: {
+                userID: document.getElementById("userID").value,
+                reserveDate: reserveDate,
+                StartTime: startTime,
+                EndTime: endTime,
+                roomCode : roomCode,
+                seat : seat
+            },
+            success: function(response) {
+                alert("예약이 완료되었습니다.");
+                //예약이 완료되면 예약 확인 페이지로 이동
+                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+            },
+            error: function(xhr, status, error) {
+                alert("예약 실패: " + error);
+            }
+        	
+        	
+        	
+        });
+
+        
+		
+	})
     
     
 </script>

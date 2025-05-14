@@ -14,14 +14,14 @@
 			text-align: center;
 			color: white;
             border-radius: 10px;       
-            background-color: #9abf7f;
+            background-color: #64b1cc;
             margin: 5px;
             cursor: pointer; 
         }
         
         /* 미팅룸 선택시 선택효과*/		
 		.selected-btn {
-            background-color: #758f62;      
+            background-color: #156c8a;      
         }	
 	</style>
 
@@ -162,10 +162,10 @@
                     data.forEach(room => {
                        		
                     		var roombtn = document.createElement("button");
-                    		roombtn.innerHTML = room.room_name;                   
+                    		roombtn.innerHTML = room.roomName;                   
                     		roombtn.setAttribute("class", "roombtn"); //클릭했을 경우 효과를 주기 위해 id 설정           		
-                    		roombtn.setAttribute("room_code", room.room_code);
-                    		roombtn.setAttribute("room_name", room.room_name);         
+                    		roombtn.setAttribute("roomCode", room.reserveRoom);
+                    		roombtn.setAttribute("roomName", room.roomName);         
                     		roombtn.setAttribute("type", "button");
                     		
                     		document.getElementById("roomList").appendChild(roombtn);	
@@ -210,8 +210,8 @@
         const reserveDate = document.getElementById("reserveDate").value;
         const startTime = document.getElementById("StartTime").value;
         const endTime = document.getElementById("EndTime").value;
-        const roomName = selectedRoom.getAttribute("room_name");
-        const roomCode = selectedRoom.getAttribute("room_code");
+        const roomName = selectedRoom.getAttribute("roomName");
+        const roomCode = selectedRoom.getAttribute("roomCode");
        
        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
        //확인용 컨펌창 띄우기
@@ -219,6 +219,9 @@
 	            "- 이용일자 : " + reserveDate + "\n" +
 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
 	            "- 이용시설 : " + roomName);      
+       
+       //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+       if(!confirmResult){return;}
            
       $.ajax({
             url: "<%=request.getContextPath()%>/reserve/meetingRoomReserve",
@@ -228,14 +231,15 @@
                 reserveDate: reserveDate,
                 StartTime: startTime,
                 EndTime: endTime,
-                roomCode: roomCode
+                roomCode: roomCode,
+                roomName: roomName
             },
             success: function(response) {
                 alert("예약이 완료되었습니다.");
                 //예약이 완료되면 예약 확인 페이지로 이동
                 window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
             },
-            error: function(xhr, status, error) {
+            error: function(xhr, status, error) {	
                 alert("예약 실패: " + error);
             }
         });

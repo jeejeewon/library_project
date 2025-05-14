@@ -202,15 +202,18 @@ public class roomReserveController extends HttpServlet{
 			int StartTime = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //예약 시작시간
 			int EndTime = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //예약 종료시간
 			String roomCode = request.getParameter("roomCode"); //예약한 미팅룸 코드
+			String roomName = request.getParameter("roomName");
 			
 			System.out.println("예약자 아이디 : " + userId);
 			System.out.println("예약날짜 : " + reserveDate);
 			System.out.println("예약 시작시간 : " + StartTime);
 			System.out.println("예약 종료시간 : " + EndTime);
-			System.out.println("예약한 미팅룸 : " + roomCode);
+			System.out.println("예약한 미팅룸 코드 : " + roomCode);
+			System.out.println("예약한 미팅룸 : " + roomName);
 			
 			//받아온 정보를 VO객체에 저장
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
+			vo.setRoomName(roomName);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
 			roomReserveService.reserveMeetingRoom(vo);
@@ -225,14 +228,14 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("deleteReserve호출됨===============");
 			
 			//삭제할 예약 내역의 예약아이디와 예약번호 값 가져오기
-			String reserve_id = request.getParameter("reserve_id");
-			String reserve_num = request.getParameter("reserve_num");
+			String reserveId = request.getParameter("reserve_id");
+			String reserveNum = request.getParameter("reserve_num");
 			
-			System.out.println("삭제 예약 아이디 : " + reserve_id);
-			System.out.println("삭제 예약 번호 : " + reserve_num);
+			System.out.println("삭제 예약 아이디 : " + reserveId);
+			System.out.println("삭제 예약 번호 : " + reserveNum);
 			
 			//아이디와 예약번호를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.deleteReserve(reserve_id, reserve_num);
+			roomReserveService.deleteReserve(reserveId, reserveNum);
 
 			return;
 		
@@ -243,11 +246,11 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("updateReserve호출됨===============");
 			
 			//수정할 예약 내역의 예약아이디와 예약번호 값 가져오기
-			String reserve_id = request.getParameter("reserve_id");
-			String reserve_num = request.getParameter("reserve_num");
+			String reserveId = request.getParameter("reserve_id");
+			String reserveNum = request.getParameter("reserve_num");
 			
-			System.out.println("수정 예약 아이디 : " + reserve_id);
-			System.out.println("수정 예약 번호 : " + reserve_num);
+			System.out.println("수정 예약 아이디 : " + reserveId);
+			System.out.println("수정 예약 번호 : " + reserveNum);
 				
 			return;	
 			
@@ -271,7 +274,7 @@ public class roomReserveController extends HttpServlet{
 		   //실시간 좌석 현황을 리스트를 List로 받아오기
 		   List seatList = roomReserveService.studySeatList(date, start, end, studyRoom);
 		   
-		   System.out.println("예약가능한 미팅룸 리스트 : " + seatList);		   
+		   System.out.println("예약가능한 스터디룸 리스트 : " + seatList);		   
 		   
 		   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
 		   ObjectMapper objectMapper = new ObjectMapper(); 
@@ -288,6 +291,50 @@ public class roomReserveController extends HttpServlet{
 		   out.close();    		
 			
 			return; //ajax로 리턴
+			
+			
+		//스터디룸 예약 진행
+		}else if(action.equals("/studyRoomReserve")) {
+			
+			System.out.println("studyRoomReserve호출됨===============");
+			
+			//예약정보를 받아오기
+			String userId = request.getParameter("userID"); 
+			
+			String selectedDate = request.getParameter("reserveDate"); //예약날짜
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			java.util.Date utilDate = null; //utilDate는 java.util.Date형
+			Date reserveDate = null;		//sqlDate는 java.sql.Date형
+			
+			try {
+				utilDate = dateFormat.parse(selectedDate);
+				reserveDate = new Date(utilDate.getTime()); //java.util.Date형을 java.sql.Date형으로 변환
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+								
+			int StartTime = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //예약 시작시간
+			int EndTime = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //예약 종료시간
+			String roomCode = request.getParameter("roomCode"); //선택한 스터디룸
+			int seat = Integer.parseInt(request.getParameter("seat")); //선택한 좌석
+			
+			System.out.println("예약자 아이디 : " + userId);
+			System.out.println("예약날짜 : " + reserveDate);
+			System.out.println("예약 시작시간 : " + StartTime);
+			System.out.println("예약 종료시간 : " + EndTime);
+			System.out.println("예약한 스터디룸 : " + roomCode + seat);
+			
+			//받아온 정보를 VO객체에 저장
+			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
+			vo.setReserveSeat(seat);
+			
+			//vo를 service로 넘겨서 비즈니스 로직 처리
+			roomReserveService.reserveStudyRoom(vo);
+			
+			//예약완료 후 예약내역 페이지로 이동
+			nextPage = "/reserve/reserveCheck";
+			
+			
 		}
 		
 	

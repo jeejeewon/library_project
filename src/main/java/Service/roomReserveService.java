@@ -35,10 +35,10 @@ public class roomReserveService {
 	}
 	
 	//예약을 삭제하는 메소드
-	public void deleteReserve(String reserve_id, String reserve_num) {
+	public void deleteReserve(String reserveId, String reserveNum) {
 		
 		//DB에 예약정보 삭제 명령
-		libraryReserveDAO.deleteReserve(reserve_id, reserve_num);
+		libraryReserveDAO.deleteReserve(reserveId, reserveNum);
 		
 	}
 
@@ -50,6 +50,13 @@ public class roomReserveService {
 		List seatList = libraryReserveDAO.studySeatList(date, start, end, studyRoom);
 		
 		return seatList;		
+	}
+
+	
+	//스터디룸 예약하는 메소드
+	public void reserveStudyRoom(libraryReserveVO vo) {	
+		//DB에 예약정보 저장 명령
+		libraryReserveDAO.reserveStudyRoom(vo);	
 	}
 
 
