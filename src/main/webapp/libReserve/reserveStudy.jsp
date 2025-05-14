@@ -90,9 +90,12 @@
 			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
 			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
-			<p>예약은 현재 날짜로부터 1개월까지만 가능합니다.</p><br>		
-			<div id="reserveTime">
+			<p>예약은 현재 날짜로부터 1개월까지만 가능합니다.</p><br>					
 				<p>▪ 이용시간</p> 
+				<p id="noReservationMsg" style="display: none; color: red;">
+				  예약 가능한 시간이 없습니다. 다른 날짜에 이용해주세요.
+				</p>
+			<div id="reserveTime">	
 				<p>&nbsp;&nbsp;&nbsp;- 시작시간
  					<select name="StartTime" id="StartTime">
 						<option value="10:00">10:00</option>
@@ -220,7 +223,12 @@
 			dateFormat: "yy/mm/dd",
 			defaultDate: today
 		}).val(today);
-
+		
+		//날짜 초기화 후 트리거 적용
+		setTimeout(() => {
+			$("#reserveDate").trigger('change');
+		}, 0);
+		
 		updateSeatStatus();
 	});
 
@@ -253,12 +261,16 @@
 	      const hour = parseInt(time.split(":")[0]);
 
 	      if (selectedDate === today) {
-	        //당일 날짜인 경우 현재 시간보다 이후만 보여줌
-	        if (hour > currentHour) {
-	          startTimeSelect.append("<option value='" + time + "'>" + time + "</option>");
-	        }
-	      } else {
-	        //미래 날짜는 전부 보여줌
+			//당일 날짜인데 현재 시간이 19시 이후일 경우	    	  
+	    	if(currentHour >= 19){
+		    	  //셀렉트 숨기고 알림 문구 보여주기 ('예약 가능한 시간이 없습니다.')
+		    	  document.getElementById("reserveTime").style.display = "none";
+		    	  document.getElementById("noReservationMsg").style.display = "block";	  	  		    	  
+		    //당일 날짜인데 현재 시간이 19시 이전일 경우 현재 시간보다 이후 시간의 옵션만 보여줌	  
+	        }else if (hour > currentHour) {
+		          startTimeSelect.append("<option value='" + time + "'>" + time + "</option>");
+		    }   	    	
+	      }else { //미래 날짜 선택시 옵션 다 보여줌        
 	        startTimeSelect.append("<option value='" + time + "'>" + time + "</option>");
 	      }
 	    }	    
@@ -330,7 +342,8 @@
 	
 	
 	//스터디룸 클릭시 selected-btn 클래스 설정
-	$(document).on('click', '.study-room-btn', function(){		
+	$(document).on('click', '.study-room-btn', function(){	
+		$('.seat-btn').removeClass('selected-seat-btn');
 		$('.study-room-btn').removeClass('selected-btn');
 		$(this).addClass('selected-btn');		
 		updateSeatStatus();
