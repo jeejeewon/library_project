@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+
+
 <!-- Context Path 설정 -->
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
@@ -21,6 +23,56 @@ request.setCharacterEncoding("UTF-8");
             background-color: #f4f4f9;
             padding: 20px;
         }
+        
+        .board-head{
+        	width:80%;
+        	display: flex;
+        }
+        .board-head p{
+        	margin-left: 10px;
+        }
+        
+        .search-form {
+	        display: flex;
+	        justify-content: center;
+	        align-items: center;
+	        margin-bottom: 20px;
+	    }
+	
+	    .search-select {
+	        padding: 8px;
+	        margin-right: 10px;
+	        font-size: 16px;
+	        border-radius: 5px;
+	        border: 1px solid #ddd;
+	    }
+	
+	    .search-input {
+	        padding: 8px;
+	        font-size: 16px;
+	        margin-right: 10px;
+	        border-radius: 5px;
+	        border: 1px solid #ddd;
+	        width: 250px;
+	    }
+	
+	    .search-btn {
+	        padding: 8px 16px;
+	        background-color: #007bff;
+	        color: white;
+	        font-size: 16px;
+	        border-radius: 5px;
+	        border: none;
+	        cursor: pointer;
+	    }
+	
+	    .search-btn:hover {
+	        background-color: #0056b3;
+	    }
+	
+	    .search-btn:focus {
+	        outline: none;
+	    }
 
         table {
             width: 80%;
@@ -94,18 +146,24 @@ request.setCharacterEncoding("UTF-8");
             background-color: #218838;
         }
     </style>
+
 </head>
 <body>
     <center>
-    	<!-- 검색 기능의 폼 태그 -->
-    	<form action="${contextPath}/bbs/noticeList.do" method="get">
-    	    <select name="searchType">
-    			<option value="title" ${ searchType == 'title' ? 'selected' : '' }>제목</option>
-    			<option value="content" ${ searchType == 'content' ? 'selected' : '' }>내용</option>
-    			<option value="userId" ${ searchType == 'userId' ? 'selected' : '' }>작성자</option>
-    		</select>
-    		<input type="text" name="searchKeyword" placeholder="검색어를 입력하세요." value="${searchKeyword}">
-    		<button type="submit">검색</button>
+    	<div class="board-head">
+    		<h2>공지사항</h2>
+    		<p>도서관소식 > 공지사항</p>
+    	</div>
+		<!-- 검색 기능의 폼 태그 -->
+		<form action="${contextPath}/bbs/noticeList.do" method="get" class="search-form">
+		    <select name="searchType" class="search-select">
+		        <option value="title" ${ searchType == 'title' ? 'selected' : '' }>제목</option>
+		        <option value="content" ${ searchType == 'content' ? 'selected' : '' }>내용</option>
+		        <option value="userId" ${ searchType == 'userId' ? 'selected' : '' }>작성자</option>
+		    </select>
+		    <input type="text" name="searchKeyword" class="search-input" placeholder="검색어를 입력하세요." value="${searchKeyword}">
+		    <button type="submit" class="search-btn">검색</button>
+		</form>
     	</form>
     	
     	<div class="board-topbar">

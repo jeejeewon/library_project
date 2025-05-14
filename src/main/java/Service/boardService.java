@@ -54,14 +54,15 @@ public class boardService {
 
 	
 
-	// 공지사항 게시글 추가를 위한 메소드.
-	public int addNotice(boardVO boardVO) {
+	// 게시글 추가를 위한 메소드.
+	public int addBoard(boardVO boardVO) {
 		System.out.println("BoardService - addNotice 호출됨 (제목: " + boardVO.getTitle() + ")");
 		// 단순히 DAO의 insertBoard 메소드를 호출하여 글 추가 작업을 위임합니다.
 		// 필요하다면 여기서 데이터 유효성 검사 등을 추가할 수 있습니다.
 		// DAO로부터 추가된 글의 번호를 받아 그대로 Controller에게 반환합니다.
 		return boardDao.insertBoard(boardVO);
 	}
+	
 
 	// 특정 글번호(boardId)를 받아 해당 글의 상세 정보를 조회하도록 DAO에게 요청하는 메소드.
 	public boardVO viewBoard(int boardId) {

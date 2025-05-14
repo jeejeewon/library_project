@@ -12,7 +12,7 @@ request.setCharacterEncoding("UTF-8");
 
 <html>
 <head>
-	<title>공지사항 글쓰기 - noticeWrite.jsp</title>
+	<title>문의글 글쓰기 - questionWrite.jsp</title>
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<style>
 		body {
@@ -109,13 +109,17 @@ request.setCharacterEncoding("UTF-8");
 			margin-top: 10px;
 			border-radius: 4px;
 		}
+
+		.checkbox-label {
+			font-size: 14px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/AddNotice.do" enctype="multipart/form-data">
+		<form name="questionWriteForm" method="post" action="${contextPath}/bbs/AddQuestion.do" enctype="multipart/form-data">
 			<div class="form-title">
-				<h2>공지사항 글쓰기</h2>
+				<h2>문의글 글쓰기</h2>
 				<div>
 					<input type="button" value="취소" onclick="history.back();">
 					<input type="submit" value="등록">
@@ -137,6 +141,13 @@ request.setCharacterEncoding("UTF-8");
 				<span class="file-name" id="bannerFileName">선택된 파일 없음</span>
 				<input type="file" onchange="readURL(this)" name="bannerImage" id="bannerImage" class="file-input">
 				<div id="bannerPreview"></div>
+			</div>
+
+			<div class="checkbox-group">
+				<label for="secret" class="checkbox-label">
+					<input type="checkbox" name="secret" id="secret">
+					비밀글로 설정
+				</label>
 			</div>
 		</form>
 	</div>

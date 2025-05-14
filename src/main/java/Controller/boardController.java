@@ -265,11 +265,11 @@ public class boardController extends HttpServlet {
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
 			boardVO.setViews(0);// 조회수는 0으로 지정. 나중에 방문시 조회수 증가시켜야함
-			boardVO.setSecret(false);// 비밀글 여부는 false로 지정 (false :공개 , true:비공개)
+			boardVO.setSecret(false);// 비밀글 여부는 false로 지정 (false :공개 , true:비공개)  (공지사항에서는 무조건 공개글)
 
 			// boardService객체를 통해 DB에 새글을 추가하는 메소드를 호출합니다
 			// boardService의 addNotice 메소드는 DB에 성공적으로 등록된 후 할당된 새 글의 번호(articleNO)를 반환합니다.
-			int boardId = boardService.addNotice(boardVO);
+			int boardId = boardService.addBoard(boardVO);
 
 			// 첨부파일이 있는 경우 파일 이동
 			moveFileToDestination(file, boardId, "첨부파일");
@@ -296,7 +296,7 @@ public class boardController extends HttpServlet {
 
 			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
 			if (boardIdParam == null || boardIdParam.isEmpty()) {
-				System.out.println("요류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
 				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
 			}
 
@@ -318,12 +318,7 @@ public class boardController extends HttpServlet {
 				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
 			}
 
-			// 컨트롤러에서 카테고리 값 받기 (기본값은 0으로 설정)
-			int category = 0; // 기본값
-			String categoryStr = request.getParameter("category");
-			if (categoryStr != null) {
-				category = Integer.parseInt(categoryStr); // 카테고리 값이 있으면 파싱하여 사용
-			}
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
 
 			// 이전 글 번호 조회
 			int getPreBoardId = boardService.getPreBoardId(boardId, category);
@@ -561,13 +556,198 @@ public class boardController extends HttpServlet {
 
 		} /// removeBoard.do end
 
+
+
+		
+		
+		
 		/*-------------------------------------문의게시판---------------------------------------*/
 		// 문의게시판 조회하기
-		// 요청주소 "/bbs/noticeList.do"
+		// 요청주소 "/bbs/questionList.do"
 		if (action.equals("/questionList.do")) {
 			
 			
+			
+			// 검색어와 검색타입 받기
+			String searchType = request.getParameter("searchType");
+			String searchKeyword = request.getParameter("searchKeyword");
+			
+			// 기본값 설정 (검색어가 없으면 빈 문자열, 검색 타입이 없으면 제목 검색)
+			if (searchType == null) searchType = "title";
+			if (searchKeyword == null) searchKeyword = "";
+
+				
+			// URL 쿼리 파라미터(?section=...&pageNum=...)로 전달된 섹션(페이지 그룹) 번호와 페이지 번호를 읽어옵니다.
+			String sectionParam = request.getParameter("section");
+			String pageNumParam = request.getParameter("pageNum");
+			
+			//파라미터 값이 없거나 비어있는경우에 기본값을 1로 설정
+			int section = Integer.parseInt(sectionParam == null || sectionParam.isEmpty() ? "1" : sectionParam);
+			int pageNum = Integer.parseInt(pageNumParam == null || pageNumParam.isEmpty() ? "1" : pageNumParam);
+			
+			
+			// 카테고리 설정 (현재 문의게시판이므로 1번으로 설정함)
+			int category = 1; // 카테고리 1번 (문의게시판)
+			
+			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			
+			//페이징된 게시글 목록과 페이징정보 추출하기
+			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
+			int totalPage = (int) resultMap.get("totalPage"); // 총 페이지 수
+			int totalSection = (int) resultMap.get("totalSection"); //총 섹션 수
+			int totalBoardCount = (int) resultMap.get("totalBoardCount"); //총 게시글 수
+			
+			//정보들을 request에 저장하기
+		    request.setAttribute("searchKeyword", searchKeyword);
+		    request.setAttribute("searchType", searchType);
+		    request.setAttribute("boardList", boardList);
+		    request.setAttribute("totalPage", totalPage);
+		    request.setAttribute("totalSection", totalSection);
+		    request.setAttribute("totalBoardCount", totalBoardCount);
+		    request.setAttribute("section", section);
+		    request.setAttribute("pageNum", pageNum);
+
+			// 메인화면 중앙에 보여줄 questionList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/questionList.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
 		}
+		
+		
+		// 문의글 글쓰기 화면
+		// 요청주소 "/bbs/questionWrite.do"
+		if (action.equals("/questionWrite.do")) {// 요청명이 questionWrite.do이면 글쓰기 화면이 나타남
+
+			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/questionWrite.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+		}
+
+		// 문의글 새 글 추가
+		// DB에 새글 추가 작업을 수행
+		if (action.equals("/AddQuestion.do")) {// 요청명이 AddQuestion.do이면 글쓰기 처리
+
+			Map<String, String> boardMap = uploadFile(request, response);
+
+			// HashMap에 저장된 글정보들을 다시 꺼내옵니다.
+			String title = boardMap.get("title");
+			String content = boardMap.get("content");
+			String file = boardMap.get("file");
+			String bannerImage = boardMap.get("bannerImage");
+			
+			// 비밀글 처리 여부
+			// secret 파라미터 값 받아오기   <---jsp에서 체크한 부분!
+			String secret = boardMap.get("secret");
+			// secret 값이 null이면 false로 처리, "on"이면 true로 처리
+			boolean isSecret = (secret != null && secret.equals("on"));
+
+			// DB에 추가하기 위해 사용자가 입력한 글정보+업로드할 파일명을 ArticleVO객체의 각변수에 저장
+			boardVO.setCategory(1);// 추가할 새글의 카테고리번호를 1으로 지정해서 문의글로 지정
+			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
+			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
+			boardVO.setUserId("admin");// 추가할 새글 작성자 ID를 admin으로 저장 (참고. t_member테이블에 ID가 admin이 저장되어 있어야함)
+			boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
+			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
+			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
+			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
+			boardVO.setViews(0);// 조회수는 0으로 지정. 나중에 방문시 조회수 증가시켜야함
+			boardVO.setSecret(isSecret);// 비밀글 여부
+
+			// boardService객체를 통해 DB에 새글을 추가하는 메소드를 호출합니다
+			// boardService의 addNotice 메소드는 DB에 성공적으로 등록된 후 할당된 새 글의 번호(articleNO)를 반환합니다.
+			int boardId = boardService.addBoard(boardVO);
+
+			// 첨부파일이 있는 경우 파일 이동
+			moveFileToDestination(file, boardId, "첨부파일");
+
+			// 배너 이미지가 있는 경우 파일 이동
+			moveFileToDestination(bannerImage, boardId, "배너 이미지");
+
+			// 글 등록 후, 새로 등록된 글 번호를 사용하여 해당 글을 조회하는 페이지로 리다이렉트합니다.
+			// 전체글을 다시 DB에서 겅색하여 보여주기 위해 다음과 같은 주소를 저장
+			nextPage = "/bbs/questionList.do";
+
+		} // end of AddNotice.do
+
+		
+		
+		// 문의사항 상세페이지
+		// 요청주소 "/bbs/questionInfo.do"
+		if (action.equals("/questionInfo.do")) {
+
+			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
+
+			// 조회할 글번호 파라미터 수신
+			// URL 쿼리 파라미터(?boardId=...)로 전달된 조회할 글의 번호를 읽어옵니다.
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
+			boardVO viewedBoard = boardService.viewBoard(boardId);
+
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (viewedBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
+
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBoardId(boardId, category);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBoardId(boardId, category);
+			request.setAttribute("getNextBoardId", getNextBoardId);
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", viewedBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 questionInfo.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/questionInfo.jsp");
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		} // end of questionInfo.do
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
