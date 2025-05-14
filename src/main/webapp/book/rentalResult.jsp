@@ -16,12 +16,12 @@
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
     .result-box {
-        padding: 50px;
+        padding: 100px;
         text-align: center;
         font-size: 18px;
     }
     .btn {
-        margin-top: 20px;
+        margin-top: 30px;
         padding: 10px 20px;
         background-color: #333;
         color: #fff;

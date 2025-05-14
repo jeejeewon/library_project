@@ -16,7 +16,8 @@
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
     .rental-section {
-        min-height: 80vh;
+        max-width: 1100px;
+        margin: 0 auto;
         padding: 40px 20px;
     }
 

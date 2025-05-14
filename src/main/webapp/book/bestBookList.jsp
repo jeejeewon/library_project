@@ -15,13 +15,11 @@
 <title>인기도서</title>
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
-    .book-section {
-        min-height: 80vh;
-        padding: 40px 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+	.book-section {
+	    padding: 40px 20px;
+	    max-width: 1200px;
+	    margin: 0 auto;
+	}
 
     .book-title {
         font-size: 22px;
@@ -30,12 +28,11 @@
         text-align: center;
     }
 
-    .book-container {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 30px;
-        justify-content: center;
-    }
+	.book-container {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	    gap: 30px;
+	}
 
     .book-card {
         display: flex;

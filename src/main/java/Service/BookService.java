@@ -22,6 +22,16 @@ public class BookService {
     public Vector<BookVo> allBooks() {
         return bookDao.allBooks();
     }
+    
+    // 도서의 총 개수를 반환
+    public int bookCount() {
+        return bookDao.bookCount();
+    }
+
+    public Vector<BookVo> booksByPage(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return bookDao.booksByPage(offset, pageSize);
+    }
 
     // 도서 상세 정보 조회
     public BookVo bookDetail(int bookNo) {
@@ -53,38 +63,21 @@ public class BookService {
 		return bookDao.myRentals(userId);
 	}
 
-    // 등록/수정 (관리자)
-    public boolean updateBook(HttpServletRequest request) {
+    // 등록
+    public boolean addBook(BookVo book) {
+        return bookDao.addBook(book);
+    }
 
-        String bookNoStr = request.getParameter("bookNo");
-
-        BookVo book = new BookVo();
-        book.setTitle(request.getParameter("title"));
-        book.setAuthor(request.getParameter("author"));
-        book.setPublisher(request.getParameter("publisher"));
-        book.setPublishYear(parseIntOrZero(request.getParameter("publishYear")));
-        book.setCategory(request.getParameter("category"));
-        book.setBookInfo(request.getParameter("bookInfo"));
-        book.setIsbn(request.getParameter("isbn"));
-        book.setThumbnail(request.getParameter("thumbnail"));
-
-        if (bookNoStr != null && !bookNoStr.isEmpty()) {
-            book.setBookNo(Integer.parseInt(bookNoStr));
-            return bookDao.updateBook(book);
-        } else {
-            return bookDao.insertBook(book);
-        }
+    // 수정
+    public boolean updateBook(BookVo book) {
+        return bookDao.updateBook(book);
     }
     
-    // 문자열을 숫자로 변환, 실패하면 0 반환
-    private int parseIntOrZero(String value) {
-        try {
-            return Integer.parseInt(value);  // 정상적으로 숫자 변환 성공
-        } catch (NumberFormatException e) {
-            return 0;  // 숫자로 변환 안 되면 0 리턴
-        }
+    // 삭제
+    public boolean deleteBook(int bookNo) {
+        return bookDao.deleteBook(bookNo);
     }
-
+    
 	// 반납 처리
     public boolean returnBook(int rentNo) {
         return bookDao.returnBook(rentNo);
@@ -99,5 +92,6 @@ public class BookService {
     public Vector<RentalVo> allRentals() {
         return bookDao.allRentals();
     }
+
     
 }

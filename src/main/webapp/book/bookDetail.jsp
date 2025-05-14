@@ -155,12 +155,12 @@
     			<a href="javascript:history.back();" class="btn">목록으로</a>
     			
     			<% if (userId != null) { %>
-       				<a href="<%= contextPath %>/books/rentalBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-loan">대여하기</a>
+       				<a href="<%= contextPath %>/books/confirmRental.do?bookNo=<%= book.getBookNo() %>" class="btn btn-loan">대여하기</a>
         			<% if ("admin".equals(userId)) { %>
             			<a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn btn-admin">관리자기능</a>
         			<% } %>
    			    <% } else { %>
-        			<a href="<%= contextPath %>/member/login.jsp" class="btn btn-loan">대여하기</a>
+        			<a href="<%= contextPath %>/member/login" class="btn btn-loan">대여하기</a>
     			<% } %>
    			</div>
           </div>

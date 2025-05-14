@@ -6,6 +6,11 @@
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<BookVo> bookList = (Vector<BookVo>) request.getAttribute("v");
+    int currentPage = (int) request.getAttribute("currentPage");
+    int totalCount = (int) request.getAttribute("totalCount");
+    int pageSize = (int) request.getAttribute("pageSize");
+    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+    
 %>
 
 <!DOCTYPE html>
@@ -15,9 +20,11 @@
 <title>도서 목록</title>
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
-    .book-section {
-        padding: 40px 20px;
-    }
+	.book-section {
+	    padding: 40px 20px;
+	    max-width: 1200px;
+	    margin: 0 auto;
+	}
 
     .book-title {
         font-size: 24px;
@@ -26,11 +33,11 @@
         margin-bottom: 50px;
     }
 
-    .book-container {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr); /* 가로 5칸 */
-        gap: 30px;
-    }
+	.book-container {
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	    gap: 30px;
+	}
 
     .book-card {
         display: flex;
@@ -125,8 +132,8 @@
 	        </button>
 	    </form>
 	</div>
-    
-    
+	
+	    
     <div class="book-title">전체 도서 목록</div>
 
     <%
@@ -150,14 +157,21 @@
         %>
     </div>
 
-    <!-- 페이징 버튼 (정적) -->
-    <div class="pagination">
-        <a href="#">◀</a>
-        <a href="#" class="active">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">▶</a>
-    </div>
+    <!-- 페이징 버튼 -->
+	<div class="pagination">
+	    <% if (currentPage > 1) { %>
+	        <a href="<%= contextPath %>/books/bookList.do?page=<%= currentPage - 1 %>">◀</a>
+	    <% } %>
+	
+	    <% for (int i = 1; i <= totalPage; i++) { %>
+	        <a href="<%= contextPath %>/books/bookList.do?page=<%= i %>"
+	           class="<%= (i == currentPage) ? "active" : "" %>"><%= i %></a>
+	    <% } %>
+	
+	    <% if (currentPage < totalPage) { %>
+	        <a href="<%= contextPath %>/books/bookList.do?page=<%= currentPage + 1 %>">▶</a>
+	    <% } %>
+	</div>
 
     <%
     } else {

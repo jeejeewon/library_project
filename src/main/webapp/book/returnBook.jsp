@@ -17,8 +17,9 @@
 <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
 <style>
     .admin-section {
-        min-height: 80vh;
-        padding: 40px 20px;
+	    padding: 40px 20px;
+	    max-width: 1200px;
+	    margin: 0 auto;
     }
 
     .admin-title {
@@ -35,9 +36,9 @@
     }
 
     .rental-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+	    display: grid;
+	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	    gap: 30px;
     }
 
     .rental-card {
@@ -105,6 +106,7 @@
     <% } else { %>
         <div style="text-align: center;">현재 미반납 도서가 없습니다.</div>
     <% } %>
+        <a href="javascript:history.back();" class="btn">목록으로</a>
 
 </div>
 

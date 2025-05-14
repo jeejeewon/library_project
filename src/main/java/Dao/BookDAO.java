@@ -12,7 +12,7 @@ public class BookDAO {
     PreparedStatement pstmt;
     ResultSet rs;
 
-    /* 전체 도서 목록 조회 (목록용: 최소 필드만) */
+    // 전체 도서 목록 조회
     public Vector<BookVo> allBooks() {
         Vector<BookVo> bookList = new Vector<>();
 
@@ -37,9 +37,59 @@ public class BookDAO {
         } finally {
             DbcpBean.close(con, pstmt, rs);
         }
+        return bookList;    
+        
+    }    
+
+    public int bookCount() {
+        String sql = "select count(*) from book";
+        int count = 0;
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }
+
+    public Vector<BookVo> booksByPage(int offset, int limit) {
+        Vector<BookVo> bookList = new Vector<>();
+        String sql = "select book_no, title, author, thumbnail "
+        		   + "from book order by book_no desc limit ?, ?";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                BookVo book = new BookVo();
+                book.setBookNo(rs.getInt("book_no"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                bookList.add(book);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
         return bookList;
     }
-    /* 도서 상세 조회 */
+
+    // 도서 상세
     public BookVo bookDetail(int bookNo) {
         BookVo book = null;
 
@@ -75,8 +125,8 @@ public class BookDAO {
 
         return book;
     }
-
-    /* 검색 결과 조회 */
+        
+    // 검색 결과
     public Vector<BookVo> searchBooks(String keyword) {
         Vector<BookVo> bookList = new Vector<>();
 
@@ -111,7 +161,7 @@ public class BookDAO {
         return bookList;
     }
 
-    /* 신착 도서 조회 */
+    // 신착 도서
     public Vector<BookVo> newBooks() {
         Vector<BookVo> bookList = new Vector<>();
 
@@ -142,13 +192,13 @@ public class BookDAO {
         return bookList;
     }
 
-    /* 인기 도서 조회 */
+    // 인기 도서
     public Vector<BookVo> bestBooks() {
         Vector<BookVo> bestList = new Vector<>();
 
         String sql = "select book_no, thumbnail, title, author, publisher, publish_year, rent_count "
                    + "from book where rent_count > 0 order by rent_count desc limit 8"; 
-        		   // 대여가 0보다 커야 불러오고, 8개 정도만 보여주기
+        		   // 대여가 0보다 커야 불러오고, 8개만 보여주기
 
         try {
             con = DbcpBean.getConnection();
@@ -173,7 +223,7 @@ public class BookDAO {
         return bestList;
     }
 
-    /* 도서 대출 */
+    // 도서 대출
     public boolean rentBook(String userId, int bookNo) {
     	
         boolean rental = false;
@@ -207,7 +257,7 @@ public class BookDAO {
             int row = pstmt.executeUpdate();
 
             if (row > 0) {
-                DbcpBean.close(null, pstmt); // pstmt 닫고 다시 준비
+                DbcpBean.close(null, pstmt);
 
                 // 3. 대출 횟수(rent_count) 증가
                 String updateBook = "update book set rent_count = rent_count + 1 "
@@ -228,7 +278,7 @@ public class BookDAO {
         return rental;
     }
     
-    /* 내 대여 내역 확인 */
+    // 내 대여 내역 확인
 	public Vector<RentalVo> myRentals(String userId) {
 	    Vector<RentalVo> rentalList = new Vector<>();
 
@@ -276,11 +326,11 @@ public class BookDAO {
 	    return rentalList;
 	}
     
-	/* 도서 등록 */
-	public boolean insertBook(BookVo book) {
-	    String sql = "insert into book (title, author, publisher, publish_year, category, "
-	    		   + "book_info, isbn, thumbnail) "
-	               + "values (?, ?, ?, ?, ?, ?, ?, ?)";
+	// 도서 등록
+	public boolean addBook(BookVo book) {
+	    String sql = "INSERT INTO book (title, author, publisher, publish_year, "
+	    		   + "category, book_info, isbn, thumbnail) "
+	    		   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	    try {
 	        con = DbcpBean.getConnection();
 	        pstmt = con.prepareStatement(sql);
@@ -301,7 +351,7 @@ public class BookDAO {
 	    return false;
 	}
 
-	/* 도서 수정 */
+	// 도서 수정
 	public boolean updateBook(BookVo book) {	    
 		String sql = "update book set title=?, author=?, publisher=?, publish_year=?, "
 	    		   + "category=?, book_info=?, isbn=?, thumbnail=? "
@@ -326,8 +376,24 @@ public class BookDAO {
 	    }
 	    return false;
 	}
+	
+	// 도서 삭제
+	public boolean deleteBook(int bookNo) {
+	    String sql = "DELETE FROM book WHERE book_no = ?";
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, bookNo);
+	        return pstmt.executeUpdate() > 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(con, pstmt);
+	    }
+	    return false;
+	}
 
-	/* 반납 처리 */
+	// 반납 처리
 	public boolean returnBook(int rentNo) {
 	    boolean result = false;
 	    String sql = "update rental_book set return_state = 1, return_date = now() "
@@ -352,7 +418,7 @@ public class BookDAO {
 	    return result;
 	}
 	
-	/* 반납 대기 목록 */
+	// 반납 대기 목록
 	public Vector<RentalVo> pendingRentals() {
 	    Vector<RentalVo> list = new Vector<>();
 	    String sql = "select r.rent_no, r.book_no, b.title, b.thumbnail, r.start_date, r.return_due "
@@ -388,7 +454,7 @@ public class BookDAO {
 	    return list;
 	}
 	
-	/* 모든 대여 목록 조회 (관리자용) */
+	// 모든 대여 목록 조회 (관리자용)
 	public Vector<RentalVo> allRentals() {
 	    Vector<RentalVo> rentalList = new Vector<>();
 

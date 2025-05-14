@@ -48,9 +48,10 @@
 <body>
 
 <div class="container admin-menu">
-    <h2>관리자 기능 메뉴</h2>
+    <h2>관리자 메뉴</h2>
 
-    <a href="<%= contextPath %>/books/addBook.do" class="admin-button">📚도서 등록/수정</a>
+    <a href="<%= contextPath %>/books/addBook.do" class="admin-button">📚도서 등록</a>
+    <a href="<%= contextPath %>/books/updateBook.do" class="admin-button">📚도서 수정</a>
     <a href="<%= contextPath %>/books/returnBook.do" class="admin-button">🔄반납 관리</a>
     <a href="<%= contextPath %>/books/allRental.do" class="admin-button secondary">📄전체 대여 목록</a>
 </div>
