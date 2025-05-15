@@ -434,6 +434,54 @@ public class libraryReserveDAO {
 		}			
 	}//updateStudyRoom 메소드 끝
 
+
+	public void updateMeetingRoom(libraryReserveVO vo) {		
+		System.out.println("updateMeetingRoom DAO 호출됨===================");
+
+		//예약번호 생성 (SA-13-0520-1314 형태 : 미팅룸코드-좌석번호-예약날짜-예약시작시간종료시간)
+		String numRoom = vo.getReserveRoom(); //예약한 미팅룸 코드 (예: meetingA)
+		String numDate = vo.getReserveDate().toString(); //예약날짜 (예: 2025-05-20)
+		
+		//스터디룸 코드에서 'SA' 추출
+		char first = numRoom.charAt(0); //첫번째 문자
+		char last = numRoom.charAt(numRoom.length()-1); //마지막 문자
+		//첫번째 문자와 마지막 문자를 합쳐서 'SA'로 변경 후 뒤에 좌석번호 붙임 'SA13'
+		numRoom = (first + "" + last).toUpperCase(); 
+		
+		//예약날짜에서 '0520'만 추출
+		String[] datePart = numDate.split("-");
+		numDate = datePart[1] + datePart[2]; 
+		
+		//최종 예약번호
+		String reserveNum = numRoom + "-" + vo.getReserveSeat() + "-" + numDate + "-" + vo.getReserveStart() + vo.getReserveEnd();
+				
+		
+		String sql = "update room_reserve "
+				   + "set reserve_num = ?, reserve_room = ?, reserve_date = ?, reserve_start = ?, reserve_end = ?, reserve_time = sysdate() "
+				   + "where reserve_id = ? and reserve_num = ?";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, reserveNum); 		 //예약 번호
+			pstmt.setString(2, vo.getReserveRoom()); //예약 스터디룸
+			pstmt.setDate(3, vo.getReserveDate());   //예약 날짜
+			pstmt.setInt(4, vo.getReserveStart());   //예약 시작시간
+			pstmt.setInt(5, vo.getReserveEnd());     //예약 종료시간
+			pstmt.setString(6, vo.getReserveId());	 //예약 수정 요청한 아이디
+			pstmt.setString(7, vo.getReserveNum());  //예약 수정 요청한 예약번호
+			
+			//쿼리문 실행
+			pstmt.executeUpdate();			
+		} catch (Exception e) {
+			System.err.println("미팅룸 예약 수정 실패" + e);
+			e.printStackTrace();	
+		}finally {
+			DbcpBean.close(con, pstmt);
+		}					
+	} //updateMeetingRoom 메소드 끝
+
 	
 
 

@@ -102,10 +102,8 @@
 		[ 도서관안내 ]-[ 시설예약 ]-[ 스터디룸 예약 ] 뷰
 	</div>	
 	<div align="center" style="margin-top: 50px;">
-		<form method="post" align="left" style="margin-left: 30%;">
-			
-			<c:if test="${not empty param.reserveNum}">
-				
+		<form method="post" align="left" style="margin-left: 30%;">			
+			<c:if test="${not empty param.reserveNum}">				
 				<p>▪ 예약내역</p>
 				<div id="reservedList">
 					<p>- 예약날짜 : ${param.reserveDate}</p>
@@ -506,7 +504,7 @@
 	        }           
 	        const seat = selectedSeat.dataset.seat;
 	              
-	        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
+	        //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
 	        //확인용 컨펌창 띄우기
 	        const confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
 	 	            "- 이용일자 : " + reserveDate + "\n" +

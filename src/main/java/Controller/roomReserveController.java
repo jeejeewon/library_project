@@ -377,7 +377,49 @@ public class roomReserveController extends HttpServlet{
 			
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";
+		
+			
+		//미팅룸 예약 수정 진행	
+		}else if(action.equals("/meetingRoomUpdate")) {
+			
+			System.out.println("meetingRoomUpdate호출됨===============");
+			
+			//예약정보를 받아오기
+			String userId = request.getParameter("userID"); 
+			String reserveNum = request.getParameter("reserveNum");
+			
+			String selectedDate = request.getParameter("reserveDate"); //예약날짜
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			java.util.Date utilDate = null; //utilDate는 java.util.Date형
+			Date reserveDate = null;		//sqlDate는 java.sql.Date형
+			
+			try {
+				utilDate = dateFormat.parse(selectedDate);
+				reserveDate = new Date(utilDate.getTime()); //java.util.Date형을 java.sql.Date형으로 변환
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+								
+			int StartTime = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //예약 시작시간
+			int EndTime = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //예약 종료시간
+			String roomCode = request.getParameter("roomCode"); //선택한 미팅룸
+			
+			System.out.println("예약자 아이디 : " + userId);
+			System.out.println("예약 수정날짜 : " + reserveDate);
+			System.out.println("예약 수정시간 : " + StartTime + " ~ " + EndTime);
+			System.out.println("예약 수정 미팅룸 : " + roomCode);
+			System.out.println("예약번호 : " + reserveNum);
 					
+			//받아온 정보를 VO객체에 저장
+			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
+			vo.setReserveNum(reserveNum);
+			
+			//vo를 service로 넘겨서 비즈니스 로직 처리
+			roomReserveService.updateMeetingRoom(vo);
+			
+			//예약완료 후 예약내역 페이지로 이동
+			nextPage = "/reserve/reserveCheck";
+			
 		}
 		
 	
