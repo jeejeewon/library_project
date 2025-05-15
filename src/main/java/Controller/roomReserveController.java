@@ -322,7 +322,7 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("예약날짜 : " + reserveDate);
 			System.out.println("예약 시작시간 : " + StartTime);
 			System.out.println("예약 종료시간 : " + EndTime);
-			System.out.println("예약한 스터디룸 : " + roomCode + seat);
+			System.out.println("예약한 스터디룸 : " + roomCode + "-" + seat);
 			
 			//받아온 정보를 VO객체에 저장
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);

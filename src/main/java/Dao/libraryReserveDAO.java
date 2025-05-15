@@ -244,8 +244,8 @@ public class libraryReserveDAO {
 				
 				reserveVO.setRoomName(roomName);
 				
-				System.out.println("아이디 : " + rs.getString("reserve_id"));
-				System.out.println("예약번호 : " + rs.getString("reserve_num"));
+//				System.out.println("아이디 : " + rs.getString("reserve_id"));
+//				System.out.println("예약번호 : " + rs.getString("reserve_num"));
 						
 				//예약정보를 List에 추가
 				reserveList.add(reserveVO);

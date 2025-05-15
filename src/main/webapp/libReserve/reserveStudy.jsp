@@ -230,18 +230,19 @@
 			defaultDate: today
 		}).val(today);
 		
+		resetSelect();
+		
 		//날짜 초기화 후 트리거 적용
 		setTimeout(() => {
 			$("#reserveDate").trigger('change');
-		}, 0);
-		
-		updateSeatStatus();
+		}, 200);
+	
 	});
 
 	
 	//사용자가 당일 날짜를 선택할 경우 현재 시간보다 이후의 시간만 보여주는 함수
-	$(function () {
-	  $('#reserveDate').on('change', function () {
+	function resetSelect() {
+	  $('#reserveDate').off('change').on('change', function () {
 	    // 사용자가 선택한 날짜
 	    const selectedDate = $('#reserveDate').val();
 
@@ -279,15 +280,17 @@
 	      }else { //미래 날짜 선택시 옵션 다 보여줌        
 	        startTimeSelect.append("<option value='" + time + "'>" + time + "</option>");
 	      }
-	    }	    
+	    }	        
+	    resetSelectEndTime();
+	    
 	    //변경된 시작시간에 맞춰 종료시간도 자동 변경
 	    startTimeSelect.trigger('change');
 	  });
-	});
+	};
 
 	
 	//시작시간 선택 시 종료시간을 동적으로 변경하여 <option>태그에 보여주는 함수
-	$(function() {
+	function resetSelectEndTime() {
 	    $('#StartTime').on('change', function() {
 	      const startTime = $(this).val(); // 사용자가 선택한 시작시간
 	      const endTimeSelect = $('#EndTime'); 
@@ -310,7 +313,7 @@
 	      //첫 번째 종료시간 옵션 자동 선택
 	      endTimeSelect.val(endTimeSelect.find('option:first').val());	           
 	    });	    
-	 });
+	 };
 	
 	
 	//첫 화면에 스터디룸A가 선택된 채로 보여주는 함수
@@ -328,8 +331,6 @@
            });
     	   //클릭한 버튼에 효과 주기
            event.target.classList.add("selected-btn");
-    	   
-           updateSeatStatus();
        }
     });
 	
