@@ -57,7 +57,6 @@ public class libraryReserveVO {
 	//시설 예약 조회시 사용할 생성자
 	public libraryReserveVO(String reserveNum, String reserveRoom, String reserveId, String reserveName,
 			Date reserveDate, int reserveStart, int reserveEnd, Timestamp reserveTime, int reserveSeat) {
-		super();
 		this.reserveNum = reserveNum;
 		this.reserveRoom = reserveRoom;
 		this.reserveId = reserveId;

@@ -62,9 +62,7 @@
 	            <c:forEach var="vo" items="${reserveList}" begin="0" end="9" step="1">
 	            	<c:if test="${!vo.isFuture}">
 	            		<tr align="center" id="pastReserve">   
-	            		    <td id="reserveDate">${vo.reserveDate}</td>    
-	            		    <input type="hidden" id="reserveStart" value="${vo.reserveStart}"></input>	   
-	            		    <input type="hidden" id="reserveEnd" value="${vo.reserveEnd}"></input>	   	   
+	            		    <td id="reserveDate">${vo.reserveDate}</td>       	   
 		                    <td id="roomName">${vo.roomName}<c:if test="${vo.reserveSeat != 0}"> - ${vo.reserveSeat}번 좌석</c:if></td>
 		                    <td>${vo.reserveStart}:00 ~ ${vo.reserveEnd}:00</td>    
 		                    <td>이용완료</td>		               
@@ -82,7 +80,9 @@
 			                <c:if test="${vo.isFuture}">
 		                    	<td>
 			                    	<a href="#" style="text-decoration: none; color: blue;" class="updateBtn" 
-			                    	data-reserve-id="${vo.reserveId}" data-reserve-num="${vo.reserveNum}" data-room-type="${vo.reserveRoom}">수정</a> &nbsp;
+			                    	data-reserve-num="${vo.reserveNum}" data-reserve-roomname="${vo.roomName}"
+			                    	data-reserve-date="${vo.reserveDate}" data-reserve-start="${vo.reserveStart}"
+			                    	data-reserve-end="${vo.reserveEnd}" data-reserve-seat="${vo.reserveSeat}">수정</a> &nbsp;
 			                    	
 			                    	<a href="#" style="text-decoration: none; color: red;" class="deleteBtn" 
 			                    	data-reserve-id="${vo.reserveId}" data-reserve-num="${vo.reserveNum}"
@@ -155,6 +155,48 @@
 	});
 	
 
+	
+	//예약 수정 버튼을 눌렀을 경우 실행되는 함수
+	document.querySelectorAll(".updateBtn").forEach(button => {
+	    button.addEventListener("click", function(event) {
+	        event.preventDefault(); // 링크 기본 동작 방지	
+	       	
+	        // 클릭한 버튼의 데이터 속성 가져오기 (예약번호, 아이디, 시설명)
+	        const reserveNum = this.getAttribute("data-reserve-num");
+	    	const roomName = this.getAttribute("data-reserve-roomname");
+	    	const reserveDate = this.getAttribute("data-reserve-date");
+	    	const startTime = this.getAttribute("data-reserve-start");
+	    	const endTime = this.getAttribute("data-reserve-end");
+	    	const roomSeat = this.getAttribute("data-reserve-seat");
+
+	        console.log('reserveNum:', reserveNum);
+	        console.log('room:', roomName + " - " + roomSeat);
+	        console.log('reserveDate:', reserveDate);
+	        console.log('time:', startTime + ":00 ~ " + endTime + ":00");
+	        
+	        //시설명에 따라 보여줄 뷰 화면 설정 (studyRoom/meetingRoom)
+	        let url = "";
+	        if(roomName.startsWith("스터디룸")){
+	        	url = "<%=request.getContextPath()%>/reserve/reserveStudy";
+	        }else{
+	        	url = "<%=request.getContextPath()%>/reserve/reserveMeeting";
+	        }
+	        
+	        url += "?reserveNum=" + reserveNum;
+	        url += "&roomName=" + roomName;
+	        url += "&reserveDate=" + reserveDate;
+	        url += "&startTime=" + startTime;
+	        url += "&endTime=" + endTime;
+	        url += "&roomSeat=" + roomSeat;
+	        
+	        console.log('url: ', url);
+	        
+	        window.location.href = url;
+	           	       
+	    });
+	});
+	
+	
 	
 	
 	

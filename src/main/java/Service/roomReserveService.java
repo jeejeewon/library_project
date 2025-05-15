@@ -58,6 +58,13 @@ public class roomReserveService {
 		//DB에 예약정보 저장 명령
 		libraryReserveDAO.reserveStudyRoom(vo);	
 	}
+	
+	
+	//스터디룸 예약 수정하는 메소드
+	public void updateStudyRoom(libraryReserveVO vo) {
+		//DB에 예약정보 수정 명령
+		libraryReserveDAO.updateStudyRoom(vo);			
+	}
 
 
 	

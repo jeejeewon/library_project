@@ -235,7 +235,7 @@
                 roomName: roomName
             },
             success: function(response) {
-                alert("예약이 완료되었습니다.");
+                alert("예약이 완료되었습니다.");   
                 //예약이 완료되면 예약 확인 페이지로 이동
                 window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
             },
