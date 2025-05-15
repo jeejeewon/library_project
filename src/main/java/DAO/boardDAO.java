@@ -353,4 +353,53 @@ public class boardDAO {
 		}
 		
 	}
+
+	
+	//답변 달기 메소드
+	public boolean updateReply(int boardId, String reply) {
+	    String sql = "UPDATE board SET reply = ? WHERE board_id = ?";
+
+	    try {
+	        con = DbcpBean.getConnection(); // DBCP에서 커넥션 가져오기
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, reply);
+	        pstmt.setInt(2, boardId);
+
+	        return pstmt.executeUpdate() == 1; // 업데이트 성공 여부 반환
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (con != null) con.close(); // 커넥션 반환
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return false;
+	}
+
+
+
+	public boolean deleteReply(int boardId) {
+		   String sql = "UPDATE board SET reply = NULL WHERE board_id = ?";
+
+		    try {
+		        con = DbcpBean.getConnection(); // DBCP에서 커넥션 가져오기
+		        pstmt = con.prepareStatement(sql);
+		        pstmt.setInt(1, boardId);
+
+		        return pstmt.executeUpdate() == 1; // 업데이트 성공 여부 반환
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try {
+		            if (pstmt != null) pstmt.close();
+		            if (con != null) con.close(); // 커넥션 반환
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    return false;
+	}
 }

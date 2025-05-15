@@ -25,6 +25,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.json.simple.JSONObject;
 
 import DAO.boardDAO;
@@ -484,79 +485,80 @@ public class boardController extends HttpServlet {
 
 		} // end of noticeModify.do
 
-		// 글 삭제 요청 처리 ("/removeBoard.do")
-		if (action.equals("/removeBoard.do")) {
-			System.out.println("글 삭제 처리 시작 ...");
+//		// 공지사항 글 삭제 요청 처리 ("/removeBoardNotice.do")
+//		if (action.equals("/removeBoardNotice.do")) {
+//			System.out.println("글 삭제 처리 시작 ...");
+//
+//			// 삭제할 글번호 파라미터 수신
+//			String BoardIdParam = request.getParameter("boardId");
+//			System.out.println("삭제 요청된 게시글의 글번호(BoaedId) 파라미터 : " + BoardIdParam);
+//
+//			// 글번호 유효성 검사
+//			if (BoardIdParam == null || BoardIdParam.isEmpty()) {
+//				System.err.println("오류: 글 삭제 요청에 글번호(BoardId) 누락");
+//				throw new ServletException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
+//			}
+//			int BoardID = Integer.parseInt(BoardIdParam);// 정수로 변환
+//
+//			// 글 삭제 서비스 호출 (삭제된 글ID를 반환받음)
+//			int deletedBoardId = boardService.removeBoard(BoardID);
+//			System.out.println("Service로 부터 반환된 삭제된 글 번호 : " + deletedBoardId);
+//
+//			// 삭제된 글 번호에 해당하는 첨부파일 폴더 삭제
+//			int boardId = deletedBoardId; // 삭제된 글 번호
+//
+//			// 첨부파일 폴더 경로 설정
+//			File fileDir = new File(BOARD_FILE_REPO + File.separator + boardId);
+//
+//			// 폴더가 존재하면 삭제
+//			if (fileDir.exists()) {
+//				try {
+//					// 폴더 내 모든 파일 목록 가져오기
+//					File[] files = fileDir.listFiles();
+//					if (files != null) {
+//						for (File file : files) {
+//							if (file.exists()) {
+//								boolean deleted = file.delete();
+//								if (deleted) {
+//									System.out.println("첨부파일 삭제 완료: " + file.getPath());
+//								} else {
+//									System.err.println("첨부파일 삭제 실패: " + file.getPath());
+//								}
+//							}
+//						}
+//					}
+//					// 폴더 삭제 (폴더가 비었을 경우 삭제)
+//					boolean dirDeleted = fileDir.delete();
+//					if (dirDeleted) {
+//						System.out.println("첨부파일 폴더 삭제 완료: " + fileDir.getPath());
+//					} else {
+//						System.err.println("첨부파일 폴더 삭제 실패: " + fileDir.getPath());
+//					}
+//				} catch (Exception e) {
+//					System.err.println("오류: 첨부파일 폴더 삭제 실패 (" + fileDir.getPath() + "): " + e.getMessage());
+//				}
+//			}
+//			
+//			
+//			//삭제 성공 후 글 목록 페이지로 이동하기
+//			response.setContentType("application/json; charset=UTF-8"); // 응답 형식을 JSON으로 명시
+//			PrintWriter pw = response.getWriter(); // 응답 출력 스트림 얻기
+//			JSONObject jsonResponse = new JSONObject(); // JSON 객체 생성
+//			jsonResponse.put("result", "success"); // 결과 상태 설정
+//			jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다."); // 성공 메시지
+//			// JavaScript에서 이동할 URL 정보를 포함하여 전달 (선택 사항)
+//			jsonResponse.put("redirect", request.getContextPath() + "/bbs/noticeList.do");
+//			pw.print(jsonResponse.toString()); // JSON 문자열 전송
+//			pw.flush(); // 버퍼 비우기
+//			System.out.println("글 삭제 성공 JSON 응답 전송: " + jsonResponse.toString()); // JSON 응답 로그
+//			return; // JSON 응답 후 서블릿 실행 종료
+//			
+//			
+//
+//		} /// removeBoard.do end
 
-			// 삭제할 글번호 파라미터 수신
-			String BoardIdParam = request.getParameter("boardId");
-			System.out.println("삭제 요청된 게시글의 글번호(BoaedId) 파라미터 : " + BoardIdParam);
 
-			// 글번호 유효성 검사
-			if (BoardIdParam == null || BoardIdParam.isEmpty()) {
-				System.err.println("오류: 글 삭제 요청에 글번호(BoardId) 누락");
-				throw new ServletException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
-			}
-			int BoardID = Integer.parseInt(BoardIdParam);// 정수로 변환
-
-			// 글 삭제 서비스 호출 (삭제된 글ID를 반환받음)
-			int deletedBoardId = boardService.removeBoard(BoardID);
-			System.out.println("Service로 부터 반환된 삭제된 글 번호 : " + deletedBoardId);
-
-			// 삭제된 글 번호에 해당하는 첨부파일 폴더 삭제
-			int boardId = deletedBoardId; // 삭제된 글 번호
-
-			// 첨부파일 폴더 경로 설정
-			File fileDir = new File(BOARD_FILE_REPO + File.separator + boardId);
-
-			// 폴더가 존재하면 삭제
-			if (fileDir.exists()) {
-				try {
-					// 폴더 내 모든 파일 목록 가져오기
-					File[] files = fileDir.listFiles();
-					if (files != null) {
-						for (File file : files) {
-							if (file.exists()) {
-								boolean deleted = file.delete();
-								if (deleted) {
-									System.out.println("첨부파일 삭제 완료: " + file.getPath());
-								} else {
-									System.err.println("첨부파일 삭제 실패: " + file.getPath());
-								}
-							}
-						}
-					}
-					// 폴더 삭제 (폴더가 비었을 경우 삭제)
-					boolean dirDeleted = fileDir.delete();
-					if (dirDeleted) {
-						System.out.println("첨부파일 폴더 삭제 완료: " + fileDir.getPath());
-					} else {
-						System.err.println("첨부파일 폴더 삭제 실패: " + fileDir.getPath());
-					}
-				} catch (Exception e) {
-					System.err.println("오류: 첨부파일 폴더 삭제 실패 (" + fileDir.getPath() + "): " + e.getMessage());
-				}
-			}
-			
-			
-			//삭제 성공 후 글 목록 페이지로 이동하기
-			response.setContentType("application/json; charset=UTF-8"); // 응답 형식을 JSON으로 명시
-			PrintWriter pw = response.getWriter(); // 응답 출력 스트림 얻기
-			JSONObject jsonResponse = new JSONObject(); // JSON 객체 생성
-			jsonResponse.put("result", "success"); // 결과 상태 설정
-			jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다."); // 성공 메시지
-			// JavaScript에서 이동할 URL 정보를 포함하여 전달 (선택 사항)
-			jsonResponse.put("redirect", request.getContextPath() + "/bbs/noticeList.do");
-			pw.print(jsonResponse.toString()); // JSON 문자열 전송
-			pw.flush(); // 버퍼 비우기
-			System.out.println("글 삭제 성공 JSON 응답 전송: " + jsonResponse.toString()); // JSON 응답 로그
-			return; // JSON 응답 후 서블릿 실행 종료
-			
-			
-
-		} /// removeBoard.do end
-
-
+		
 
 		
 		
@@ -731,6 +733,348 @@ public class boardController extends HttpServlet {
 			nextPage = "/main.jsp";
 
 		} // end of questionInfo.do
+		
+		
+		
+		
+		
+		// 상세페이지에서 문의사항 글 답변달기/답변수정하기
+		// 요청주소 "/bbs/reply.do"
+		if(action.equals("/reply.do")) {
+		    String boardIdStr = request.getParameter("boardId");
+		    String reply = request.getParameter("reply");
+
+		    int boardId = 0;
+		    try {
+		        boardId = Integer.parseInt(boardIdStr);
+		    } catch (NumberFormatException e) {
+		        response.setContentType("application/json;charset=UTF-8");
+		        response.getWriter().write("{\"result\":\"fail\", \"message\":\"잘못된 요청입니다.\"}");
+		        return;
+		    }
+
+		    boardService service = new boardService();
+		    boolean updateSuccess = false;
+
+		    try {
+		        // 이미 등록된 답변이 있어도 덮어쓰기 가능하므로 updateReply만 호출
+		        updateSuccess = service.updateReply(boardId, reply);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    response.setContentType("application/json;charset=UTF-8");
+		    if(updateSuccess) {
+		        response.getWriter().write("{\"result\":\"success\", \"reply\":\"" + reply.replace("\"", "\\\"") + "\"}");
+		    } else {
+		        response.getWriter().write("{\"result\":\"fail\", \"message\":\"답변 저장 실패\"}");
+		    }
+		}
+
+
+
+		
+		
+		
+		
+		
+		// 상세페이지에서 문의사항 글 삭제하기
+		// 요청주소 "/bbs/replyDelete.do"
+		if(action.equals("/replyDelete.do")) {
+		    // 요청 파라미터에서 boardId 받아오기
+		    String boardIdStr = request.getParameter("boardId");
+		    
+		    int boardId = 0;
+		    try {
+		        boardId = Integer.parseInt(boardIdStr); // 문자열을 정수로 변환
+		    } catch (NumberFormatException e) {
+		        // 잘못된 요청 처리 (숫자가 아닐 경우)
+		        response.setContentType("application/json;charset=UTF-8");
+		        response.getWriter().write("{\"result\":\"fail\", \"message\":\"잘못된 요청입니다.\"}");
+		        return;
+		    }
+
+		    boardService service = new boardService(); // 서비스 객체 생성
+		    boolean deleteSuccess = false;
+		    try {
+		    	deleteSuccess = service.deleteReply(boardId); // 서비스 통해 삭제 처리
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    response.setContentType("application/json;charset=UTF-8");
+		    if(deleteSuccess) {
+		        response.getWriter().write("{\"result\":\"success\"}"); // 성공 응답
+		    } else {
+		        response.getWriter().write("{\"result\":\"fail\", \"message\":\"삭제 실패\"}"); // 실패 응답
+		    }
+		}
+
+
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// 문의사항 글 수정하기
+		// 상세페이지에서 수정 버튼을 눌렀을때 수정페이지 요청
+		// 요청주소 "/bbs/noticeModifyForm.do"
+		if (action.equals("/noticeModifyForm.do")) {
+			System.out.println("공지사항 글 수정 페이지 요청 시작...");
+
+			// 글번호 파라미터 수신
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
+				throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			boardVO modBoard = boardService.viewBoard(boardId);
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (modBoard != null ? "BoardId=" + modBoard.getBoardId() : "null"));// 조회 결과
+																												// 로그
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (modBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", modBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 noticeModifyForm.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/noticeModifyForm.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		} // end of noticeModifyForm.do
+
+		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
+		// 요청주소 "/bbs/noticeModify.do"
+		if (action.equals("/noticeModify.do")) {
+			System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
+
+			// 파일 업로드를 포함한 수정된 폼 데이터 처리
+			// 수정 폼에서도 파일첨부가 가능하므로 uploadFile() 메소드를 호출
+			// 반환된 Map에는 수정된 글 제목, 내용, 첨부파일 등등의 정보가 담겨있습니다.
+			Map<String, String> boardMap = uploadFile(request, response);
+			System.out.println("uploadFile()메소드 Map (수정): " + boardMap);
+
+			// Map에서 수정 정보 추출
+			String boardIdParam = boardMap.get("boardId"); // 수정할 글 번호
+			// 글 번호 유효성 검사
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
+				throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+			int boardId = Integer.parseInt(boardIdParam); // 글 번호를 int형으로 변환
+			String title = boardMap.get("title"); // 수정된 제목 추출
+			String content = boardMap.get("content"); // 수정된 내용 추출
+			String file = boardMap.get("file"); // 수정된 첨부파일 추출
+			String originalFileName = boardMap.get("originalFileName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일
+																		// 삭제용)
+			String bannerImage = boardMap.get("bannerImage"); // 수정된 배너 이미지 추출
+			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존
+																			// 파일 삭제용)
+			System.out.println("추출된 수정 정보 : " + "boardId=" + boardId + ", title=" + title + ", content=" + content
+					+ ", file=" + file + ", bannerImage=" + bannerImage);
+
+			// boardVO 객체에 수정된 정보 저장
+			// 데이터베이스에 업데이트를 하기위해 수정된 정보와 글 번호를 boardVO 객체에 저장합니다.
+			// 주의 : 멤버 변수 boardVO 재사용시, 스레드 안전 문제 가능성이 있으므로 새 객체를 생성하는것이 안전합니다.
+			boardVO modVO = new boardVO();// 수정 정보를 담을 새 VO객체
+			modVO.setBoardId(boardId); // 수정할 글 번호 (WHERE절에서 사용됩니다.)
+			modVO.setTitle(title); // 수정된 제목
+			modVO.setContent(content); // 수정된 내용
+			modVO.setFile(file); // 수정된 첨부파일
+			modVO.setBannerImg(bannerImage); // 수정된 배너 이미지
+			// 그 외 작성자, 작성일 등은 수정하지 않으므로 그대로 둡니다.
+
+			// boardService를 통해 글 수정 처리 요청
+			// boardService에게 movVO 객체를 전달하여 DB에서 해당 글의 내용을 업데이트 하도록 요청합니다.
+			boardService.modifyNotice(modVO);
+			System.out.println("공지사항 글 수정 완료"); // 수정 완료 로그
+
+			// 첨부파일 처리
+			// 수정된 첨부파일이 있는 경우 파일 이동
+			if (file != null && !file.isEmpty()) {
+				// 새 파일을 임시 폴더(temp)에서 최종 폴더(글번호 폴더)로 이동
+				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);// 임시 폴더에 저장된
+																											// 파일
+				File destDir = new File(BOARD_FILE_REPO + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
+
+				// 최종 폴더가 없다면 생성
+				if (!destDir.exists()) {
+					destDir.mkdirs();
+				}
+				// 임시 파일 존재 확인 후 이동
+				if (srcFile.exists()) {
+					FileUtils.moveFileToDirectory(srcFile, destDir, true); // 파일 이동
+					System.out.println("첨부파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath()); // 이동 완료 로그
+				} else {
+					System.out.println("오류 : 임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
+				}
+
+				// 기존 첨부파일 처리 :
+				// 기존 파일이 있었고, 새로 첨부된 파일과 이름이 다른 경우에만 기존 파일 삭제
+				if (originalFileName != null && !originalFileName.isEmpty() && !originalFileName.equals(file)) {
+					File oldFile = new File(destDir, originalFileName);
+					// 기존 파일이 존재하는 경우 삭제
+					if (oldFile.exists()) {
+						boolean deleted = oldFile.delete();
+						System.out.println("기존 첨부 파일 삭제 ( " + oldFile.getPath() + " ) : " + deleted);// 삭제 결과 로그
+					}
+				}
+
+			}
+
+			// 수정된 배너 이미지가 있는 경우 파일 이동
+			if (bannerImage != null && !bannerImage.isEmpty()) {
+				if (originalBannerName != null && !originalBannerName.isEmpty()) {
+					File oldBanner = new File(
+							BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
+					if (oldBanner.exists()) {
+						oldBanner.delete();
+						System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
+					}
+				}
+
+				moveFileToDestination(bannerImage, boardId, "배너 이미지");
+			}
+
+			// 수정 후 상세페이지로 리디렉션
+			response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
+
+		} // end of noticeModify.do
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// 게시판글 삭제 (모든게시판에 적용) 
+		// 게시판 action에 따른 redirect URL 매핑
+		Map<String, String> redirectMap = new HashMap<>();
+		redirectMap.put("/removeQuestion.do", "/bbs/questionList.do");
+		redirectMap.put("/removeNotice.do", "/bbs/noticeList.do");
+//		redirectMap.put("/removeEvent.do", "/bbs/eventList.do");  추후 다른걸로 추가예정
+
+		// 해당 요청이 매핑에 있는지 확인
+		if (redirectMap.containsKey(action)) {
+		    System.out.println("글 삭제 처리 시작 ...");
+
+		    String boardIdParam = request.getParameter("boardId");
+		    System.out.println("삭제 요청된 게시글의 글번호(BoardId) 파라미터 : " + boardIdParam);
+
+		    if (boardIdParam == null || boardIdParam.isEmpty()) {
+		        System.err.println("오류: 글 삭제 요청에 글번호(BoardId) 누락");
+		        throw new ServletException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
+		    }
+
+		    int boardID = Integer.parseInt(boardIdParam);
+		    int deletedBoardId = boardService.removeBoard(boardID);
+		    System.out.println("Service로 부터 반환된 삭제된 글 번호 : " + deletedBoardId);
+
+		    File fileDir = new File(BOARD_FILE_REPO + File.separator + deletedBoardId);
+		    if (fileDir.exists()) {
+		        try {
+		            File[] files = fileDir.listFiles();
+		            if (files != null) {
+		                for (File file : files) {
+		                    if (file.exists()) {
+		                        boolean deleted = file.delete();
+		                        if (deleted) {
+		                            System.out.println("첨부파일 삭제 완료: " + file.getPath());
+		                        } else {
+		                            System.err.println("첨부파일 삭제 실패: " + file.getPath());
+		                        }
+		                    }
+		                }
+		            }
+		            boolean dirDeleted = fileDir.delete();
+		            if (dirDeleted) {
+		                System.out.println("첨부파일 폴더 삭제 완료: " + fileDir.getPath());
+		            } else {
+		                System.err.println("첨부파일 폴더 삭제 실패: " + fileDir.getPath());
+		            }
+		        } catch (Exception e) {
+		            System.err.println("오류: 첨부파일 폴더 삭제 실패 (" + fileDir.getPath() + "): " + e.getMessage());
+		        }
+		    }
+
+		    // JSON 응답 처리
+		    response.setContentType("application/json; charset=UTF-8");
+		    PrintWriter pw = response.getWriter();
+		    JSONObject jsonResponse = new JSONObject();
+		    jsonResponse.put("result", "success");
+		    jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다.");
+		    jsonResponse.put("redirect", request.getContextPath() + redirectMap.get(action)); // 매핑된 경로 사용
+		    pw.print(jsonResponse.toString());
+		    pw.flush();
+		    System.out.println("글 삭제 성공 JSON 응답 전송: " + jsonResponse.toString());
+		    return;
+		}
+
 		
 		
 		

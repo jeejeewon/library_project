@@ -111,5 +111,21 @@ public class boardService {
 
 	}
 
+	// 답변달기
+	public boolean updateReply(int boardId, String reply) {
+
+		return boardDao.updateReply(boardId, reply);
+	}
+	
+	// 답변삭제
+	public boolean deleteReply(int boardId) throws Exception {
+		
+		if(boardId <= 0) {
+			throw new IllegalArgumentException("잘못된 게시글 ID입니다.");
+		}
+		
+		return boardDao.deleteReply(boardId);
+	}
+
 	
 }
