@@ -7,17 +7,17 @@ import java.sql.Timestamp;
 public class libraryReserveVO {
 
 	private String reserveNum;		//예약번호
-	private String reserveRoom;	//예약시설코드
+	private String reserveRoom;	    //예약시설코드
 	private String roomName;		//예약시설명 
 	private int reserveSeat;		//예약한 스터디룸 좌석번호
 	private String reserveId;		//예약자 ID
-	private String reserveName;	//예약자명
+	private String reserveName;	    //예약자명
 	private Date reserveDate;		//예약일자
 	private int reserveStart;		//예약시작시간
-	private int reserveEnd;		//예약종료시간
+	private int reserveEnd;		    //예약종료시간
 	private Timestamp reserveTime;	//예약시간
 	private boolean isFuture;	    //예약날짜가 미래인지 여부 (true:미래, false:현재)
-	private boolean isNow; //예약된 시간에 현재 시간이 겹친다면? (현재 이용중이라면?)
+	private boolean isNow;          //예약된 시간에 현재 시간이 겹친다면? (현재 이용중이라면?)
 	
 	
 	//기본생성자

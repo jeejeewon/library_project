@@ -73,6 +73,12 @@ public class roomReserveService {
 		libraryReserveDAO.updateMeetingRoom(vo);				
 	}
 
+	
+	//전체 시설 예약 내역을 조회하는 메소드
+	public List allReservedList() {
+		return libraryReserveDAO.allReservedList();
+	}
+
 
 	
 

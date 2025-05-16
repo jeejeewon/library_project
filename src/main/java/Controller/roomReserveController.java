@@ -420,6 +420,39 @@ public class roomReserveController extends HttpServlet{
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";
 			
+			
+		//관리자메뉴에서 시설예약관리 메뉴 클릭했을 때 보여줄 뷰페이지 이동	
+		}else if(action.equals("/reserveAdmin")) {			
+			
+			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");			
+			nextPage = "/main.jsp";							
+			
+			
+		//전체 시설 예약 내역 조회
+		}else if(action.equals("/allReservedList")){
+			
+			System.out.println("allReservedList호출됨===============");
+			
+			List reservedList = roomReserveService.allReservedList();
+			
+			   System.out.println("조회한 예약 내역 : " + reservedList);		   
+			   
+			   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
+			   ObjectMapper objectMapper = new ObjectMapper(); 
+			   String json = objectMapper.writeValueAsString(reservedList);
+			    
+			   System.out.println("JSON형식으로 변환된 데이터 : " + json);
+			   		   
+			   //JSON형식으로 변환된 데이터를 ajax로 리턴하기
+			   response.setContentType("application/json; charset=utf-8");
+
+			   //ajax로 반환
+			   out.write(json); //ajax로 JSON형식으로 변환된 데이터 리턴
+			   out.flush();
+			   out.close();    		
+			
+			   return;
+						
 		}
 		
 	

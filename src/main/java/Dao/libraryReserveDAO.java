@@ -482,6 +482,48 @@ public class libraryReserveDAO {
 		}					
 	} //updateMeetingRoom 메소드 끝
 
+
+	//DB에서 전체 시설 예약 내역 조회하는 메소드
+	public List allReservedList() {
+		
+		System.out.println("allReservedList DAO 호출됨===================");
+		
+		String sql = "select * from room_reserve "
+				   + "order by case when reserve_date >= now() then 0 else 1 end, "
+				   + "reserve_date asc, reserve_start asc";
+		
+		List reservedList = new ArrayList();
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			
+			//쿼리문 실행
+			pstmt.executeQuery(sql);
+			
+			//조회된 결과를 ResultSet 객체에 저장
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) { //조회된 결과가 있을 경우 				
+				
+				//DB에서 조회한 값을 VO 객체에 저장
+				libraryReserveVO = new libraryReserveVO(rs.getString("reserve_num"), rs.getString("reserve_room"), 
+						           rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
+						           rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));		
+			
+				reservedList.add(libraryReserveVO);
+				
+			}						
+		} catch (Exception e) {
+			System.err.println("전체 예약 내역 조회 실패" + e);
+			e.printStackTrace();	
+		}finally {
+			DbcpBean.close(con, pstmt, rs);
+		}					
+		
+		return reservedList;
+	}//allReservedList
+
 	
 
 
