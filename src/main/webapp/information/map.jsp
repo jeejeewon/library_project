@@ -10,7 +10,6 @@
 		justify-content: center;
 		align-items: center;
 		height: 100%;
-		padding: 3%;
 	}
 	
 	h2{		
@@ -57,6 +56,14 @@
 		margin-left: 20px;
 		margin-bottom: 50px;
 	}
+	
+	#mapInpo ul{
+		margin-left: 90px;
+	}	
+	
+	.map-inpo-li{
+		margin-left: 20px;
+	}
 		
 	.map-title {
 		display: flex;
@@ -90,7 +97,7 @@
 <title>Insert title here</title>
 <script>
 	const script = document.createElement("script");
-	script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey='앱키'&autoload=false&libraries=clusterer,services";
+	script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=앱키&autoload=false&libraries=clusterer,services";
 	document.head.appendChild(script);
 
 	script.onload = () => {
@@ -118,7 +125,7 @@
 <body>
 	<h2>찾아오시는 길</h2>
 	<div id="mapStyle">
-		<div id="map" style="width: 50%; height: 500px;"><!-- 카카오맵이 들어올 div --></div>
+		<div id="map" style="width: 50%; height: 500px; background-color: gray"><!-- 카카오맵이 들어올 div --></div>
 	</div>
 	<div id="mapContent">
 		<h3>대중교통이용안내</h3>
@@ -129,17 +136,11 @@
 			</h4>
 				<ul>
 					<li>● 1호선 동래역 하차후,버스이용(마을버스 17번)</li>
-						<ul>
-							<li>- 2번출구앞 좌측편 동래지하철역 버스정류장에서 마을버스 17번 이용</li>
-						</ul>
+					<li class="map-inpo-li">- 2번출구앞 좌측편 동래지하철역 버스정류장에서 마을버스 17번 이용</li>
 					<li>● 3호선 종합운동장역 하차후,버스이용(54번,83-1번,마을버스 17번)</li>	
-						<ul>
-							<li>- 9번출구앞에서 약50m직진 후,삼정그린아파트 정류장에서 54번,83-1번,마을버스 17번 이용</li>
-						</ul>	
+					<li class="map-inpo-li">- 9번출구앞에서 약50m직진 후,삼정그린아파트 정류장에서 54번,83-1번,마을버스 17번 이용</li>	
 					<li>● 1,2호선 서면역 하차후,버스이용(133번, 54번, 81번, 83-1번, 103번)</li>	
-						<ul>
-							<li>- 13번출구로 나와서 부전시장입구 정류장에서 133번,54번,81번,83-1번,103번 이용</li>
-						</ul>			
+					<li class="map-inpo-li">- 13번출구로 나와서 부전시장입구 정류장에서 133번,54번,81번,83-1번,103번 이용</li>			
 				</ul>
 			<h4 class="map-title">
 				<span><img src="../information/img/ico_bus.png" alt="버스 아이콘"></span>
