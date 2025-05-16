@@ -14,7 +14,7 @@ request.setCharacterEncoding("UTF-8");
 <html>
 <head>
 
-<title>공지사항 글수정 - noticeModifyForm.jsp</title>
+<title>문의사항 글수정 - questionModifyForm.jsp</title>
 
 
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -47,15 +47,15 @@ request.setCharacterEncoding("UTF-8");
 	<center>
 
 
-		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/noticeModify.do" enctype="multipart/form-data">
+		<form name="questionWriteForm" method="post" action="${contextPath}/bbs/questionModify.do" enctype="multipart/form-data">
 		
 			<!-- 수정 대상 게시글 ID 전달 -->
 			<input type="hidden" name="boardId" value="${board.boardId}">
 		
 			<div class="form-title">
-				<h2>공지사항 글 수정</h2>
+				<h2>문의사항 글 수정</h2>
 				<div>
-					<button type="button" onclick="location.href='${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}'">취소</button>
+					<button type="button" onclick="location.href='${contextPath}/bbs/questionInfo.do?boardId=${board.boardId}'">취소</button>
 					<input type="submit" value="수정">
 				</div>
 			</div>
@@ -113,6 +113,14 @@ request.setCharacterEncoding("UTF-8");
 					</td>
 				</tr>
 			</table>
+			
+			<div class="checkbox-group">
+				<label for="secret" class="checkbox-label">
+					<input type="checkbox" name="secret" id="secret" value="on" <c:if test="${board.secret}">checked</c:if> />
+					비밀글로 설정
+				</label>
+			</div>
+			
 		</form>
 
 	</center>

@@ -234,7 +234,10 @@ request.setCharacterEncoding("UTF-8");
 
 		<div class="title-area">
 			<div class="left">
-				<p>${board.title}</p><!-- 제목 -->
+					<c:if test="${board.secret}">
+						<span style="color: gray;">🔒 비밀글</span>
+					</c:if>
+				<span>${board.title}</span><!-- 제목 -->
 				<p>작성자: ${board.userId}</p>
 			</div>
 			<div class="right">
@@ -499,6 +502,9 @@ request.setCharacterEncoding("UTF-8");
 		    $("#editReplyBtn").hide();              // 수정 버튼 숨기기
 		    $("#replyFormArea").html(editForm);     // 수정 폼 삽입
 		});
+		
+		
+		
 		// --- 수정 폼 취소 버튼 ---
 		$(document).on("click", "#cancelEditReplyBtn", function() {
 			$("#replyFormArea").empty();     // 수정 폼 삭제

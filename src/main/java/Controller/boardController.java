@@ -178,8 +178,6 @@ public class boardController extends HttpServlet {
 		// 요청주소 "/bbs/noticeList.do"
 		if (action.equals("/noticeList.do")) {
 			
-			
-			
 			// 검색어와 검색타입 받기
 			String searchType = request.getParameter("searchType");
 			String searchKeyword = request.getParameter("searchKeyword");
@@ -187,10 +185,6 @@ public class boardController extends HttpServlet {
 			// 기본값 설정 (검색어가 없으면 빈 문자열, 검색 타입이 없으면 제목 검색)
 			if (searchType == null) searchType = "title";
 			if (searchKeyword == null) searchKeyword = "";
-
-			
-		
-			
 			
 			// URL 쿼리 파라미터(?section=...&pageNum=...)로 전달된 섹션(페이지 그룹) 번호와 페이지 번호를 읽어옵니다.
 			String sectionParam = request.getParameter("section");
@@ -430,7 +424,7 @@ public class boardController extends HttpServlet {
 
 			// boardService를 통해 글 수정 처리 요청
 			// boardService에게 movVO 객체를 전달하여 DB에서 해당 글의 내용을 업데이트 하도록 요청합니다.
-			boardService.modifyNotice(modVO);
+			boardService.modifyBoard(modVO);
 			System.out.println("공지사항 글 수정 완료"); // 수정 완료 로그
 
 			// 첨부파일 처리
@@ -484,79 +478,6 @@ public class boardController extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
 
 		} // end of noticeModify.do
-
-//		// 공지사항 글 삭제 요청 처리 ("/removeBoardNotice.do")
-//		if (action.equals("/removeBoardNotice.do")) {
-//			System.out.println("글 삭제 처리 시작 ...");
-//
-//			// 삭제할 글번호 파라미터 수신
-//			String BoardIdParam = request.getParameter("boardId");
-//			System.out.println("삭제 요청된 게시글의 글번호(BoaedId) 파라미터 : " + BoardIdParam);
-//
-//			// 글번호 유효성 검사
-//			if (BoardIdParam == null || BoardIdParam.isEmpty()) {
-//				System.err.println("오류: 글 삭제 요청에 글번호(BoardId) 누락");
-//				throw new ServletException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
-//			}
-//			int BoardID = Integer.parseInt(BoardIdParam);// 정수로 변환
-//
-//			// 글 삭제 서비스 호출 (삭제된 글ID를 반환받음)
-//			int deletedBoardId = boardService.removeBoard(BoardID);
-//			System.out.println("Service로 부터 반환된 삭제된 글 번호 : " + deletedBoardId);
-//
-//			// 삭제된 글 번호에 해당하는 첨부파일 폴더 삭제
-//			int boardId = deletedBoardId; // 삭제된 글 번호
-//
-//			// 첨부파일 폴더 경로 설정
-//			File fileDir = new File(BOARD_FILE_REPO + File.separator + boardId);
-//
-//			// 폴더가 존재하면 삭제
-//			if (fileDir.exists()) {
-//				try {
-//					// 폴더 내 모든 파일 목록 가져오기
-//					File[] files = fileDir.listFiles();
-//					if (files != null) {
-//						for (File file : files) {
-//							if (file.exists()) {
-//								boolean deleted = file.delete();
-//								if (deleted) {
-//									System.out.println("첨부파일 삭제 완료: " + file.getPath());
-//								} else {
-//									System.err.println("첨부파일 삭제 실패: " + file.getPath());
-//								}
-//							}
-//						}
-//					}
-//					// 폴더 삭제 (폴더가 비었을 경우 삭제)
-//					boolean dirDeleted = fileDir.delete();
-//					if (dirDeleted) {
-//						System.out.println("첨부파일 폴더 삭제 완료: " + fileDir.getPath());
-//					} else {
-//						System.err.println("첨부파일 폴더 삭제 실패: " + fileDir.getPath());
-//					}
-//				} catch (Exception e) {
-//					System.err.println("오류: 첨부파일 폴더 삭제 실패 (" + fileDir.getPath() + "): " + e.getMessage());
-//				}
-//			}
-//			
-//			
-//			//삭제 성공 후 글 목록 페이지로 이동하기
-//			response.setContentType("application/json; charset=UTF-8"); // 응답 형식을 JSON으로 명시
-//			PrintWriter pw = response.getWriter(); // 응답 출력 스트림 얻기
-//			JSONObject jsonResponse = new JSONObject(); // JSON 객체 생성
-//			jsonResponse.put("result", "success"); // 결과 상태 설정
-//			jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다."); // 성공 메시지
-//			// JavaScript에서 이동할 URL 정보를 포함하여 전달 (선택 사항)
-//			jsonResponse.put("redirect", request.getContextPath() + "/bbs/noticeList.do");
-//			pw.print(jsonResponse.toString()); // JSON 문자열 전송
-//			pw.flush(); // 버퍼 비우기
-//			System.out.println("글 삭제 성공 JSON 응답 전송: " + jsonResponse.toString()); // JSON 응답 로그
-//			return; // JSON 응답 후 서블릿 실행 종료
-//			
-//			
-//
-//		} /// removeBoard.do end
-
 
 		
 
@@ -643,7 +564,7 @@ public class boardController extends HttpServlet {
 			String bannerImage = boardMap.get("bannerImage");
 			
 			// 비밀글 처리 여부
-			// secret 파라미터 값 받아오기   <---jsp에서 체크한 부분!
+			// secrt 파라미터 값 받아오기   <---jsp에서 체크한 부분!
 			String secret = boardMap.get("secret");
 			// secret 값이 null이면 false로 처리, "on"이면 true로 처리
 			boolean isSecret = (secret != null && secret.equals("on"));
@@ -816,19 +737,11 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		// 문의사항 글 수정하기
+		// 문의게시판 글 수정하기
 		// 상세페이지에서 수정 버튼을 눌렀을때 수정페이지 요청
-		// 요청주소 "/bbs/noticeModifyForm.do"
-		if (action.equals("/noticeModifyForm.do")) {
-			System.out.println("공지사항 글 수정 페이지 요청 시작...");
+		// 요청주소 "/bbs/questionModifyForm.do"
+		if (action.equals("/questionModifyForm.do")) {
+			System.out.println("문의사항 글 수정 페이지 요청 시작...");
 
 			// 글번호 파라미터 수신
 			String boardIdParam = request.getParameter("boardId");
@@ -862,16 +775,16 @@ public class boardController extends HttpServlet {
 
 			// 이동할 JSP페이지 경로 설정하기
 			// 메인화면 중앙에 보여줄 noticeModifyForm.jsp를 request에 "center"라는 이름으로 저장하기
-			request.setAttribute("center", "board/noticeModifyForm.jsp");
+			request.setAttribute("center", "board/questionModifyForm.jsp");
 
 			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
 			nextPage = "/main.jsp";
 
-		} // end of noticeModifyForm.do
+		} // end of questionModifyForm.do
 
 		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
-		// 요청주소 "/bbs/noticeModify.do"
-		if (action.equals("/noticeModify.do")) {
+		// 요청주소 "/bbs/questionModify.do"
+		if (action.equals("/questionModify.do")) {
 			System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
 
 			// 파일 업로드를 포함한 수정된 폼 데이터 처리
@@ -879,6 +792,8 @@ public class boardController extends HttpServlet {
 			// 반환된 Map에는 수정된 글 제목, 내용, 첨부파일 등등의 정보가 담겨있습니다.
 			Map<String, String> boardMap = uploadFile(request, response);
 			System.out.println("uploadFile()메소드 Map (수정): " + boardMap);
+			
+
 
 			// Map에서 수정 정보 추출
 			String boardIdParam = boardMap.get("boardId"); // 수정할 글 번호
@@ -896,8 +811,15 @@ public class boardController extends HttpServlet {
 			String bannerImage = boardMap.get("bannerImage"); // 수정된 배너 이미지 추출
 			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존
 																			// 파일 삭제용)
+			// 비밀글 처리 여부
+			// secret 파라미터 값 받아오기   <---jsp에서 체크한 부분!
+			String secret = boardMap.get("secret");
+			// secret 값이 null이면 false로 처리, "on"이면 true로 처리
+			boolean isSecret = (secret != null && secret.equals("on"));
+			
+			
 			System.out.println("추출된 수정 정보 : " + "boardId=" + boardId + ", title=" + title + ", content=" + content
-					+ ", file=" + file + ", bannerImage=" + bannerImage);
+					+ ", file=" + file + ", bannerImage=" + bannerImage + ", secret" + isSecret);
 
 			// boardVO 객체에 수정된 정보 저장
 			// 데이터베이스에 업데이트를 하기위해 수정된 정보와 글 번호를 boardVO 객체에 저장합니다.
@@ -908,11 +830,12 @@ public class boardController extends HttpServlet {
 			modVO.setContent(content); // 수정된 내용
 			modVO.setFile(file); // 수정된 첨부파일
 			modVO.setBannerImg(bannerImage); // 수정된 배너 이미지
+			modVO.setSecret(isSecret);// 비밀글 여부
 			// 그 외 작성자, 작성일 등은 수정하지 않으므로 그대로 둡니다.
 
 			// boardService를 통해 글 수정 처리 요청
 			// boardService에게 movVO 객체를 전달하여 DB에서 해당 글의 내용을 업데이트 하도록 요청합니다.
-			boardService.modifyNotice(modVO);
+			boardService.modifyBoard(modVO);
 			System.out.println("공지사항 글 수정 완료"); // 수정 완료 로그
 
 			// 첨부파일 처리
@@ -963,9 +886,9 @@ public class boardController extends HttpServlet {
 			}
 
 			// 수정 후 상세페이지로 리디렉션
-			response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
+			response.sendRedirect(request.getContextPath() + "/bbs/questionInfo.do?boardId=" + boardId);
 
-		} // end of noticeModify.do
+		} // end of questionModify.do
 
 		
 		
@@ -983,6 +906,132 @@ public class boardController extends HttpServlet {
 		
 		
 		
+		/*-------------------------------------내서평게시판---------------------------------------*/
+		// 내서평 게시판 조회하기
+		// 요청주소 "/bbs/myReviewList.do"
+		if (action.equals("/myReviewList.do")) {
+			
+			
+			
+			// 검색어와 검색타입 받기
+			String searchType = request.getParameter("searchType");
+			String searchKeyword = request.getParameter("searchKeyword");
+			
+			// 기본값 설정 (검색어가 없으면 빈 문자열, 검색 타입이 없으면 제목 검색)
+			if (searchType == null) searchType = "title";
+			if (searchKeyword == null) searchKeyword = "";
+
+			
+			// URL 쿼리 파라미터(?section=...&pageNum=...)로 전달된 섹션(페이지 그룹) 번호와 페이지 번호를 읽어옵니다.
+			String sectionParam = request.getParameter("section");
+			String pageNumParam = request.getParameter("pageNum");
+			
+			//파라미터 값이 없거나 비어있는경우에 기본값을 1로 설정
+			int section = Integer.parseInt(sectionParam == null || sectionParam.isEmpty() ? "1" : sectionParam);
+			int pageNum = Integer.parseInt(pageNumParam == null || pageNumParam.isEmpty() ? "1" : pageNumParam);
+			
+			
+			// 카테고리 설정 (현재 서평이므로 2번으로 설정함)
+			int category = 2; // 카테고리 2번 (내서평)
+			
+			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			
+			//페이징된 게시글 목록과 페이징정보 추출하기
+			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
+			int totalPage = (int) resultMap.get("totalPage"); // 총 페이지 수
+			int totalSection = (int) resultMap.get("totalSection"); //총 섹션 수
+			int totalBoardCount = (int) resultMap.get("totalBoardCount"); //총 게시글 수
+			
+			//정보들을 request에 저장하기
+		    request.setAttribute("searchKeyword", searchKeyword);
+		    request.setAttribute("searchType", searchType);
+		    request.setAttribute("boardList", boardList);
+		    request.setAttribute("totalPage", totalPage);
+		    request.setAttribute("totalSection", totalSection);
+		    request.setAttribute("totalBoardCount", totalBoardCount);
+		    request.setAttribute("section", section);
+		    request.setAttribute("pageNum", pageNum);
+
+			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/myReviewList.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		}
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*-------------------------------------행사안내 게시판---------------------------------------*/
+		// 행사안내 리스트 조회하기
+		// 행사안내 리스트는 공지사항에서 배너이미지를 등록한 게시글이 노출됩니다.
+		// 요청주소 "/bbs/eventList.do"
+		if (action.equals("/eventList.do")) {
+			
+			
+			// 검색어와 검색타입 받기
+			String searchType = request.getParameter("searchType");
+			String searchKeyword = request.getParameter("searchKeyword");
+			
+			// 기본값 설정 (검색어가 없으면 빈 문자열, 검색 타입이 없으면 제목 검색)
+			if (searchType == null) searchType = "title";
+			if (searchKeyword == null) searchKeyword = "";
+
+			
+			// URL 쿼리 파라미터(?section=...&pageNum=...)로 전달된 섹션(페이지 그룹) 번호와 페이지 번호를 읽어옵니다.
+			String sectionParam = request.getParameter("section");
+			String pageNumParam = request.getParameter("pageNum");
+			
+			//파라미터 값이 없거나 비어있는경우에 기본값을 1로 설정
+			int section = Integer.parseInt(sectionParam == null || sectionParam.isEmpty() ? "1" : sectionParam);
+			int pageNum = Integer.parseInt(pageNumParam == null || pageNumParam.isEmpty() ? "1" : pageNumParam);
+			
+		    // 서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
+		    Map<String, Object> resultMap = boardService.getEventBoardList(section, pageNum, searchKeyword, searchType);
+
+			//페이징된 게시글 목록과 페이징정보 추출하기
+			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
+			int totalPage = (int) resultMap.get("totalPage"); // 총 페이지 수
+			int totalSection = (int) resultMap.get("totalSection"); //총 섹션 수
+			int totalBoardCount = (int) resultMap.get("totalBoardCount"); //총 게시글 수
+			
+            // 정보들을 request에 저장하기
+            request.setAttribute("searchKeyword", searchKeyword);
+            request.setAttribute("searchType", searchType);
+            request.setAttribute("boardList", boardList);
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("totalSection", totalSection);
+            request.setAttribute("totalBoardCount", totalBoardCount);
+            request.setAttribute("section", section);
+            request.setAttribute("pageNum", pageNum);
+
+			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/eventList.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		}
+		
+		
+		
+		
+		
+
+		
+		
+		
+		
+		
+	
 		
 		
 		
@@ -1012,7 +1061,15 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		// 게시판글 삭제 (모든게시판에 적용) 
+		
+		
+		
+		
+		
+		
+		
+		
+		// 게시판글 삭제 (모든게시판 공통 적용) 
 		// 게시판 action에 따른 redirect URL 매핑
 		Map<String, String> redirectMap = new HashMap<>();
 		redirectMap.put("/removeQuestion.do", "/bbs/questionList.do");

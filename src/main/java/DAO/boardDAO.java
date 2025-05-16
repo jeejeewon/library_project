@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -283,11 +285,12 @@ public class boardDAO {
         String content = modVO.getContent(); // 수정된 내용
         String file = modVO.getFile(); // 수정된 첨부파일
         String bannerImg = modVO.getBannerImg(); // 수정된 배너 이미지
+        boolean secret = modVO.getSecret(); // 수정된 비밀글 여부
 
         try {
             con = DbcpBean.getConnection();
 
-            String sql = "UPDATE board SET title = ?, content = ?";
+            String sql = "UPDATE board SET title = ?, content = ?, secret = ?";
 
             if (file != null && !file.isEmpty()) {
                 sql += ", file = ?";
@@ -300,21 +303,22 @@ public class boardDAO {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, title);
             pstmt.setString(2, content);
+            pstmt.setBoolean(3, secret);
 
             if (file != null && !file.isEmpty()) {
-                pstmt.setString(3, file);
+                pstmt.setString(4, file);
+                if (bannerImg != null && !bannerImg.isEmpty()) {
+                    pstmt.setString(5, bannerImg);
+                    pstmt.setInt(6, boardId);
+                } else {
+                    pstmt.setInt(5, boardId);
+                }
+            } else {
                 if (bannerImg != null && !bannerImg.isEmpty()) {
                     pstmt.setString(4, bannerImg);
                     pstmt.setInt(5, boardId);
                 } else {
                     pstmt.setInt(4, boardId);
-                }
-            } else {
-                if (bannerImg != null && !bannerImg.isEmpty()) {
-                    pstmt.setString(3, bannerImg);
-                    pstmt.setInt(4, boardId);
-                } else {
-                    pstmt.setInt(3, boardId);
                 }
             }
 
@@ -402,4 +406,95 @@ public class boardDAO {
 		    }
 		    return false;
 	}
+
+	// 배너가 있는 게시글 목록을 가져오는 메소드
+	public List<boardVO> getBannerList(int startRow, int endRow, String searchKeyword, String searchType) {
+	    List<boardVO> boardList = new ArrayList<>();
+	    String sql = "SELECT * FROM board WHERE category = 0 AND banner_img IS NOT NULL ORDER BY board_id DESC LIMIT ?, ?";  // 카테고리 0, 배너가 있는 글만
+
+	    // 검색 조건에 따른 추가 쿼리 처리
+	    if (searchKeyword != null && !searchKeyword.isEmpty()) {
+	        if (searchType.equals("title")) {
+	            sql += " AND title LIKE ?";
+	        } else if (searchType.equals("content")) {
+	            sql += " AND content LIKE ?";
+	        } else if (searchType.equals("userId")) {
+	            sql += " AND user_id LIKE ?";
+	        }
+	    }
+
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, startRow);  // 페이징 시작 row
+	        pstmt.setInt(2, endRow);    // 페이징 끝 row
+
+	        // 검색 조건이 있을 경우, 파라미터 설정
+	        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+	            pstmt.setString(3, "%" + searchKeyword + "%");  // LIKE 쿼리 파라미터
+	        }
+
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            boardVO board = new boardVO();
+	            board.setBoardId(rs.getInt("board_id"));
+	            board.setTitle(rs.getString("title"));
+	            board.setContent(rs.getString("content"));
+	            board.setUserId(rs.getString("user_id"));
+	            board.setBannerImg(rs.getString("banner_img"));
+	            // 추가적인 VO 속성 설정 필요 시 추가
+
+	            boardList.add(board);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(con, pstmt, rs);
+	    }
+
+	    return boardList;
+	}
+
+	// 배너가 있는 게시글의 전체 개수를 구하는 메소드
+	public int getTotalBannerCount(String searchKeyword, String searchType) {
+	    int totalCount = 0;
+	    String sql = "SELECT COUNT(*) FROM board WHERE category = 0 AND banner_img IS NOT NULL"; // 카테고리 0, 배너가 있는 글만
+
+	    // 검색 조건에 따른 추가 쿼리 처리
+	    if (searchKeyword != null && !searchKeyword.isEmpty()) {
+	        if (searchType.equals("title")) {
+	            sql += " AND title LIKE ?";
+	        } else if (searchType.equals("content")) {
+	            sql += " AND content LIKE ?";
+	        } else if (searchType.equals("userId")) {
+	            sql += " AND user_id LIKE ?";
+	        }
+	    }
+
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+
+	        // 검색 조건이 있을 경우, 파라미터 설정
+	        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+	            pstmt.setString(1, "%" + searchKeyword + "%");  // LIKE 쿼리 파라미터
+	        }
+
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            totalCount = rs.getInt(1);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(con, pstmt, rs);
+	    }
+
+	    return totalCount;
+	}
+
 }
