@@ -269,7 +269,12 @@
 	//사용자가 당일 날짜를 선택할 경우 현재 시간보다 이후의 시간만 보여주는 함수
 	function resetSelect() {
 	  $('#reserveDate').off('change').on('change', function () {
-	    // 사용자가 선택한 날짜
+	    
+		//<select>가 숨겨져 있을 경우 다시 활성화
+		document.getElementById("reserveTime").style.display = "block";
+		document.getElementById("noReservationMsg").style.display = "none";
+		    
+		// 사용자가 선택한 날짜
 	    const selectedDate = $('#reserveDate').val();
 
 	    // 현재 날짜와 시간 구하기
@@ -406,7 +411,12 @@
             	EndTime: $("#EndTime option:selected").val(),
             	studyRoom: selectedRoom
             },
-            success: function(data) {     
+            success: function(data) {   
+            	
+            	//예약 가능한 시간이 없을 경우 (당일 19시 이후 예약일 경우)
+            	if(data === "NO_AVAILABLE_TIME"){
+            		return;
+            	}
             	
                 $('.seat-btn').removeClass('reserved').prop('disabled', false);
                 
@@ -417,7 +427,7 @@
             	
             }, //success
             error: function(xhr, status, error) {
-            	alert('서버 오류: ' + error);
+            	alert('서버 오류' + error);
             }
         });		
 	}
@@ -478,7 +488,7 @@
 	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
 	            },
 	            error: function(xhr, status, error) {
-	                alert("예약 실패: " + error);
+	                alert("예약에 실패하였습니다. " + error);
 	            }     	
 	        });		
 		})
@@ -533,7 +543,7 @@
 	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
 	            },
 	            error: function(xhr, status, error) {
-	                alert("예약 수정 실패: " + error);
+	                alert("예약 수정에 실패하였습니다. " + error);
 	            }     	
 	        });		 
 		})

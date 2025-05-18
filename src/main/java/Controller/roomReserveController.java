@@ -5,7 +5,9 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -261,8 +263,19 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("studyRoomList호출됨===============");
 			
 			String date = request.getParameter("Date");
-			int start = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); //문자열로 받아온 시작시간을 int형으로 변환
-			int end = Integer.parseInt(request.getParameter("EndTime").split(":")[0]); //문자열로 받아온 종료시간을 int형으로 변환
+			String startTime = request.getParameter("StartTime");
+			String endTime = request.getParameter("EndTime");
+			
+			//예약 시간을 불러오지 못했을 경우 (당일 19시 이후 예약할 경우)
+			if (startTime == null || endTime == null) {
+			    System.out.println("예약 시간을 불러오지 못했습니다.");
+			    response.setContentType("application/json; charset=utf-8");
+			    response.getWriter().write("\"NO_AVAILABLE_TIME\"");
+			    return;
+			}
+			
+			int start = Integer.parseInt(startTime.split(":")[0]); //문자열로 받아온 시작시간을 int형으로 변환
+			int end = Integer.parseInt(endTime.split(":")[0]); //문자열로 받아온 종료시간을 int형으로 변환
 			String studyRoom = request.getParameter("studyRoom");
 			
 			System.out.println("선택날짜 : " + date); 
@@ -274,8 +287,8 @@ public class roomReserveController extends HttpServlet{
 		   //실시간 좌석 현황을 리스트를 List로 받아오기
 		   List seatList = roomReserveService.studySeatList(date, start, end, studyRoom);
 		   
-		   System.out.println("예약가능한 스터디룸 리스트 : " + seatList);		   
-		   
+		   System.out.println("예약가능한 스터디룸 리스트 : " + seatList);		   		 
+		   		   
 		   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
 		   ObjectMapper objectMapper = new ObjectMapper(); 
 		   String json = objectMapper.writeValueAsString(seatList);
