@@ -7,8 +7,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>나의 시설 예약 관리</title>
+<title>시설 예약 내역</title>
 	<style>
+	
+	h2{		
+		font-size: 25px;
+		font-weight: bold;
+		margin: 50px;
+		border-bottom: 1px solid #dedede;
+		width: 50%;
+		margin: 50px auto;
+		padding-bottom: 10px;		
+		color: #2d3081;
+		text-align: left;
+	}
 		#reserveTable {
             width: 100%;
             border-collapse: collapse;
@@ -41,6 +53,7 @@
 </head>
 <body>
 	<div align="center">
+		<h2>시설 예약 내역</h2>
 		<table id="reserveTable">
 		    <tr>
 		    	<td colspan="5" align="right">* 예약내역은 최근 10건까지만 보여집니다.</td>

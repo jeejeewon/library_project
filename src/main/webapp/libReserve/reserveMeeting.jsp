@@ -7,7 +7,18 @@
 <meta charset="UTF-8">
 <title>미팅룸 예약하기</title>
 	<style>
-		
+	
+		h2{		
+			font-size: 25px;
+			font-weight: bold;
+			margin: 50px;
+			border-bottom: 1px solid #dedede;
+			width: 50%;
+			margin: 50px auto;
+			padding-bottom: 10px;		
+			color: #2d3081;
+			text-align: left;
+		}		
         .roombtn {
 			border: 0;
 			padding: 15px 25px;
@@ -52,11 +63,8 @@
 
 
 <body>
-	<div align="center" style="margin-top: 100px; color: red;">
-		reserveMeeting.jsp <br>
-		[ 도서관안내 ]-[ 시설예약 ]-[ 미팅룸 예약 ] 뷰
-	</div>	
 	<div align="center" style="margin-top: 50px;">
+		<h2>미팅룸 예약</h2>
 		<form method="post" align="left" style="margin-left: 30%;">
 			<c:if test="${not empty param.reserveNum}">				
 				<p>▪ 예약내역</p>
