@@ -88,13 +88,9 @@
 	}
 	
 
-	
-
-	
-
 </style>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>오시는 길</title>
 <script>
 	const script = document.createElement("script");
 	script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=앱키&autoload=false&libraries=clusterer,services";

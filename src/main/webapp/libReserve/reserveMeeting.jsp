@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>미팅룸 예약하기</title>
 	<style>
 		
         .roombtn {

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>나의 시설 예약 관리</title>
 	<style>
 		#reserveTable {
             width: 100%;

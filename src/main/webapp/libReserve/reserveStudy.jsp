@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>스터디룸 예약하기</title>
 	<style>	
 	    table {
 	      border-collapse: collapse;

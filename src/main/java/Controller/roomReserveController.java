@@ -134,7 +134,23 @@ public class roomReserveController extends HttpServlet{
 			
 			
 		//[ 관리자메뉴 ]-[ 시설예약관리 ] 뷰	
-		}else if(action.equals("/reserveAdmin")) {			
+		}else if(action.equals("/reserveAdmin")) {		
+			
+			//로그인한 사용자 정보 가져오기
+			HttpSession session = request.getSession();
+			String userId = (String)session.getAttribute("id");
+			
+			System.out.println("id : " + userId);
+			
+			//관리자가 아닐 경우 
+			if(userId == null || !userId.equals("admin")) {
+				response.setContentType("text/html;charset=utf-8");
+				out.println("<script>alert('접근 권한이 없습니다. 관리자에게 문의하세요.');  location.href='" + contextPath + "/member/login';</script>");
+				out.flush();
+				out.close();
+				return;
+			}
+			
 			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");			
 			nextPage = "/main.jsp";	
 		
@@ -452,6 +468,8 @@ public class roomReserveController extends HttpServlet{
 			   
 			   //받은 리스트를 JSON형식으로 변환하기 (jackson 라이브러리 사용 - ObjectMapper)
 			   ObjectMapper objectMapper = new ObjectMapper(); 
+			   //날짜 포맷 지정
+			   objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")); 
 			   String json = objectMapper.writeValueAsString(reservedList);
 			    
 			   System.out.println("JSON형식으로 변환된 데이터 : " + json);

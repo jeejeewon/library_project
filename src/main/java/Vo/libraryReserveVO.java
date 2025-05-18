@@ -18,7 +18,7 @@ public class libraryReserveVO {
 	private Timestamp reserveTime;	//예약시간
 	private boolean isFuture;	    //예약날짜가 미래인지 여부 (true:미래, false:현재)
 	private boolean isNow;          //예약된 시간에 현재 시간이 겹친다면? (현재 이용중이라면?)
-	
+	private String tel;				//예약자 연락처
 	
 	//기본생성자
 	public libraryReserveVO() {}
@@ -169,6 +169,20 @@ public class libraryReserveVO {
 	public void setFuture(boolean isFuture) {
 		this.isFuture = isFuture;
 	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public void setNow(boolean isNow) {
+		this.isNow = isNow;
+	}
+	
+	
 	
 	
 	
