@@ -22,7 +22,7 @@ String contextPath = request.getContextPath();
 			<ul>
 				<li>희망 도서</li>
 				<li>최근 조회한 도서</li>
-				<li><a href="<%=contextPath%>/books/rentalConfirm.do">내 대여 내역</a></li>
+				<li><a href="<%=contextPath%>/books/myRentalList.do">내 대여 내역</a></li>
 			</ul>
 		</div>
 		<div class="menu-section">

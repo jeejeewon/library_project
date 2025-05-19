@@ -1,21 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="Vo.BookVo, java.util.*" %>
+<%@ page import="Vo.RentalVo, Vo.BookVo, java.util.*, java.text.SimpleDateFormat" %>
 <%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
-    Vector<BookVo> bookList = (Vector<BookVo>) request.getAttribute("v");
+    Vector<RentalVo> rentalList = (Vector<RentalVo>) request.getAttribute("rentalList");
     int currentPage = (int) request.getAttribute("currentPage");
     int totalCount = (int) request.getAttribute("totalCount");
     int pageSize = (int) request.getAttribute("pageSize");
     int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-    String message = (String) request.getAttribute("message");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>도서 수정/삭제</title>
+    <title>나의 대여 목록</title>
     <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
     <style>
         .content-box {
@@ -32,20 +32,13 @@
             color: #003c83;
         }
 
-        .message {
-            color: green;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        
         .toolbar {
             text-align: right;
             margin-bottom: 20px;
         }
-        
+
         .toolbar a {
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-size: 14px;
             border-radius: 4px;
             background-color: #003c83;
@@ -59,8 +52,8 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
         }
 
         .card {
@@ -69,18 +62,11 @@
             border-radius: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
         }
 
         .card img {
-            width: 100%;
-            max-width: 140px;
-            height: auto;
-            aspect-ratio: 3 / 4;
+            width: 100px;
+            height: 140px;
             object-fit: cover;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -91,27 +77,27 @@
             font-size: 16px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
-        .card .author {
-            font-size: 14px;
+        .card .meta {
+            font-size: 13px;
             color: #666;
+            margin-bottom: 4px;
         }
 
-        .btn {
+        .status {
+            font-size: 13px;
+            font-weight: bold;
             margin-top: 10px;
-            padding: 8px 14px;
-            font-size: 14px;
-            border-radius: 4px;
-            background-color: #003c83;
-            color: white;
-            text-decoration: none;
-            display: inline-block;
         }
 
-        .btn:hover {
-            background-color: #002c66;
+        .status.returned {
+            color: green;
+        }
+
+        .status.pending {
+            color: red;
         }
 
         .pagination {
@@ -151,57 +137,54 @@
 </head>
 <body>
 <div class="content-box">
-    <div class="title">도서 수정 및 삭제</div>
-    
-    <div class="toolbar">
-        <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a>
-    </div>    
-        
-	<%
-	    Boolean fromUpdate = (Boolean) request.getAttribute("fromUpdate");
-	    if (fromUpdate != null && fromUpdate && message != null) {
-	%>
-	<script>
-	    alert("<%= message.replaceAll("\"", "\\\\\"") %>");
-	</script>
-	<%
-	    }
-	%>     
+    <div class="title">나의 대여 목록</div>
 
-    <% if (bookList != null && !bookList.isEmpty()) { %>
+    <div class="toolbar">
+        <a href="<%= contextPath %>/books/bookList.do">전체 도서 목록으로</a>
+    </div>
+
+    <% if (rentalList != null && !rentalList.isEmpty()) { %>
         <div class="grid-container">
-            <% for (BookVo book : bookList) { %>
-                <div class="card">
-                    <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>">
-                        <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
-                             onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="도서 썸네일">
-                    </a>
-                    <div class="title"><%= book.getTitle() %></div>
-                    <div class="author"><%= book.getAuthor() %></div>
-                    <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn">수정/삭제</a>
-                </div>
-            <% } %>
+            <% for (RentalVo rental : rentalList) {
+                BookVo book = rental.getBook();
+                if (book != null) {
+            %>
+            <div class="card">
+                <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
+                     onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
+                <div class="title"><%= book.getTitle() %></div>
+                <div class="meta">대여일: <%= sdf.format(rental.getStartDate()) %></div>
+                <div class="meta">반납 예정일: <%= sdf.format(rental.getReturnDue()) %></div>
+                <% if (rental.getReturnState() == 1) { %>
+                    <div class="status returned">✅ 반납 완료</div>
+                <% } else { %>
+                    <div class="status pending">📕 미반납</div>
+                <% } %>
+            </div>
+            <% 
+                }
+              } %>
         </div>
 
         <div class="pagination">
             <% if (currentPage > 1) { %>
-                <a href="<%= contextPath %>/books/updateBook.do?page=<%= currentPage - 1 %>">◀</a>
+                <a href="<%= contextPath %>/books/myRentalList.do?page=<%= currentPage - 1 %>">◀</a>
             <% } %>
 
             <% for (int i = 1; i <= totalPage; i++) { %>
                 <% if (i == currentPage) { %>
                     <a class="active"><%= i %></a>
                 <% } else { %>
-                    <a href="<%= contextPath %>/books/updateBook.do?page=<%= i %>"><%= i %></a>
+                    <a href="<%= contextPath %>/books/myRentalList.do?page=<%= i %>"><%= i %></a>
                 <% } %>
             <% } %>
 
             <% if (currentPage < totalPage) { %>
-                <a href="<%= contextPath %>/books/updateBook.do?page=<%= currentPage + 1 %>">▶</a>
+                <a href="<%= contextPath %>/books/myRentalList.do?page=<%= currentPage + 1 %>">▶</a>
             <% } %>
         </div>
     <% } else { %>
-        <div class="empty-message">등록된 도서가 없습니다.</div>
+        <div class="empty-message">현재 대여 중인 도서가 없습니다.</div>
     <% } %>
 </div>
 </body>

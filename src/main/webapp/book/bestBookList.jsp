@@ -1,121 +1,204 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.BookVo, java.util.*" %>
-
 <%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<BookVo> bookList = (Vector<BookVo>) request.getAttribute("v");
+    int currentPage = (int) request.getAttribute("currentPage");
+    int totalCount = (int) request.getAttribute("totalCount");
+    int pageSize = (int) request.getAttribute("pageSize");
+    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>인기도서</title>
-<link rel="stylesheet" href="<%= contextPath %>/css/common.css">
-<style>
-	.book-section {
-	    padding: 40px 20px;
-	    max-width: 1200px;
-	    margin: 0 auto;
-	}
+    <meta charset="UTF-8">
+    <title>인기 도서</title>
+    <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
+    <style>
+        .content-box {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-    .book-title {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 50px;
-        text-align: center;
-    }
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
-	.book-container {
-	    display: grid;
-	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	    gap: 30px;
-	}
+        .btn {
+            padding: 8px 14px;
+            font-size: 14px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            border: none;
+        }
 
-    .book-card {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;         /* ★ 수직 가운데 정렬 */
-        align-items: center;            /* 수평 가운데 정렬 */
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 16px;
-        background-color: #fafafa;
-        text-align: center;
-        transition: transform 0.2s ease;
-        height: 280px;
-        overflow: hidden;
-    }
+        .btn-green {
+            background-color: #4caf50;
+        }
 
-    .book-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        .btn-green:hover {
+            background-color: #388e3c;
+        }
 
-    .book-card img {
-        width: 100px;
-        height: 140px;
-        object-fit: cover;
-        margin-bottom: 12px;
-        border: 1px solid #ccc;
-    }
+        .btn-blue {
+            background-color: #003c83;
+        }
 
-	.book-card .title {
-	    font-size: 14px;
-	    font-weight: bold;
-	    margin-bottom: 6px;
-	    color: #333;
-	    display: -webkit-box;
-	    -webkit-line-clamp: 2;
-	    -webkit-box-orient: vertical;
-	    overflow: hidden;
-	    text-overflow: ellipsis;
-	    height: 38px;
-	}
+        .btn-blue:hover {
+            background-color: #002c66;
+        }
 
-    .book-card .author {
-        font-size: 12px;
-        color: #666;
-    }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #003c83;
+        }
 
-    .empty-message {
-        text-align: center;
-        padding: 40px;
-        font-size: 16px;
-        color: #999;
-    }
-</style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card img.thumb {
+            width: 100%;
+            max-width: 140px;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .card .title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .card .author {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            margin: 0 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #eee;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #ccc;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination a.active {
+            background-color: #003c83;
+            color: white;
+            border-color: #003c83;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            font-size: 16px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<div class="container book-section">
-    <div class="book-title">인기도서</div>
-
-    <%
-    if (bookList != null && bookList.size() > 0) {
-    %>
-    <div class="book-container">
-        <% for (BookVo book : bookList) { %>
-        <div class="book-card">
-            <a href="<%= contextPath %>/books/bookDetail.do?bookNo=<%= book.getBookNo() %>">
-                <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
-                     onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" />
-            </a>
-            <div class="title"><%= book.getTitle() %></div>
-            <div class="author"><%= book.getAuthor() %></div>
-        </div>
-        <% } %>
+<div class="content-box">
+    <div class="toolbar">
+        <form action="<%= contextPath %>/books/bookSearch.do" method="get">
+            <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색">
+            <button type="submit" class="btn btn-green">검색</button>
+        </form>
+        <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
     </div>
-    <%
-    } else {
-    %>
-    <div class="empty-message">인기도서가 없습니다.</div>
-    <%
-    }
-    %>
-</div>
 
+    <div class="title">인기 도서</div>
+
+    <% if (bookList != null && !bookList.isEmpty()) { %>
+        <div class="grid-container">
+            <% for (BookVo book : bookList) { %>
+                <div class="card">
+                    <a href="<%= contextPath %>/books/bookDetail.do?bookNo=<%= book.getBookNo() %>">
+                        <img class="thumb" src="<%= contextPath %>/<%= book.getThumbnail() %>"
+                             onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="도서 썸네일">
+                    </a>
+                    <div class="title"><%= book.getTitle() %></div>
+                    <div class="author"><%= book.getAuthor() %></div>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="<%= contextPath %>/books/bestBooks.do?page=<%= currentPage - 1 %>">◀</a>
+            <% } %>
+            <% for (int i = 1; i <= totalPage; i++) { %>
+                <% if (i == currentPage) { %>
+                    <a class="active"><%= i %></a>
+                <% } else { %>
+                    <a href="<%= contextPath %>/books/bestBooks.do?page=<%= i %>"><%= i %></a>
+                <% } %>
+            <% } %>
+            <% if (currentPage < totalPage) { %>
+                <a href="<%= contextPath %>/books/bestBooks.do?page=<%= currentPage + 1 %>">▶</a>
+            <% } %>
+        </div>
+
+    <% } else { %>
+        <div class="empty-message">인기 도서가 없습니다.</div>
+    <% } %>
+</div>
 </body>
 </html>

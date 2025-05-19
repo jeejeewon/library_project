@@ -6,22 +6,39 @@ import java.util.Vector;
 import Vo.BookVo;
 import Vo.RentalVo;
 
-public class BookDAO {
+public class BookDAO{
 
-    Connection con;
-    PreparedStatement pstmt;
-    ResultSet rs;
+    private Connection con;
+    private PreparedStatement pstmt;
+    private ResultSet rs;
 
-    // 전체 도서 목록 조회
-    public Vector<BookVo> allBooks() {
-        Vector<BookVo> bookList = new Vector<>();
-
-        String sql = "select book_no, title, author, thumbnail from "
-        		   + "book order by book_no desc";
+    // 전체 도서 수
+    public int bookCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM book";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) count = rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }
+    
+    // 일반 전체 도서 페이징
+    public Vector<BookVo> booksByPage(int offset, int limit) {
+        Vector<BookVo> list = new Vector<>();
+        String sql = "SELECT * FROM book ORDER BY book_no DESC LIMIT ?, ?";
 
         try {
             con = DbcpBean.getConnection();
             pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -30,20 +47,155 @@ public class BookDAO {
                 book.setTitle(rs.getString("title"));
                 book.setAuthor(rs.getString("author"));
                 book.setThumbnail(rs.getString("thumbnail"));
-                bookList.add(book);
+                list.add(book);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DbcpBean.close(con, pstmt, rs);
         }
-        return bookList;    
-        
-    }    
 
-    public int bookCount() {
-        String sql = "select count(*) from book";
+        return list;
+    }    
+    
+    // 도서 상세정보
+    public BookVo getBook(int bookNo) {
+        BookVo book = null;
+        String sql = "SELECT * FROM book WHERE book_no = ?";
+
+        try {
+            con = DbcpBean.getConnection(); 
+            pstmt = con.prepareStatement(sql); 
+            pstmt.setInt(1, bookNo); 
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                book = extractBook(rs);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs); 
+        }
+
+        return book;
+    }
+
+    // 검색 도서 전체 수
+    public int bookCount(String keyword) {
         int count = 0;
+        String sql = "SELECT COUNT(*) FROM book "
+        		   + "WHERE title LIKE ? OR author LIKE ? OR category LIKE ?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            String like = "%" + keyword + "%";
+            pstmt.setString(1, like);
+            pstmt.setString(2, like);
+            pstmt.setString(3, like);
+            rs = pstmt.executeQuery();
+            if (rs.next()) count = rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }
+
+    // 검색 도서 페이징 (제목, 저자, 출판사, 카테고리 등 검색)
+    public Vector<BookVo> booksByPage(String keyword, int offset, int limit) {
+        Vector<BookVo> list = new Vector<>();
+        String sql = "SELECT * FROM book " +
+                     "WHERE title LIKE ? OR author LIKE ? OR category LIKE ? OR publisher LIKE ? " +
+                     "ORDER BY book_no DESC LIMIT ?, ?";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+
+            String likeKeyword = "%" + keyword + "%";
+            pstmt.setString(1, likeKeyword);
+            pstmt.setString(2, likeKeyword);
+            pstmt.setString(3, likeKeyword);
+            pstmt.setString(4, likeKeyword);
+            pstmt.setInt(5, offset);
+            pstmt.setInt(6, limit);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                BookVo book = new BookVo();
+                book.setBookNo(rs.getInt("book_no"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                list.add(book);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
+        return list;
+    }
+
+    // 신착 도서 전체 수
+    public int newBooksCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM book "
+        		   + "WHERE publish_year = YEAR(CURDATE())";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }   
+    
+    // 신착 도서 페이징
+    public Vector<BookVo> newBooksByPage(int offset, int limit) {
+        Vector<BookVo> list = new Vector<>();
+        String sql = "SELECT * FROM book WHERE publish_year = YEAR(CURDATE()) "
+                   + "ORDER BY book_no DESC LIMIT ?, ?";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                BookVo book = new BookVo();
+                book.setBookNo(rs.getInt("book_no"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                list.add(book);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
+        return list;
+    }
+    
+	// 인기 도서 전체 수
+    public int bestBooksCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM book WHERE rent_count > 0"; 
 
         try {
             con = DbcpBean.getConnection();
@@ -60,10 +212,11 @@ public class BookDAO {
         return count;
     }
 
-    public Vector<BookVo> booksByPage(int offset, int limit) {
-        Vector<BookVo> bookList = new Vector<>();
-        String sql = "select book_no, title, author, thumbnail "
-        		   + "from book order by book_no desc limit ?, ?";
+    // 인기 도서 페이징 조회
+    public Vector<BookVo> bestBooksByPage(int offset, int limit) {
+        Vector<BookVo> list = new Vector<>();
+        String sql = "SELECT * FROM book WHERE rent_count > 5 "
+        		   + "ORDER BY rent_count DESC LIMIT ?, ?";
 
         try {
             con = DbcpBean.getConnection();
@@ -78,7 +231,7 @@ public class BookDAO {
                 book.setTitle(rs.getString("title"));
                 book.setAuthor(rs.getString("author"));
                 book.setThumbnail(rs.getString("thumbnail"));
-                bookList.add(book);
+                list.add(book);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,187 +239,277 @@ public class BookDAO {
             DbcpBean.close(con, pstmt, rs);
         }
 
-        return bookList;
+        return list;
     }
-
-    // 도서 상세
-    public BookVo bookDetail(int bookNo) {
-        BookVo book = null;
-
-        String sql = "select * from book where book_no = ?";
-
-        try {
-            con = DbcpBean.getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, bookNo);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                book = new BookVo();
-                book.setBookNo(rs.getInt("book_no"));
-                book.setTitle(rs.getString("title"));
-                book.setAuthor(rs.getString("author"));
-                book.setPublisher(rs.getString("publisher"));
-                book.setPublishYear(rs.getInt("publish_year"));
-                book.setBookInfo(rs.getString("book_info"));
-                book.setIsbn(rs.getString("isbn"));
-                book.setCategory(rs.getString("category"));
-                book.setRentalState(rs.getInt("rental_state"));
-                book.setRentCount(rs.getInt("rent_count"));
-                book.setThumbnail(rs.getString("thumbnail"));
-                book.setRegDate(rs.getTimestamp("reg_date"));
-                book.setModDate(rs.getTimestamp("mod_date"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DbcpBean.close(con, pstmt, rs);
-        }
-
-        return book;
-    }
-        
-    // 검색 결과
-    public Vector<BookVo> searchBooks(String keyword) {
-        Vector<BookVo> bookList = new Vector<>();
-
-        String sql = "select book_no, title, author, thumbnail " 
-                   + "from book "
-                   + "where title like ? or author like ? or "
-                   + "publisher like ? or category like ?";
-
-        try {
-            con = DbcpBean.getConnection();
-            pstmt = con.prepareStatement(sql);
-            String kw = "%" + keyword + "%";
-            pstmt.setString(1, kw);
-            pstmt.setString(2, kw);
-            pstmt.setString(3, kw);
-            pstmt.setString(4, kw);
-
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                BookVo book = new BookVo();
-                book.setBookNo(rs.getInt("book_no"));
-                book.setTitle(rs.getString("title"));
-                book.setAuthor(rs.getString("author"));
-                book.setThumbnail(rs.getString("thumbnail"));
-                bookList.add(book);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DbcpBean.close(con, pstmt, rs);
-        }
-        return bookList;
-    }
-
-    // 신착 도서
-    public Vector<BookVo> newBooks() {
-        Vector<BookVo> bookList = new Vector<>();
-
-        String sql = "select book_no, title, author, thumbnail "
-                   + "from book "
-                   + "where publish_year = year(curdate()) "
-                   + "order by reg_date desc";
-
-        try {
-            con = DbcpBean.getConnection();
-            pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                BookVo book = new BookVo();
-                book.setBookNo(rs.getInt("book_no"));
-                book.setTitle(rs.getString("title"));
-                book.setAuthor(rs.getString("author"));
-                book.setThumbnail(rs.getString("thumbnail"));
-                bookList.add(book);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DbcpBean.close(con, pstmt, rs);
-        }
-
-        return bookList;
-    }
-
-    // 인기 도서
-    public Vector<BookVo> bestBooks() {
-        Vector<BookVo> bestList = new Vector<>();
-
-        String sql = "select book_no, thumbnail, title, author, publisher, publish_year, rent_count "
-                   + "from book where rent_count > 0 order by rent_count desc limit 8"; 
-        		   // 대여가 0보다 커야 불러오고, 8개만 보여주기
-
-        try {
-            con = DbcpBean.getConnection();
-            pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                BookVo vo = new BookVo();
-                vo.setBookNo(rs.getInt("book_no"));
-                vo.setThumbnail(rs.getString("thumbnail"));
-                vo.setTitle(rs.getString("title"));
-                vo.setAuthor(rs.getString("author"));
-                bestList.add(vo);
-            }
-        } catch (Exception e) {
-            System.out.println("selectBestBooks 오류 : " + e);
-            e.printStackTrace();
-        } finally {
-            DbcpBean.close(con, pstmt, rs);
-        }
-
-        return bestList;
-    }
-
-    // 도서 대출
+    
+    // 도서 대여
     public boolean rentBook(String userId, int bookNo) {
-    	
-        boolean rental = false;
+        boolean result = false;
+        String insertSql = "INSERT INTO rental_book (user_id, book_no, "
+        			     + "start_date, return_due, return_state) "
+                         + "VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 14 DAY), 0)";
+        String updateSql = "UPDATE book SET rental_state = 1, "
+        			     + "rent_count = rent_count + 1 WHERE book_no = ?";
 
         try {
             con = DbcpBean.getConnection();
+            con.setAutoCommit(false);
 
-            // 1. 대출 상태 확인
-            String bookState = "select count(*) from rental_book where book_no = ? "
-            				 + "and return_state = 0";
-            
-            pstmt = con.prepareStatement(bookState);
-            pstmt.setInt(1, bookNo);
-            rs = pstmt.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                return false; // 이미 대출 중
-            }
-
-            DbcpBean.close(null, pstmt, rs); // 이전 pstmt, rs 닫기
-
-            // 2. 대출 정보 삽입
-            String insertBook = "insert into rental_book (user_id, book_no, return_due) "
-            		          + "values (?, ?, date_add(now(), interval 14 day))";
-            				  // 대출기간 14일 지정
-            
-            pstmt = con.prepareStatement(insertBook);
+            // 1. rental_book insert
+            pstmt = con.prepareStatement(insertSql);
             pstmt.setString(1, userId);
             pstmt.setInt(2, bookNo);
+            int insertResult = pstmt.executeUpdate();
+            pstmt.close();
 
-            int row = pstmt.executeUpdate();
+            // 2. book 테이블 update
+            pstmt = con.prepareStatement(updateSql);
+            pstmt.setInt(1, bookNo);
+            int updateResult = pstmt.executeUpdate();
 
-            if (row > 0) {
-                DbcpBean.close(null, pstmt);
+            if (insertResult == 1 && updateResult == 1) {
+                con.commit();
+                result = true;
+            } else {
+                con.rollback();
+            }
 
-                // 3. 대출 횟수(rent_count) 증가
-                String updateBook = "update book set rent_count = rent_count + 1 "
-                		          + "where book_no = ?";
-                pstmt = con.prepareStatement(updateBook);
-                pstmt.setInt(1, bookNo);
-                pstmt.executeUpdate();
+        } catch (Exception e) {
+            try { 
+            	if (con != null) con.rollback(); 
+            } catch (Exception ex) { 
+            	ex.printStackTrace(); 
+            	}
+            e.printStackTrace();
+	        } finally {
+	            try { 
+	            	if (con != null) con.setAutoCommit(true); 
+	            } catch (Exception ex) { 
+	            	ex.printStackTrace(); 
+	            }
+	            DbcpBean.close(con, pstmt, rs);
+	        }
+        return result;
+    }
+    
+    // 유저아이디별 도서 대여 수량
+    public int countRentalsByUser(String userId) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM rental_book WHERE user_id = ?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) count = rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }
 
-                rental = true;
+    // 대여 목록 페이징
+    public Vector<RentalVo> getRentalsByUserByPage(String userId, int offset, int limit) {
+        Vector<RentalVo> list = new Vector<>();
+        String sql = "SELECT r.*, b.title, b.thumbnail FROM rental_book r " +
+                     "JOIN book b ON r.book_no = b.book_no " +
+                     "WHERE r.user_id = ? " +
+                     "ORDER BY r.start_date DESC LIMIT ?, ?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, offset);
+            pstmt.setInt(3, limit);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                RentalVo rental = new RentalVo();
+                rental.setRentNo(rs.getInt("rent_no"));
+                rental.setUserId(rs.getString("user_id"));
+                rental.setBookNo(rs.getInt("book_no"));
+                rental.setStartDate(rs.getTimestamp("start_date"));
+                rental.setReturnDue(rs.getTimestamp("return_due"));
+                rental.setReturnDate(rs.getTimestamp("return_date"));
+                rental.setReturnState(rs.getInt("return_state"));
+
+                BookVo book = new BookVo();
+                book.setTitle(rs.getString("title"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                rental.setBook(book);
+
+                list.add(rental);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return list;
+    }
+
+    
+    // 도서 등록
+    public boolean addBook(BookVo book) {
+        boolean result = false;
+        String sql = "INSERT INTO book (title, author, publisher, publish_year, "
+        		   + "isbn, category, book_info, thumbnail) " 
+        		   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, book.getTitle());
+            pstmt.setString(2, book.getAuthor());
+            pstmt.setString(3, book.getPublisher());
+            pstmt.setInt(4, book.getPublishYear());
+            pstmt.setString(5, book.getIsbn());
+            pstmt.setString(6, book.getCategory());
+            pstmt.setString(7, book.getBookInfo());
+            pstmt.setString(8, book.getThumbnail());
+            result = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return result;
+    }
+
+    // 도서 수정
+    public boolean updateBook(BookVo book) {
+        boolean result = false;
+        String sql = "UPDATE book SET title=?, author=?, publisher=?, publish_year=?, "
+                   + "isbn=?, category=?, book_info=?, thumbnail=?, rental_state=? "
+                   + "WHERE book_no=?";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, book.getTitle());
+            pstmt.setString(2, book.getAuthor());
+            pstmt.setString(3, book.getPublisher());
+            pstmt.setInt(4, book.getPublishYear());
+            pstmt.setString(5, book.getIsbn());
+            pstmt.setString(6, book.getCategory());
+            pstmt.setString(7, book.getBookInfo());
+            pstmt.setString(8, book.getThumbnail());
+            pstmt.setInt(9, book.getRentalState());
+            pstmt.setInt(10, book.getBookNo());
+            result = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
+        return result;
+    }
+
+    // 도서 삭제
+    public boolean deleteBook(int bookNo) {
+        boolean result = false;
+        String sql = "DELETE FROM book WHERE book_no=?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, bookNo);
+            result = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return result;
+    }
+
+    // 반납 처리: return_date 업데이트, return_state 변경, 도서 상태 변경
+    public boolean processReturn(int rentNo) {
+        boolean result = false;
+        String sql1 = "UPDATE rental_book SET return_state = 1, "
+        		    + "return_date = NOW() WHERE rent_no = ?";
+        String sql2 = "UPDATE book SET rental_state = 0 "
+        		    + "WHERE book_no = (SELECT book_no FROM rental_book WHERE rent_no = ?)";
+
+        try {
+            con = DbcpBean.getConnection();
+            con.setAutoCommit(false);
+
+            pstmt = con.prepareStatement(sql1);
+            pstmt.setInt(1, rentNo);
+            int updated1 = pstmt.executeUpdate();
+            pstmt.close();
+
+            pstmt = con.prepareStatement(sql2);
+            pstmt.setInt(1, rentNo);
+            int updated2 = pstmt.executeUpdate();
+
+            if (updated1 > 0 && updated2 > 0) {
+                con.commit();
+                result = true;
+            } else {
+                con.rollback();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try { con.rollback(); } catch (Exception ignored) {}
+        } finally {
+            try { con.setAutoCommit(true); } catch (Exception ignored) {}
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return result;
+    }
+
+    public int countPendingRentals() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM rental_book WHERE return_state = 0";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
+    }
+
+    public Vector<RentalVo> selectPendingRentalsByPage(int offset, int limit) {
+        Vector<RentalVo> list = new Vector<>();
+        String sql = "SELECT r.*, b.title, b.thumbnail FROM rental_book r "
+        		   + "JOIN book b ON r.book_no = b.book_no "
+        		   + "WHERE r.return_state = 0 ORDER BY r.start_date DESC LIMIT ?, ?";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                RentalVo vo = new RentalVo();
+                vo.setRentNo(rs.getInt("rent_no"));
+                vo.setUserId(rs.getString("user_id"));
+                vo.setBookNo(rs.getInt("book_no"));
+                vo.setStartDate(rs.getTimestamp("start_date"));
+                vo.setReturnDue(rs.getTimestamp("return_due"));
+                vo.setReturnDate(rs.getTimestamp("return_date"));
+                vo.setReturnState(rs.getInt("return_state"));
+
+                BookVo book = new BookVo();
+                book.setTitle(rs.getString("title"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                vo.setBook(book);
+
+                list.add(vo);
             }
 
         } catch (Exception e) {
@@ -275,228 +518,111 @@ public class BookDAO {
             DbcpBean.close(con, pstmt, rs);
         }
 
-        return rental;
+        return list;
+    }
+
+    // 반납 대기중 목록 가져오기
+    public Vector<RentalVo> getPendingRentals() {
+        Vector<RentalVo> list = new Vector<>();
+        String sql = "SELECT r.*, b.title, b.thumbnail FROM rental_book r "
+        		   + "JOIN book b ON r.book_no = b.book_no "
+                   + "WHERE r.return_state = 0 ORDER BY r.start_date ASC";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                RentalVo vo = new RentalVo();
+                vo.setRentNo(rs.getInt("rent_no"));
+                vo.setBookNo(rs.getInt("book_no"));
+                vo.setUserId(rs.getString("user_id"));
+                vo.setStartDate(rs.getTimestamp("start_date"));
+                vo.setReturnDue(rs.getTimestamp("return_due"));
+
+                BookVo book = new BookVo();
+                book.setTitle(rs.getString("title"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                vo.setBook(book);
+
+                list.add(vo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return list;
+    }
+
+    // 전체 도서 대여 확인 (book 테이블과 JOIN)    
+    public int allRentalCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM rental_book";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) count = rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return count;
     }
     
-    // 내 대여 내역 확인
-	public Vector<RentalVo> myRentals(String userId) {
-	    Vector<RentalVo> rentalList = new Vector<>();
+    public Vector<RentalVo> allRentalsByPage(int offset, int limit) {
+        Vector<RentalVo> list = new Vector<>();
+        String sql = "SELECT r.*, b.title, b.thumbnail FROM rental_book r " +
+                     "JOIN book b ON r.book_no = b.book_no " +
+                     "ORDER BY r.start_date DESC LIMIT ?, ?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+            rs = pstmt.executeQuery();
 
-	    String sql = "select r.rent_no, r.book_no, r.user_id, b.title, b.author, b.thumbnail, "
-	    		   + "r.start_date, r.return_due, r.return_date, r.return_state "
-	               + "from rental_book r "
-	               + "join book b on r.book_no = b.book_no "
-	               + "where r.user_id = ? "
-	               + "order by r.start_date desc";
+            while (rs.next()) {
+                RentalVo rental = new RentalVo();
+                rental.setRentNo(rs.getInt("rent_no"));
+                rental.setUserId(rs.getString("user_id"));
+                rental.setBookNo(rs.getInt("book_no"));
+                rental.setStartDate(rs.getTimestamp("start_date"));
+                rental.setReturnDue(rs.getTimestamp("return_due"));
+                rental.setReturnDate(rs.getTimestamp("return_date"));
+                rental.setReturnState(rs.getInt("return_state"));
 
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, userId);
-	        rs = pstmt.executeQuery();
+                BookVo book = new BookVo();
+                book.setTitle(rs.getString("title"));
+                book.setThumbnail(rs.getString("thumbnail"));
+                rental.setBook(book);
 
-	        while (rs.next()) {
-	            RentalVo rental = new RentalVo();
-	            rental.setRentNo(rs.getInt("rent_no"));
-	            rental.setUserId(rs.getString("user_id"));
-	            rental.setBookNo(rs.getInt("book_no"));
-	            rental.setStartDate(rs.getTimestamp("start_date"));
-	            rental.setReturnDue(rs.getTimestamp("return_due"));
-	            rental.setReturnDate(rs.getTimestamp("return_date"));
-	            rental.setReturnState(rs.getInt("return_state"));
-
-	            // BookVo 객체 생성해서 join 데이터 넣기
-	            BookVo book = new BookVo();
-	            book.setBookNo(rs.getInt("book_no")); 
-	            book.setTitle(rs.getString("title"));
-	            book.setAuthor(rs.getString("author"));
-	            book.setThumbnail(rs.getString("thumbnail"));
-
-	            rental.setBook(book); // RentalVo에 BookVo 세팅
-
-	            rentalList.add(rental);
-	        }
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt, rs);
-	    }
-
-	    return rentalList;
-	}
-    
-	// 도서 등록
-	public boolean addBook(BookVo book) {
-	    String sql = "INSERT INTO book (title, author, publisher, publish_year, "
-	    		   + "category, book_info, isbn, thumbnail) "
-	    		   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, book.getTitle());
-	        pstmt.setString(2, book.getAuthor());
-	        pstmt.setString(3, book.getPublisher());
-	        pstmt.setInt(4, book.getPublishYear());
-	        pstmt.setString(5, book.getCategory());
-	        pstmt.setString(6, book.getBookInfo());
-	        pstmt.setString(7, book.getIsbn());
-	        pstmt.setString(8, book.getThumbnail());
-	        return pstmt.executeUpdate() > 0;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt);
-	    }
-	    return false;
-	}
-
-	// 도서 수정
-	public boolean updateBook(BookVo book) {	    
-		String sql = "update book set title=?, author=?, publisher=?, publish_year=?, "
-	    		   + "category=?, book_info=?, isbn=?, thumbnail=? "
-	               + "where book_no=?";
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setString(1, book.getTitle());
-	        pstmt.setString(2, book.getAuthor());
-	        pstmt.setString(3, book.getPublisher());
-	        pstmt.setInt(4, book.getPublishYear());
-	        pstmt.setString(5, book.getCategory());
-	        pstmt.setString(6, book.getBookInfo());
-	        pstmt.setString(7, book.getIsbn());
-	        pstmt.setString(8, book.getThumbnail());
-	        pstmt.setInt(9, book.getBookNo());
-	        return pstmt.executeUpdate() > 0;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt);
-	    }
-	    return false;
-	}
-	
-	// 도서 삭제
-	public boolean deleteBook(int bookNo) {
-	    String sql = "DELETE FROM book WHERE book_no = ?";
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, bookNo);
-	        return pstmt.executeUpdate() > 0;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt);
-	    }
-	    return false;
-	}
-
-	// 반납 처리
-	public boolean returnBook(int rentNo) {
-	    boolean result = false;
-	    String sql = "update rental_book set return_state = 1, return_date = now() "
-	    		   + "where rent_no = ?";
-
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        pstmt.setInt(1, rentNo);
-
-	        int row = pstmt.executeUpdate();
-	        if (row > 0) {
-	            result = true;
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt, rs);
-	    }
-
-	    return result;
-	}
-	
-	// 반납 대기 목록
-	public Vector<RentalVo> pendingRentals() {
-	    Vector<RentalVo> list = new Vector<>();
-	    String sql = "select r.rent_no, r.book_no, b.title, b.thumbnail, r.start_date, r.return_due "
-	               + "from rental_book r join book b on r.book_no = b.book_no "
-	               + "where r.return_state = 0 "
-	               + "order by r.start_date asc";
-
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
-	        while (rs.next()) {
-	            RentalVo rental = new RentalVo();
-	            rental.setRentNo(rs.getInt("rent_no"));
-	            rental.setBookNo(rs.getInt("book_no"));
-	            rental.setStartDate(rs.getTimestamp("start_date"));
-	            rental.setReturnDue(rs.getTimestamp("return_due"));
-	            rental.setReturnState(0); // 모두 미반납
-	            // Book 정보 세팅
-	            BookVo book = new BookVo();
-	            book.setBookNo(rs.getInt("book_no"));
-	            book.setTitle(rs.getString("title"));
-	            book.setThumbnail(rs.getString("thumbnail"));
-	            rental.setBook(book);
-
-	            list.add(rental);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt, rs);
-	    }
-	    return list;
-	}
-	
-	// 모든 대여 목록 조회 (관리자용)
-	public Vector<RentalVo> allRentals() {
-	    Vector<RentalVo> rentalList = new Vector<>();
-
-	    String sql = "select r.rent_no, r.user_id, r.book_no, b.title, b.thumbnail, "
-	               + "r.start_date, r.return_due, r.return_date, r.return_state "
-	               + "from rental_book r "
-	               + "join book b on r.book_no = b.book_no "
-	               + "order by r.start_date desc";
-
-	    try {
-	        con = DbcpBean.getConnection();
-	        pstmt = con.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
-
-	        while (rs.next()) {
-	            RentalVo rental = new RentalVo();
-	            rental.setRentNo(rs.getInt("rent_no"));
-	            rental.setUserId(rs.getString("user_id"));
-	            rental.setBookNo(rs.getInt("book_no"));
-	            rental.setStartDate(rs.getTimestamp("start_date"));
-	            rental.setReturnDue(rs.getTimestamp("return_due"));
-	            rental.setReturnDate(rs.getTimestamp("return_date"));
-	            rental.setReturnState(rs.getInt("return_state"));
-
-	            BookVo book = new BookVo();
-	            book.setBookNo(rs.getInt("book_no"));
-	            book.setTitle(rs.getString("title"));
-	            book.setThumbnail(rs.getString("thumbnail"));
-	            rental.setBook(book);
-
-	            rentalList.add(rental);
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt, rs);
-	    }
-
-	    return rentalList;
-	}
-
-	
+                list.add(rental);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return list;
+    }
+   
+    private BookVo extractBook(ResultSet rs) throws SQLException {
+        BookVo book = new BookVo();
+        book.setBookNo(rs.getInt("book_no"));
+        book.setTitle(rs.getString("title"));
+        book.setAuthor(rs.getString("author"));
+        book.setPublisher(rs.getString("publisher"));
+        book.setPublishYear(rs.getInt("publish_year"));
+        book.setBookInfo(rs.getString("book_info"));
+        book.setCategory(rs.getString("category"));
+        book.setThumbnail(rs.getString("thumbnail"));
+        book.setIsbn(rs.getString("isbn"));
+        book.setRentCount(rs.getInt("rent_count"));        
+        book.setRentalState(rs.getInt("rental_state")); 
+        return book;
+    }
 
 }

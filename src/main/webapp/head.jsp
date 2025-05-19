@@ -60,7 +60,7 @@
 				<ul class="sub-menu">
 					<li>희망 도서</li>
 					<li>최근 조회한 도서</li>
-					<li><a href="${contextPath}/books/rentalConfirm.do">내 대여 내역</a></li>
+					<li><a href="${contextPath}/books/myRentalList.do">내 대여 내역</a></li>
 					<li>내 서평 관리</li>
 					<li><a href="${contextPath}/reserve/reserveCheck">시설 예약 관리</a></li>
 				</ul>

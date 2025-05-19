@@ -1,58 +1,130 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="Vo.BookVo" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
+    String message = (String) request.getAttribute("message");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>도서 등록</title>
-<link rel="stylesheet" href="<%= contextPath %>/css/common.css">
-<style>
-    .form-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-    }
-    .form-container h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .form-container input, .form-container textarea {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    .form-container button {
-        width: 100%;
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>도서 등록</title>
+    <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
+    <style>
+        body {
+            background-color: #fafafa;
+        }
+
+        .content-box {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .content-box h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #003c83;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            font-size: 14px;
+            margin: 12px 0 4px;
+            color: #333;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-blue {
+            background-color: #003c83;
+        }
+
+        .btn-blue:hover {
+            background-color: #002c66;
+        }
+
+        .btn-gray {
+            background-color: #888;
+        }
+
+        .btn-gray:hover {
+            background-color: #555;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 15px;
+            margin-bottom: 20px;
+            color: green;
+        }
+    </style>
 </head>
 <body>
-<div class="form-container">
-    <h2>도서 등록</h2>
-    <form action="<%= contextPath %>/books/addBookProcess.do" method="post" enctype="multipart/form-data">
-        <input type="text" name="title" placeholder="도서명" required>
-        <input type="text" name="author" placeholder="저자" required>
-        <input type="text" name="publisher" placeholder="출판사" required>
-        <input type="number" name="publishYear" placeholder="출판년도" required>
-        <input type="text" name="isbn" placeholder="ISBN" required>
-        <input type="text" name="category" placeholder="카테고리" required>
-        <input type="file" name="thumbnail" accept="image/*" required>
-        <textarea name="bookInfo" rows="5" placeholder="도서 설명"></textarea>
-        <button type="submit">등록</button>
+<div class="content-box">
+    <h2>입고 도서 등록</h2>
+
+    <% if (message != null) { %>
+        <div class="message"><%= message %></div>
+    <% } %>
+
+    <form action="<%= contextPath %>/books/addBook.do" method="post" enctype="multipart/form-data">
+    
+        <label for="thumbnail">썸네일 이미지</label>
+        <input type="file" name="thumbnail" accept="image/*">
+    
+        <label for="title">도서명</label>
+        <input type="text" name="title" required>
+
+        <label for="author">저자</label>
+        <input type="text" name="author" required>
+
+        <label for="publisher">출판사</label>
+        <input type="text" name="publisher" required>
+
+        <label for="publishYear">출판년도</label>
+        <input type="number" name="publishYear" required>
+
+        <label for="isbn">ISBN</label>
+        <input type="text" name="isbn" required>
+
+        <label for="category">카테고리</label>
+        <input type="text" name="category" required>
+
+        <label for="bookInfo">도서 설명</label>
+        <textarea name="bookInfo" rows="5"></textarea>
+        
+        <div class="btn-group">
+            <a href="<%= contextPath %>/books/adminBook.do" class="btn btn-gray">관리자화면</a>
+            <button type="submit" class="btn btn-blue">등록하기</button>
+        </div>
     </form>
 </div>
 </body>

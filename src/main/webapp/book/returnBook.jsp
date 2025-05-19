@@ -1,114 +1,187 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" 
-	pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.RentalVo, Vo.BookVo, java.util.*" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
-    String contextPath = request.getContextPath();    
-    Vector<RentalVo> pendingList = (Vector<RentalVo>) request.getAttribute("pendingList");
+    String contextPath = request.getContextPath();
+    Vector<RentalVo> rentalList = (Vector<RentalVo>) request.getAttribute("rentalList");
+    int currentPage = (int) request.getAttribute("currentPage");
+    int totalCount = (int) request.getAttribute("totalCount");
+    int pageSize = (int) request.getAttribute("pageSize");
+    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
     String message = (String) request.getAttribute("message");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>반납 처리</title>
-<link rel="stylesheet" href="<%= contextPath %>/css/common.css">
-<style>
-    .admin-section {
-	    padding: 40px 20px;
-	    max-width: 1200px;
-	    margin: 0 auto;
-    }
+    <meta charset="UTF-8">
+    <title>반납 대기 목록</title>
+    <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
+    <style>
+        .content-box {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .toolbar {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .toolbar a {
+            padding: 6px 14px;
+            font-size: 14px;
+            border-radius: 4px;
+            background-color: #003c83;
+            color: white;
+            text-decoration: none;
+        }
 
-    .admin-title {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+        .toolbar a:hover {
+            background-color: #002c66;
+        } 
 
-    .message {
-        color: green;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        .title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #003c83;
+        }
 
-    .rental-container {
-	    display: grid;
-	    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	    gap: 30px;
-    }
+        .message {
+            text-align: center;
+            color: green;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
 
-    .rental-card {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 12px;
-        background-color: #fafafa;
-        text-align: center;
-    }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
 
-    .rental-card img {
-        width: 100px;
-        height: 140px;
-        object-fit: cover;
-        margin-bottom: 10px;
-    }
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
 
-    .rental-card .title {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
+        .card img {
+            width: 100px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
 
-    .rental-card .dates {
-        font-size: 12px;
-        color: #555;
-        margin-bottom: 10px;
-    }
+        .card .title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
 
-    .rental-card .btn-return {
-        padding: 6px 12px;
-        background-color: #003c83;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        text-decoration: none;
-        font-size: 12px;
-    }
-</style>
+        .card .meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .card .btn-return {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #003c83;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .card .btn-return:hover {
+            background-color: #002c66;
+        }
+
+        .pagination {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            margin: 0 4px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #eee;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #ccc;
+        }
+
+        .pagination a.active {
+            background-color: #003c83;
+            color: white;
+            border-color: #003c83;
+        }
+    </style>
 </head>
 <body>
-
-<div class="container admin-section">
-    <div class="admin-title">미반납 도서 목록</div>
+<div class="content-box">
+    <div class="title">반납 대기 중인 도서</div>
+    
+    <div class="toolbar">
+        <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a>
+    </div> 
 
     <% if (message != null) { %>
         <div class="message"><%= message %></div>
     <% } %>
 
-    <% if (pendingList != null && pendingList.size() > 0) { %>
-        <div class="rental-container">
-            <% for (RentalVo rental : pendingList) {
-                   BookVo book = rental.getBook(); %>
-            <div class="rental-card">
-                <img src="<%= contextPath %>/<%= book.getThumbnail() %>" 
-                     onerror="this.src='<%= contextPath %>/book/img/noimage.png';">
-                <div class="title"><%= book.getTitle() %></div>
-                <div class="dates">
-                    대출일: <%= rental.getStartDate().toLocalDateTime().toLocalDate() %><br>
-                    반납 예정일: <%= rental.getReturnDue().toLocalDateTime().toLocalDate() %>
+    <% if (rentalList != null && !rentalList.isEmpty()) { %>
+        <div class="card-grid">
+            <% for (RentalVo rental : rentalList) {
+                BookVo book = rental.getBook();
+            %>
+                <div class="card">
+                    <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
+                         onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
+                    <div class="title"><%= book.getTitle() %></div>
+                    <div class="meta">사용자: <%= rental.getUserId() %></div>
+                    <div class="meta">대여일: <%= sdf.format(rental.getStartDate()) %></div>
+                    <div class="meta">반납 예정일: <%= sdf.format(rental.getReturnDue()) %></div>
+                    <a href="<%= contextPath %>/books/returnBook.do?rentNo=<%= rental.getRentNo() %>" 
+                       class="btn-return" onclick="return confirm('반납 처리하시겠습니까?');">
+                        반납 처리
+                    </a>
                 </div>
-                <a href="<%= contextPath %>/books/returnBook.do?rentNo=<%= rental.getRentNo() %>" class="btn-return">반납 처리</a>
-            </div>
+            <% } %>
+        </div>
+
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="<%= contextPath %>/books/returnBook.do?page=<%= currentPage - 1 %>">◀</a>
+            <% } %>
+            <% for (int i = 1; i <= totalPage; i++) { %>
+                <% if (i == currentPage) { %>
+                    <a class="active"><%= i %></a>
+                <% } else { %>
+                    <a href="<%= contextPath %>/books/returnBook.do?page=<%= i %>"><%= i %></a>
+                <% } %>
+            <% } %>
+            <% if (currentPage < totalPage) { %>
+                <a href="<%= contextPath %>/books/returnBook.do?page=<%= currentPage + 1 %>">▶</a>
             <% } %>
         </div>
     <% } else { %>
-        <div style="text-align: center;">현재 미반납 도서가 없습니다.</div>
+        <div class="message">반납 대기 중인 도서가 없습니다.</div>
     <% } %>
-        <a href="javascript:history.back();" class="btn">목록으로</a>
-
 </div>
-
 </body>
 </html>
