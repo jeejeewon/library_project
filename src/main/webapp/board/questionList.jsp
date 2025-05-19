@@ -212,6 +212,7 @@ request.setCharacterEncoding("UTF-8");
 					        </c:otherwise>
 					    </c:choose>
 					</td>
+					
 										
 		            <td>${boardVo.userId}</td>
 		            <td><fmt:formatDate value="${boardVo.createdAt}" pattern="yyyy-MM-dd" /></td>

@@ -76,7 +76,6 @@ public class boardController extends HttpServlet {
 	    Map<String, String> uploadMap = new HashMap<>();
 	    String encoding = "utf-8";
 
-	    // 업로드할 파일을 임시로 저장할 폴더 생성
 	    File currentDirPath = new File(BOARD_FILE_REPO);
 	    File tempDir = new File(currentDirPath, "temp");
 
@@ -84,17 +83,15 @@ public class boardController extends HttpServlet {
 	        tempDir.mkdirs(); // temp 폴더가 없으면 생성
 	    }
 
-	    // 파일 업로드 환경 설정
 	    DiskFileItemFactory factory = new DiskFileItemFactory();
 	    factory.setSizeThreshold(1024 * 1024 * 3); // 메모리에 저장할 파일 최대 크기: 3MB
 	    factory.setRepository(tempDir); // 3MB 초과 파일은 임시 폴더에 저장
 
-	    // 업로드 처리를 위한 객체 생성
 	    ServletFileUpload upload = new ServletFileUpload(factory);
 	    upload.setHeaderEncoding(encoding); // 한글 깨짐 방지를 위한 인코딩 설정
 
 	    try {
-	        // 업로드 요청 파싱 (폼 입력값과 파일이 모두 포함되어 있음)
+	        // 업로드 요청 파싱
 	        List<FileItem> items = upload.parseRequest(request);
 
 	        for (FileItem fileItem : items) {
@@ -109,17 +106,21 @@ public class boardController extends HttpServlet {
 	                if (fileSize > 0) { // 파일이 존재하는 경우
 	                    String fileNameOnly = new File(originalFileName).getName(); // 경로 제거 후 파일명만 추출
 
+	                    // 타임스탬프 추가
+	                    String timestamp = String.valueOf(System.currentTimeMillis());
+	                    String uniqueFileName = timestamp + "_" + fileNameOnly;
+
 	                    // 업로드된 파일을 임시 폴더에 저장
-	                    File uploadFile = new File(tempDir, fileNameOnly);
+	                    File uploadFile = new File(tempDir, uniqueFileName);
 	                    fileItem.write(uploadFile);
 
 	                    // 필드명에 따라 다르게 저장
 	                    if ("file".equals(fieldName)) {
-	                        uploadMap.put("file", fileNameOnly); // 글 작성용 첨부파일
-	                        uploadMap.put("newFileName", fileNameOnly); // 글 수정 시 새로 업로드한 첨부파일
+	                        uploadMap.put("file", uniqueFileName); // 글 작성용 첨부파일
+	                        uploadMap.put("newFileName", uniqueFileName); // 글 수정 시 새로 업로드한 첨부파일
 	                    } else if ("bannerImage".equals(fieldName)) {
-	                        uploadMap.put("bannerImage", fileNameOnly); // 글 작성 시 배너 이미지
-	                        uploadMap.put("newBannerName", fileNameOnly); // 글 수정 시 새로 업로드한 배너 이미지
+	                        uploadMap.put("bannerImage", uniqueFileName); // 글 작성 시 배너 이미지
+	                        uploadMap.put("newBannerName", uniqueFileName); // 글 수정 시 새로 업로드한 배너 이미지
 	                    }
 	                } else { // 파일이 비어 있는 경우
 	                    // 파일 없으면 공백 처리
@@ -181,6 +182,7 @@ public class boardController extends HttpServlet {
 
 	    return uploadMap; // 업로드된 데이터(제목, 내용, 파일명 등) 반환
 	}
+
 
 
 
@@ -848,7 +850,7 @@ public class boardController extends HttpServlet {
 		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
 		// 요청주소 "/bbs/questionModify.do"
 		if (action.equals("/questionModify.do")) {
-			System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
+			System.out.println("문의사항 글 수정페이지로 이동 요청 시작...");
 
 			// 파일 업로드를 포함한 수정된 폼 데이터 처리
 			// 수정 폼에서도 파일첨부가 가능하므로 uploadFile() 메소드를 호출
@@ -899,7 +901,7 @@ public class boardController extends HttpServlet {
 			// boardService를 통해 글 수정 처리 요청
 			// boardService에게 movVO 객체를 전달하여 DB에서 해당 글의 내용을 업데이트 하도록 요청합니다.
 			boardService.modifyBoard(modVO);
-			System.out.println("공지사항 글 수정 완료"); // 수정 완료 로그
+			System.out.println("문의사항 글 수정 완료"); // 수정 완료 로그
 
 			// 첨부파일 처리
 			// 수정된 첨부파일이 있는 경우 파일 이동
@@ -1235,7 +1237,8 @@ public class boardController extends HttpServlet {
 		
 		
 
-		
+
+
 		
 		
 		

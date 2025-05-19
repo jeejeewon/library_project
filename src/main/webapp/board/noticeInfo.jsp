@@ -11,6 +11,11 @@
 request.setCharacterEncoding("UTF-8");
 %>
 
+<%
+    // 세션에서 'fromPage' 값을 가져오기
+    String fromPage = (String) session.getAttribute("fromPage");
+%>
+
 <html>
 <head>
 	<title>공지사항 상세페이지 - noticeInfo.jsp</title>
@@ -210,23 +215,42 @@ request.setCharacterEncoding("UTF-8");
 	
 		<div class="paging">
 		    <!-- 이전글 버튼 (이전글이 있을 경우만 표시) -->
-			<c:if test="${getPreBoardId > 0}">
-			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
-			        <input type="hidden" name="boardId" value="${getPreBoardId}">
-			        <button type="submit">이전글</button>
-			    </form>
-			</c:if>
+		    <c:if test="${getPreBoardId > 0}">
+		        <form action="${preBoardUrl}" method="get">
+		            <input type="hidden" name="boardId" value="${getPreBoardId}">
+		            <input type="hidden" name="fromPage" value="${fromPage}">
+		            <button type="submit">이전글</button>
+		        </form>
+		    </c:if>
 			
-			<!-- 다음글 버튼 (다음글이 있을 경우만 표시) -->
-			<c:if test="${getNextBoardId > 0}">
-			    <form action="${pageContext.request.contextPath}/bbs/noticeInfo.do" method="get">
-			        <input type="hidden" name="boardId" value="${getNextBoardId}">
-			        <button type="submit">다음글</button>
-			    </form>
-			</c:if>
-			<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
-				<button type="submit">목록</button>
-			</form>
+		    <!-- 다음글 버튼 (다음글이 있을 경우만 표시) -->
+		    <c:if test="${getNextBoardId > 0}">
+		        <form action="${nextBoardUrl}" method="get">
+		            <input type="hidden" name="boardId" value="${getNextBoardId}">
+		            <input type="hidden" name="fromPage" value="${fromPage}">
+		            <button type="submit">다음글</button>
+		        </form>
+		    </c:if>
+			
+			<!-- 목록 버튼 -->
+		    <c:choose>
+		        <c:when test="${fromPage == 'noticeList'}">
+		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:when>
+		        <c:when test="${fromPage == 'eventList'}">
+		            <form action="${contextPath}/bbs/eventList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:when>
+		        <c:otherwise>
+		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:otherwise>
+		    </c:choose>
+
 		</div>
 
 		<div class="title-area">

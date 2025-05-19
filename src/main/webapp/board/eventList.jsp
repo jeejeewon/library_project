@@ -174,17 +174,6 @@ request.setCharacterEncoding("UTF-8");
             <p>도서관소식 > 행사안내</p>
         </div>
 
-        <!-- 검색 기능의 폼 태그 -->
-        <form action="${contextPath}/bbs/eventList.do" method="get" class="search-form">
-            <select name="searchType" class="search-select">
-                <option value="title" ${ searchType == 'title' ? 'selected' : '' }>제목</option>
-                <option value="content" ${ searchType == 'content' ? 'selected' : '' }>내용</option>
-                <option value="userId" ${ searchType == 'userId' ? 'selected' : '' }>작성자</option>
-            </select>
-            <input type="text" name="searchKeyword" class="search-input" placeholder="검색어를 입력하세요." value="${searchKeyword}">
-            <button type="submit" class="search-btn">검색</button>
-        </form>
-
         <div class="board-topbar">
             <!-- 총 게시글 수 표시 -->
             <p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>

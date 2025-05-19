@@ -206,7 +206,14 @@ request.setCharacterEncoding("UTF-8");
                     <td>${boardVo.userId}</td>
                     <td><fmt:formatDate value="${boardVo.createdAt}" pattern="yyyy-MM-dd" /></td>
                     <td>${boardVo.views}</td>
-                    <td>${boardVo.file}</td>
+                    <td>
+					    <c:choose>
+					        <c:when test="${not empty boardVo.file}">
+					            💾
+					        </c:when>
+					        <c:otherwise>  </c:otherwise>
+					    </c:choose>
+					</td>
                 </tr>
             </c:forEach>
         </table>
