@@ -403,11 +403,9 @@ public class boardController extends HttpServlet {
 			String title = boardMap.get("title"); // 수정된 제목 추출
 			String content = boardMap.get("content"); // 수정된 내용 추출
 			String file = boardMap.get("file"); // 수정된 첨부파일 추출
-			String originalFileName = boardMap.get("originalFileName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일
-																		// 삭제용)
+			String originalFileName = boardMap.get("originalFileName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일 // 삭제용)
 			String bannerImage = boardMap.get("bannerImage"); // 수정된 배너 이미지 추출
-			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존
-																			// 파일 삭제용)
+			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 // 파일 삭제용)
 			System.out.println("추출된 수정 정보 : " + "boardId=" + boardId + ", title=" + title + ", content=" + content
 					+ ", file=" + file + ", bannerImage=" + bannerImage);
 
@@ -420,6 +418,7 @@ public class boardController extends HttpServlet {
 			modVO.setContent(content); // 수정된 내용
 			modVO.setFile(file); // 수정된 첨부파일
 			modVO.setBannerImg(bannerImage); // 수정된 배너 이미지
+			modVO.setSecret(false); // 공지사항은 무조건 공개글로 처리
 			// 그 외 작성자, 작성일 등은 수정하지 않으므로 그대로 둡니다.
 
 			// boardService를 통해 글 수정 처리 요청
