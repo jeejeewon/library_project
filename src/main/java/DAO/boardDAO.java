@@ -290,45 +290,15 @@ public class boardDAO {
         try {
             con = DbcpBean.getConnection();
 
-            String sql = "UPDATE board SET title = ?, content = ?, secret = ?";
-
-            // file과 bannerImg가 null이 아닐 경우에만 업데이트
-            if (file != null && !file.isEmpty()) {
-                sql += ", file = ?";
-            } else {
-                sql += ", file = NULL"; // 파일 삭제 시 NULL로 설정
-            }
-
-            if (bannerImg != null && !bannerImg.isEmpty()) {
-                sql += ", banner_img = ?";
-            } else {
-                sql += ", banner_img = NULL"; // 배너 이미지 삭제 시 NULL로 설정
-            }
-
-            sql += " WHERE board_id = ?";
+            String sql = "UPDATE board SET title = ?, content = ?, secret = ?, file = ?, banner_img = ? WHERE board_id = ?";
 
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, title);
             pstmt.setString(2, content);
             pstmt.setBoolean(3, secret);
-
-            // 파일 처리
-            if (file != null && !file.isEmpty()) {
-                pstmt.setString(4, file);
-                if (bannerImg != null && !bannerImg.isEmpty()) {
-                    pstmt.setString(5, bannerImg);
-                    pstmt.setInt(6, boardId);
-                } else {
-                    pstmt.setInt(5, boardId);
-                }
-            } else {
-                if (bannerImg != null && !bannerImg.isEmpty()) {
-                    pstmt.setString(4, bannerImg);
-                    pstmt.setInt(5, boardId);
-                } else {
-                    pstmt.setInt(4, boardId);
-                }
-            }
+            pstmt.setString(4, file); // <-- modVO에서 받은 파일 이름을 그대로 바인딩!
+            pstmt.setString(5, bannerImg); // <-- modVO에서 받은 배너 이미지 이름을 그대로 바인딩!
+            pstmt.setInt(6, boardId); // <-- WHERE 조건 boardId 바인딩
 
             pstmt.executeUpdate();
 

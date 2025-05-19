@@ -70,12 +70,14 @@ public class boardController extends HttpServlet {
 	// 업로드 파일이 저장될 기본 경로 상수
 	public static final String BOARD_FILE_REPO = "C:\\workspace_libraryProject\\library_project\\src\\main\\webapp\\board\\board_file_repo";
 
+	// 업로드 파일을 저장하는 메소드
 	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException, FileUploadException {
 
 	    Map<String, String> uploadMap = new HashMap<>();
 	    String encoding = "utf-8";
 
+	    // 업로드할 파일을 임시로 저장할 폴더 생성
 	    File currentDirPath = new File(BOARD_FILE_REPO);
 	    File tempDir = new File(currentDirPath, "temp");
 
@@ -83,15 +85,17 @@ public class boardController extends HttpServlet {
 	        tempDir.mkdirs(); // temp 폴더가 없으면 생성
 	    }
 
+	    // 파일 업로드 환경 설정
 	    DiskFileItemFactory factory = new DiskFileItemFactory();
 	    factory.setSizeThreshold(1024 * 1024 * 3); // 메모리에 저장할 파일 최대 크기: 3MB
 	    factory.setRepository(tempDir); // 3MB 초과 파일은 임시 폴더에 저장
 
+	    // 업로드 처리를 위한 객체 생성
 	    ServletFileUpload upload = new ServletFileUpload(factory);
 	    upload.setHeaderEncoding(encoding); // 한글 깨짐 방지를 위한 인코딩 설정
 
 	    try {
-	        // 업로드 요청 파싱
+	        // 업로드 요청 파싱 (폼 입력값과 파일이 모두 포함되어 있음)
 	        List<FileItem> items = upload.parseRequest(request);
 
 	        for (FileItem fileItem : items) {
@@ -106,21 +110,20 @@ public class boardController extends HttpServlet {
 	                if (fileSize > 0) { // 파일이 존재하는 경우
 	                    String fileNameOnly = new File(originalFileName).getName(); // 경로 제거 후 파일명만 추출
 
-	                    // 타임스탬프 추가
-	                    String timestamp = String.valueOf(System.currentTimeMillis());
-	                    String uniqueFileName = timestamp + "_" + fileNameOnly;
+	                    // 타임스탬프 추가하여 파일명 변경
+	                    String newFileName = System.currentTimeMillis() + "_" + fileNameOnly;
 
 	                    // 업로드된 파일을 임시 폴더에 저장
-	                    File uploadFile = new File(tempDir, uniqueFileName);
+	                    File uploadFile = new File(tempDir, newFileName);
 	                    fileItem.write(uploadFile);
 
-	                    // 필드명에 따라 다르게 저장
+	                    // 첨부파일 처리
 	                    if ("file".equals(fieldName)) {
-	                        uploadMap.put("file", uniqueFileName); // 글 작성용 첨부파일
-	                        uploadMap.put("newFileName", uniqueFileName); // 글 수정 시 새로 업로드한 첨부파일
+	                        uploadMap.put("file", newFileName); // 글 작성용 첨부파일
+	                        uploadMap.put("newFileName", newFileName); // 글 수정 시 새로 업로드한 첨부파일
 	                    } else if ("bannerImage".equals(fieldName)) {
-	                        uploadMap.put("bannerImage", uniqueFileName); // 글 작성 시 배너 이미지
-	                        uploadMap.put("newBannerName", uniqueFileName); // 글 수정 시 새로 업로드한 배너 이미지
+	                        uploadMap.put("bannerImage", newFileName); // 글 작성 시 배너 이미지
+	                        uploadMap.put("newBannerName", newFileName); // 글 수정 시 새로 업로드한 배너 이미지
 	                    }
 	                } else { // 파일이 비어 있는 경우
 	                    // 파일 없으면 공백 처리
@@ -182,6 +185,7 @@ public class boardController extends HttpServlet {
 
 	    return uploadMap; // 업로드된 데이터(제목, 내용, 파일명 등) 반환
 	}
+
 
 
 
@@ -454,11 +458,11 @@ public class boardController extends HttpServlet {
 		    String title = boardMap.get("title");
 		    String content = boardMap.get("content");
 
-		    String file = boardMap.get("newFileName");
+		    String finalFileName = boardMap.get("newFileName");
 		    String originalFileName = boardMap.get("originalFileName");
 		    String deleteFile = boardMap.get("deleteFile");
 
-		    String bannerImage = boardMap.get("newBannerName");
+		    String finalBannerName = boardMap.get("newBannerName");
 		    String originalBannerName = boardMap.get("originalBannerName");
 		    String deleteBanner = boardMap.get("deleteBanner");
 
@@ -467,74 +471,37 @@ public class boardController extends HttpServlet {
 		    modVO.setBoardId(boardId);
 		    modVO.setTitle(title);
 		    modVO.setContent(content);
-		    modVO.setFile(file);
-		    modVO.setBannerImg(bannerImage);
+		    modVO.setFile(finalFileName);
+		    modVO.setBannerImg(finalBannerName);
 		    modVO.setSecret(false);
 
-		    // 첨부파일 처리
-		    if (file != null && !file.isEmpty()) {
-		        File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);
-		        File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
-		        if (!destDir.exists()) {
-		            destDir.mkdirs();
-		        }
-		        if (srcFile.exists()) {
-		            FileUtils.moveFileToDirectory(srcFile, destDir, true);
-		            System.out.println("첨부파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath());
-		        } else {
-		            System.out.println("오류 : 임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
-		        }
-
-		        if (originalFileName != null && !originalFileName.isEmpty() && !originalFileName.equals(file)) {
-		            File oldFile = new File(destDir, originalFileName);
-		            if (oldFile.exists()) {
-		                boolean deleted = oldFile.delete();
-		                System.out.println("기존 첨부 파일 삭제: " + deleted + " - " + oldFile.getPath());
-		            }
-		        }
+		    // 새로운 첨부 파일이 있다면 이동
+		    if (!"".equals(finalFileName) && !finalFileName.equals(originalFileName)) { // 새 파일이 있고 원래 이름과 다를 경우에만 (실제로 업로드된 경우)
+		        moveFileToDestination(finalFileName, boardId, "file");
+		        System.out.println("새 첨부파일 이동 완료: " + finalFileName);
+		    } else if ("".equals(finalFileName) && !"".equals(originalFileName) && "true".equals(deleteFile)){
+		        // 첨부파일 삭제 요청으로 finalFileName이 ""이 됐고 원래 파일이 있었을 때, moveFileToDestination 호출 안 함 (삭제만 함)
+		         System.out.println("첨부파일 삭제 요청됨. 이동 없음.");
+		    } else {
+		        // 파일 수정/삭제 없음 (finalFileName == originalFileName 또는 둘 다 빈값)
+		        System.out.println("첨부파일 변경 없음.");
 		    }
 
-		    if ((file == null || file.isEmpty()) && "true".equals(deleteFile)) {
-		        if (originalFileName != null && !originalFileName.isEmpty()) {
-		            File oldFile = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalFileName);
-		            if (oldFile.exists()) {
-		                boolean deleted = oldFile.delete();
-		                System.out.println("삭제 요청된 기존 첨부 파일 삭제: " + deleted + " - " + oldFile.getPath());
-		            }
-		        }
+
+		    // 새로운 배너 이미지가 있다면 이동
+		    if (!"".equals(finalBannerName) && !finalBannerName.equals(originalBannerName)) { // 새 파일이 있고 원래 이름과 다를 경우에만
+		        moveFileToDestination(finalBannerName, boardId, "banner");
+		        System.out.println("새 배너 이미지 이동 완료: " + finalBannerName);
+		    } else if ("".equals(finalBannerName) && !"".equals(originalBannerName) && "true".equals(deleteBanner)){
+		        // 배너 이미지 삭제 요청으로 finalBannerName이 ""이 됐고 원래 배너가 있었을 때
+		        System.out.println("배너 이미지 삭제 요청됨. 이동 없음.");
+		    } else {
+		         // 배너 이미지 수정/삭제 없음
+		        System.out.println("배너 이미지 변경 없음.");
 		    }
 
-		    if ("true".equals(deleteFile) && (file == null || file.isEmpty())) {
-		        modVO.setFile(null);
-		    }
 
-		    // 배너 이미지 처리
-		    if (bannerImage != null && !bannerImage.isEmpty()) {
-		        if (originalBannerName != null && !originalBannerName.isEmpty()) {
-		            File oldBanner = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
-		            if (oldBanner.exists()) {
-		                oldBanner.delete();
-		                System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
-		            }
-		        }
-		        moveFileToDestination(bannerImage, boardId, "배너 이미지");
-		    }
-
-		    if ((bannerImage == null || bannerImage.isEmpty()) && "true".equals(deleteBanner)) {
-		        if (originalBannerName != null && !originalBannerName.isEmpty()) {
-		            File oldBanner = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
-		            if (oldBanner.exists()) {
-		                boolean deleted = oldBanner.delete();
-		                System.out.println("삭제 요청된 기존 배너 이미지 삭제: " + deleted + " - " + oldBanner.getPath());
-		            }
-		        }
-		    }
-
-		    if ("true".equals(deleteBanner) && (bannerImage == null || bannerImage.isEmpty())) {
-		        modVO.setBannerImg(null);
-		    }
-
-		    // 수정된 정보를 DB에 반영
+		    // 수정된 정보를 DB에 반영 (finalFileName과 finalBannerName이 들어간 modVO 사용)
 		    boardService.modifyBoard(modVO);  // DB 수정 요청
 		    System.out.println("공지사항 글 수정 완료");
 
