@@ -88,30 +88,6 @@ request.setCharacterEncoding("UTF-8");
 						<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
 					</td>
 				</tr>
-				<tr>
-					<td colspan="2">
-						<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
-    					<span class="file-name" id="bannerFileName">
-        					<c:choose>
-            					<c:when test="${not empty board.bannerImg}">
-                					${board.bannerImg}
-            					</c:when>
-            					<c:otherwise>
-                					선택된 파일 없음
-            					</c:otherwise>
-        					</c:choose>
-    					</span>
-    					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
-		                <button type="button" id="deleteBannerBtn" onclick="deleteFile('bannerImage', 'bannerFileName', 'deleteBannerBtn', 'bannerPreview')" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
-    					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
-    					
-    					<div id="bannerPreview" style="display: inline-block; margin-left: 20px;">
-        					<c:if test="${not empty board.bannerImg}">
-            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
-        					</c:if>
-    					</div>
-					</td>
-				</tr>
 			</table>
 			
 			<div class="checkbox-group">
@@ -136,13 +112,6 @@ request.setCharacterEncoding("UTF-8");
 			fileNameSpan.textContent = '선택된 파일 없음';
 			deleteBtn.style.display = 'none';
 	
-			// 이미지 미리보기 지우기 (배너일 경우)
-			if (previewId) {
-				const previewContainer = document.getElementById(previewId);
-				if (previewContainer) {
-					previewContainer.innerHTML = '';
-				}
-			}
 		}
 	
 		// 파일 선택시 이름 출력 및 삭제 버튼 표시
@@ -162,34 +131,11 @@ request.setCharacterEncoding("UTF-8");
 			});
 		}
 	
-		// 일반 파일, 배너 이미지 둘 다 적용
+		
 		setupFileNameDisplay('file', 'fileName', 'deleteFileBtn');
-		setupFileNameDisplay('bannerImage', 'bannerFileName', 'deleteBannerBtn');
 	
-		// 배너 이미지 미리보기
-		function readURL(input) {
-			if (input.files && input.files[0]) {
-				const reader = new FileReader();
-				reader.readAsDataURL(input.files[0]);
-	
-				reader.onload = function (e) {
-					const previewContainer = document.getElementById('bannerPreview');
-					previewContainer.innerHTML = ''; // 기존 이미지 제거
-	
-					const imgPreview = document.createElement('img');
-					imgPreview.src = e.target.result;
-					imgPreview.style.width = '200px';
-					imgPreview.style.height = 'auto';
-					imgPreview.style.border = '1px solid #ccc';
-					imgPreview.style.marginTop = '5px';
-	
-					previewContainer.appendChild(imgPreview);
-				};
-			}
-		}
-		document.getElementById('bannerImage').addEventListener('change', function () {
-			readURL(this);
-		});
+
+
 	</script>
 	
 </body>

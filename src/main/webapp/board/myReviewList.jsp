@@ -160,7 +160,7 @@ request.setCharacterEncoding("UTF-8");
     	
     	<div class="board-topbar">
     		<p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
-        	<a href="${contextPath}/bbs/myReviewWrite.do" class="write-btn">글쓰기</a>
+ 	    <!--<a href="${contextPath}/bbs/myReviewWrite.do" class="write-btn">글쓰기</a>-->
     	</div>
 
         <!-- 내서평게시판 리스트 테이블 -->

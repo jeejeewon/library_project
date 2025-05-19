@@ -164,7 +164,6 @@ request.setCharacterEncoding("UTF-8");
 		    <input type="text" name="searchKeyword" class="search-input" placeholder="검색어를 입력하세요." value="${searchKeyword}">
 		    <button type="submit" class="search-btn">검색</button>
 		</form>
-    	</form>
     	
     	<div class="board-topbar">
     		<!-- 총 게시글 수 표시 -->

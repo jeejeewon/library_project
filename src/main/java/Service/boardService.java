@@ -90,7 +90,7 @@ public class boardService {
 		return boardDao.getNextBoardId(currentBoardId, category); // DAO에 category 전달
 	}
 
-	// 공지사항 게시글 수정을 위한 메소드
+	// 게시글 수정을 위한 메소드
 	public void modifyBoard(boardVO modVO) {
 		System.out.println("BoardService - modifyNotice 호출됨 (글 번호: " + modVO.getBoardId() + ")");
 		// 단순히 DAO의 updateBoard 메소드를 호출하여 글 수정 작업을 위임합니다.

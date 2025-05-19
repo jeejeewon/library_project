@@ -15,120 +15,100 @@ request.setCharacterEncoding("UTF-8");
 <head>
     <title>행사안내 리스트 - eventList.jsp</title>
     <!-- 스타일 추가 -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-            margin: 0;
-        }
+<style>
+    /* 기본 body 스타일 */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        padding: 20px;
+        margin: 0;
+    }
 
-        .board-head {
-            width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* .board-head 등 기존 스타일 유지 */
 
-        .board-head p {
-            margin-left: 10px;
-            font-size: 18px;
-            color: #666;
-        }
+    /* 행사 카드 스타일 */
+    .event-card {
+        width: 80%;
+        max-width: 1440px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        margin: 0 auto;
+    }
 
-        .search-form {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+    .non-event {
+        width: 100%;
+        text-align: center;
+    }
 
-        .search-select, .search-input, .search-btn {
-            padding: 8px;
-            font-size: 16px;
-            margin-right: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
+    /* 카드 기본 스타일 */
+    .card {
+        position: relative;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .search-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+    /* 이미지 비율을 4:3으로 유지하기 위한 스타일 */
+    .card img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 4 / 3; /* 4:3 비율 유지 */
+    }
 
-        .search-btn:hover {
-            background-color: #0056b3;
-        }
+    .card p {
+        padding: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
 
-        .search-btn:focus {
-            outline: none;
-        }
+    .card p.date {
+        font-size: 14px;
+        color: #888;
+    }
 
-        .board-topbar {
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-            margin-bottom: 20px;
-        }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .write-btn {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .write-btn:hover {
-            background-color: #218838;
-        }
-
-        /* 행사 카드 스타일 */
-        .event-card {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
+    /* 반응형 스타일 */
+    /* PC에서 최대 4개 */
+    @media (min-width: 1024px) {
         .card {
-            width: 30%;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            text-align: center;
-            transition: transform 0.3s;
+            width: calc(25% - 20px); /* 4개 열 */
         }
+    }
 
-        .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+    /* 태블릿에서는 3개로 설정 */
+    @media (max-width: 1023px) and (min-width: 768px) {
+        .card {
+            width: calc(33.33% - 20px); /* 3개 열 */
         }
+    }
 
-        .card p {
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
+    /* 모바일에서는 2개로 설정 */
+    @media (max-width: 767px) and (min-width: 480px) {
+        .card {
+            width: calc(50% - 20px); /* 2개 열 */
         }
+    }
 
-        .card p.date {
-            font-size: 14px;
-            color: #888;
+    /* 초소형 모바일에서는 1개씩 */
+    @media (max-width: 479px) {
+        .card {
+            width: 100%; /* 1개 열 */
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 페이지네이션 스타일 */
-        .pagination-wrapper {
+    }
+    
+    
+           .pagination-wrapper {
             text-align: center;
             margin-top: 20px;
         }
@@ -162,7 +142,30 @@ request.setCharacterEncoding("UTF-8");
             background-color: #007bff;
             color: white;
         }
-    </style>
+		
+		.board-topbar{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 80%
+		}
+		
+		
+		.write-btn {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .write-btn:hover {
+            background-color: #218838;
+        }
+		
+</style>
+
 </head>
 <body>
     <center>
@@ -186,22 +189,22 @@ request.setCharacterEncoding("UTF-8");
             <!-- 총 게시글 수 표시 -->
             <p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
             <!-- 글쓰기 버튼 -->
-            <a href="${contextPath}/bbs/eventWrite.do" class="write-btn">글쓰기</a>
+        	<a href="${contextPath}/bbs/noticeWrite.do" class="write-btn">글쓰기</a><!-- 공지사항의 글쓰기로 가짐 -->
         </div>
 
         <!-- 행사안내 리스트 카드 -->
         <div class="event-card">
             <!-- 글이 없을경우 -->
             <c:if test="${empty boardList}">
-                <p align="center">📭 등록된 행사가 없습니다.</p>
+                <p class="non-event">📭 등록된 행사가 없습니다.</p>
             </c:if>
 
             <!-- 게시글 반복문 -->
             <c:forEach var="board" items="${boardList}">
                 <c:if test="${not empty board.bannerImg}">
                     <!-- 배너 이미지가 있는 경우에만 -->
-                    <a href="${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}">
-                        <div class="card">
+                    <a href="${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}" class="card">
+                        <div>
                             <img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" alt="배너 이미지">
                             <p>${board.title}</p>
                             <p class="date"><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd" /></p>

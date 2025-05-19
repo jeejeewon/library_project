@@ -256,13 +256,6 @@ request.setCharacterEncoding("UTF-8");
 					<span>${board.file}</span>
 				</div>
 			</c:if>
-			<c:if test="${not empty board.bannerImg}"><!-- 배너이지미파일이 있을 경우에만 나타나도록 설정 -->
-				<div class="file">
-					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" id="preview2" alt="배너 이미지">
-					<a href="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" download class="download-link">배너이미지</a>
-					<span>${board.bannerImg}</span>
-				</div>
-			</c:if>
 		</div>
 
 		<div class="board-info-bottom">

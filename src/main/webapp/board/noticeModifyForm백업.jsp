@@ -16,6 +16,7 @@ request.setCharacterEncoding("UTF-8");
 
 <title>공지사항 글수정 - noticeModifyForm.jsp</title>
 
+
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <style>
 .file-upload-label {
@@ -44,7 +45,10 @@ request.setCharacterEncoding("UTF-8");
 </head>
 <body>
 	<center>
+
+
 		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/noticeModify.do" enctype="multipart/form-data">
+		
 			<!-- 수정 대상 게시글 ID 전달 -->
 			<input type="hidden" name="boardId" value="${board.boardId}">
 		
@@ -56,27 +60,39 @@ request.setCharacterEncoding("UTF-8");
 				</div>
 			</div>
 		
+			
 			<table align="center" border="1">
 				<tr>
 					<td>
 						<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;" value="${board.title}" onfocus="this.select()">
 					</td>
 					<td>
-						<label for="file" class="file-upload-label">첨부파일 업로드</label>
-						<span class="file-name" id="fileName">
-							<c:choose>
-            					<c:when test="${not empty board.file}">
-                					${board.file}
-            					</c:when>
-            					<c:otherwise>
-                					선택된 파일 없음
-            					</c:otherwise>
-        					</c:choose>
-    					</span>
-						<!-- 첨부파일 삭제 버튼 (초기에는 숨김) -->
-						<button type="button" id="deleteFileBtn" onclick="deleteFile('file', 'fileName', 'deleteFileBtn')" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
-    					<input type="file" name="file" id="file" class="file-input">	
+					    <label for="file" class="file-upload-label">첨부파일 업로드</label>
+					    <span class="file-name" id="fileName">
+					        <c:choose>
+					            <c:when test="${not empty board.file}">
+					                ${board.file}
+					            </c:when>
+					            <c:otherwise>
+					                선택된 파일 없음
+					            </c:otherwise>
+					        </c:choose>
+					    </span>
+					
+					    <!-- 첨부파일 삭제 버튼 -->
+					    <button type="button" id="deleteFileBtn" 
+					        onclick="deleteFile('file', 'fileName', 'deleteFileBtn')" 
+					        style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
+					
+					    <!-- 실제 파일 input -->
+					    <input type="file" name="file" id="file" class="file-input">
+					
+					    <!-- 기존 파일 이름 전송 -->
+					    <input type="hidden" name="originalFileName" value="${board.file}">
+					    <!-- 삭제 여부 전송 -->
+					    <input type="hidden" name="deleteFile" id="deleteFile" value="false">
 					</td>
+
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -85,36 +101,44 @@ request.setCharacterEncoding("UTF-8");
 				</tr>
 				<tr>
 					<td colspan="2">
-						<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
-    					<span class="file-name" id="bannerFileName">
-        					<c:choose>
-            					<c:when test="${not empty board.bannerImg}">
-                					${board.bannerImg}
-            					</c:when>
-            					<c:otherwise>
-                					선택된 파일 없음
-            					</c:otherwise>
-        					</c:choose>
-    					</span>
-    					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
-		                <button type="button" id="deleteBannerBtn" onclick="deleteFile('bannerImage', 'bannerFileName', 'deleteBannerBtn', 'bannerPreview')" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
-    					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
-    					
-    					<div id="bannerPreview" style="display: inline-block; margin-left: 20px;">
-        					<c:if test="${not empty board.bannerImg}">
-            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
-        					</c:if>
-    					</div>
+					    <label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
+					    <span class="file-name" id="bannerFileName">
+					        <c:choose>
+					            <c:when test="${not empty board.bannerImg}">
+					                ${board.bannerImg}
+					            </c:when>
+					            <c:otherwise>
+					                선택된 파일 없음
+					            </c:otherwise>
+					        </c:choose>
+					    </span>
+					
+					    <!-- 배너이미지 삭제 버튼 -->
+					    <button type="button" id="deleteBannerBtn" 
+					        onclick="deleteFile('bannerImage', 'bannerFileName', 'deleteBannerBtn', 'bannerPreview')" 
+					        style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
+					
+					    <!-- 실제 배너 이미지 input -->
+					    <input type="file" name="bannerImage" id="bannerImage" class="file-input">
+					
+					    <!-- 기존 배너 이미지 이름 전송 -->
+					    <input type="hidden" name="originalBannerName" value="${board.bannerImg}">
+					    <!-- 삭제 여부 전송 -->
+					    <input type="hidden" name="deleteBanner" id="deleteBanner" value="false">
+					
+					    <!-- 미리보기 -->
+					    <div id="bannerPreview" style="display: inline-block; margin-left: 20px;">
+					        <c:if test="${not empty board.bannerImg}">
+					            <img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" 
+					                 style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
+					        </c:if>
+					    </div>
 					</td>
 				</tr>
 			</table>
 		</form>
+
 	</center>
-
-	<!-- 히든 input 추가 (파일 삭제 여부 확인용) -->
-	<input type="hidden" id="deleteFile" name="deleteFile" value="false">
-	<input type="hidden" id="deleteBanner" name="deleteBanner" value="false">
-
 	<script>
 		// 파일 삭제 함수
 		function deleteFile(fileInputId, fileNameSpanId, deleteBtnId, previewId) {
@@ -122,12 +146,12 @@ request.setCharacterEncoding("UTF-8");
 			const fileNameSpan = document.getElementById(fileNameSpanId);
 			const deleteBtn = document.getElementById(deleteBtnId);
 	
-			// 파일 초기화
+			// 파일 input 초기화
 			fileInput.value = '';
 			fileNameSpan.textContent = '선택된 파일 없음';
 			deleteBtn.style.display = 'none';
 	
-			// 이미지 미리보기 지우기 (배너일 경우)
+			// 이미지 미리보기 제거 (배너일 경우)
 			if (previewId) {
 				const previewContainer = document.getElementById(previewId);
 				if (previewContainer) {
@@ -135,25 +159,31 @@ request.setCharacterEncoding("UTF-8");
 				}
 			}
 	
-			// 삭제 여부 히든 input 값 설정
+			// 🔥 삭제 여부를 나타내는 hidden input 값 true로 설정
 			if (fileInputId === 'file') {
-				document.getElementById('deleteFile').value = 'true'; // 파일 삭제 여부를 'true'로 설정
+				document.getElementById('deleteFile').value = 'true';
 			}
 			if (fileInputId === 'bannerImage') {
-				document.getElementById('deleteBanner').value = 'true'; // 배너 이미지 삭제 여부를 'true'로 설정
+				document.getElementById('deleteBanner').value = 'true';
 			}
 		}
 	
-		// 파일 선택시 이름 출력 및 삭제 버튼 표시
-		function setupFileNameDisplay(inputId, spanId, buttonId) {
+		// 파일 선택 시 파일명 표시 및 삭제 버튼 노출
+		function setupFileNameDisplay(inputId, spanId, buttonId, deleteHiddenId) {
 			const input = document.getElementById(inputId);
 			const span = document.getElementById(spanId);
 			const button = document.getElementById(buttonId);
+			const deleteHidden = document.getElementById(deleteHiddenId);
 	
 			input.addEventListener('change', function () {
 				if (input.files.length > 0) {
 					span.textContent = input.files[0].name;
 					button.style.display = 'inline-block';
+	
+					// 🔥 새 파일을 선택한 경우 삭제 플래그는 false로 리셋
+					if (deleteHidden) {
+						deleteHidden.value = 'false';
+					}
 				} else {
 					span.textContent = '선택된 파일 없음';
 					button.style.display = 'none';
@@ -161,9 +191,9 @@ request.setCharacterEncoding("UTF-8");
 			});
 		}
 	
-		// 일반 파일, 배너 이미지 둘 다 적용
-		setupFileNameDisplay('file', 'fileName', 'deleteFileBtn');
-		setupFileNameDisplay('bannerImage', 'bannerFileName', 'deleteBannerBtn');
+		// 일반 파일과 배너 이미지 각각 적용
+		setupFileNameDisplay('file', 'fileName', 'deleteFileBtn', 'deleteFile');
+		setupFileNameDisplay('bannerImage', 'bannerFileName', 'deleteBannerBtn', 'deleteBanner');
 	
 		// 배너 이미지 미리보기
 		function readURL(input) {
@@ -173,7 +203,7 @@ request.setCharacterEncoding("UTF-8");
 	
 				reader.onload = function (e) {
 					const previewContainer = document.getElementById('bannerPreview');
-					previewContainer.innerHTML = ''; // 기존 이미지 제거
+					previewContainer.innerHTML = '';
 	
 					const imgPreview = document.createElement('img');
 					imgPreview.src = e.target.result;
@@ -186,9 +216,12 @@ request.setCharacterEncoding("UTF-8");
 				};
 			}
 		}
+	
 		document.getElementById('bannerImage').addEventListener('change', function () {
 			readURL(this);
 		});
 	</script>
+
+	
 </body>
 </html>

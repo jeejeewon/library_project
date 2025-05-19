@@ -102,13 +102,6 @@ request.setCharacterEncoding("UTF-8");
 			display: none;
 		}
 
-		#bannerPreview img {
-			width: 200px;
-			height: auto;
-			border: 1px solid #ccc;
-			margin-top: 10px;
-			border-radius: 4px;
-		}
 
 		.checkbox-label {
 			font-size: 14px;
@@ -136,12 +129,6 @@ request.setCharacterEncoding("UTF-8");
 
 			<textarea name="content" placeholder="내용을 입력하세요"></textarea>
 
-			<div class="file-group">
-				<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
-				<span class="file-name" id="bannerFileName">선택된 파일 없음</span>
-				<input type="file" onchange="readURL(this)" name="bannerImage" id="bannerImage" class="file-input">
-				<div id="bannerPreview"></div>
-			</div>
 
 			<div class="checkbox-group">
 				<label for="secret" class="checkbox-label">
@@ -167,22 +154,7 @@ request.setCharacterEncoding("UTF-8");
 		}
 
 		setupFileNameDisplay('file', 'fileName');
-		setupFileNameDisplay('bannerImage', 'bannerFileName');
 
-		function readURL(input) {
-			if (input.files && input.files[0]) {
-				const reader = new FileReader();
-				reader.onload = function (e) {
-					const previewContainer = document.getElementById('bannerPreview');
-					previewContainer.innerHTML = ''; // clear previous
-
-					const imgPreview = document.createElement('img');
-					imgPreview.src = e.target.result;
-					previewContainer.appendChild(imgPreview);
-				};
-				reader.readAsDataURL(input.files[0]);
-			}
-		}
 	</script>
 </body>
 </html>

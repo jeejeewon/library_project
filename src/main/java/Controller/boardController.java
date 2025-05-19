@@ -70,70 +70,122 @@ public class boardController extends HttpServlet {
 	// 업로드 파일이 저장될 기본 경로 상수
 	public static final String BOARD_FILE_REPO = "C:\\workspace_libraryProject\\library_project\\src\\main\\webapp\\board\\board_file_repo";
 
-	// 파일 업로드 처리 메소드
 	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException, FileUploadException {
+	        throws ServletException, IOException, FileUploadException {
 
-		Map<String, String> uploadMap = new HashMap<>();
-		String encoding = "utf-8";
+	    Map<String, String> uploadMap = new HashMap<>();
+	    String encoding = "utf-8";
 
-		// 업로드할 파일을 임시로 저장할 폴더 생성
-		File currentDirPath = new File(BOARD_FILE_REPO);
-		File tempDir = new File(currentDirPath, "temp");
+	    // 업로드할 파일을 임시로 저장할 폴더 생성
+	    File currentDirPath = new File(BOARD_FILE_REPO);
+	    File tempDir = new File(currentDirPath, "temp");
 
-		if (!tempDir.exists()) {
-			tempDir.mkdirs(); // temp 폴더가 없으면 생성
-		}
+	    if (!tempDir.exists()) {
+	        tempDir.mkdirs(); // temp 폴더가 없으면 생성
+	    }
 
-		// 파일 업로드 환경 설정
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		factory.setSizeThreshold(1024 * 1024 * 3); // 메모리에 저장할 파일 최대 크기: 3MB
-		factory.setRepository(tempDir); // 3MB 초과 파일은 임시 폴더에 저장
+	    // 파일 업로드 환경 설정
+	    DiskFileItemFactory factory = new DiskFileItemFactory();
+	    factory.setSizeThreshold(1024 * 1024 * 3); // 메모리에 저장할 파일 최대 크기: 3MB
+	    factory.setRepository(tempDir); // 3MB 초과 파일은 임시 폴더에 저장
 
-		// 업로드 처리를 위한 객체 생성
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		upload.setHeaderEncoding(encoding); // 한글 깨짐 방지를 위한 인코딩 설정
+	    // 업로드 처리를 위한 객체 생성
+	    ServletFileUpload upload = new ServletFileUpload(factory);
+	    upload.setHeaderEncoding(encoding); // 한글 깨짐 방지를 위한 인코딩 설정
 
-		try {
-			// 업로드 요청 파싱 (폼 입력값과 파일이 모두 포함되어 있음)
-			List items = upload.parseRequest(request);
+	    try {
+	        // 업로드 요청 파싱 (폼 입력값과 파일이 모두 포함되어 있음)
+	        List<FileItem> items = upload.parseRequest(request);
 
-			for (int i = 0; i < items.size(); i++) {
-				FileItem fileItem = (FileItem) items.get(i);
+	        for (FileItem fileItem : items) {
+	            String fieldName = fileItem.getFieldName();
 
-				// 일반 입력 값 처리 (ex. 제목, 내용 등)
-				if (fileItem.isFormField()) {
-					uploadMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
-				} else { // 파일 업로드 처리
-					String fieldName = fileItem.getFieldName(); // input 태그 name 속성
-					String originalFileName = fileItem.getName(); // 사용자가 올린 원본 파일 이름
-					long fileSize = fileItem.getSize(); // 파일 크기
+	            if (fileItem.isFormField()) {
+	                uploadMap.put(fieldName, fileItem.getString(encoding));
+	            } else { // 파일 업로드 처리
+	                String originalFileName = fileItem.getName();
+	                long fileSize = fileItem.getSize(); // 파일 크기
 
-					if (fileSize > 0) { // 파일이 존재하는 경우
-						String fileNameOnly = new File(originalFileName).getName(); // 경로 제거 후 파일명만 추출
+	                if (fileSize > 0) { // 파일이 존재하는 경우
+	                    String fileNameOnly = new File(originalFileName).getName(); // 경로 제거 후 파일명만 추출
 
-						// 업로드된 파일을 임시 폴더에 저장
-						File uploadFile = new File(tempDir, fileNameOnly);
-						fileItem.write(uploadFile);
+	                    // 업로드된 파일을 임시 폴더에 저장
+	                    File uploadFile = new File(tempDir, fileNameOnly);
+	                    fileItem.write(uploadFile);
 
-						// 결과 맵에 파일 이름 저장 (이후 이동을 위해)
-						uploadMap.put(fieldName, fileNameOnly);
-					} else { // 파일이 비어 있는 경우
-						uploadMap.put(fieldName, "");
-					}
-				}
-			}
-		} catch (FileUploadException e) {
-			System.err.println("파일 업로드 실패: " + e.getMessage());
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.err.println("파일 처리 중 오류 발생: " + e.getMessage());
-			e.printStackTrace();
-			throw new ServletException("파일 업로드 중 오류 발생", e);
-		}
+	                    // 필드명에 따라 다르게 저장
+	                    if ("file".equals(fieldName)) {
+	                        uploadMap.put("file", fileNameOnly); // 글 작성용 첨부파일
+	                        uploadMap.put("newFileName", fileNameOnly); // 글 수정 시 새로 업로드한 첨부파일
+	                    } else if ("bannerImage".equals(fieldName)) {
+	                        uploadMap.put("bannerImage", fileNameOnly); // 글 작성 시 배너 이미지
+	                        uploadMap.put("newBannerName", fileNameOnly); // 글 수정 시 새로 업로드한 배너 이미지
+	                    }
+	                } else { // 파일이 비어 있는 경우
+	                    // 파일 없으면 공백 처리
+	                    if ("file".equals(fieldName)) {
+	                        uploadMap.put("newFileName", ""); // 수정 시 새 첨부파일 없음
+	                    } else if ("bannerImage".equals(fieldName)) {
+	                        uploadMap.put("newBannerName", ""); // 수정 시 새 배너 없음
+	                    }
+	                }
+	            }
+	        }
 
-		return uploadMap; // 업로드된 데이터(제목, 내용, 파일명 등) 반환
+	        // 기존 파일 이름들도 함께 수신 (수정 폼에서 hidden input으로 전달됨)
+	        uploadMap.putIfAbsent("originalFileName", "");
+	        uploadMap.putIfAbsent("originalBannerName", "");
+
+	        // 삭제 요청 파라미터 수신 (hidden input으로 전달된 값 반영)
+	        uploadMap.putIfAbsent("deleteFile", "false");
+	        uploadMap.putIfAbsent("deleteBanner", "false");
+
+	        // 기존 파일 이름들도 함께 수신 (수정 폼에서 hidden input으로 전달된 값)
+	        if (!uploadMap.containsKey("originalFileName")) {
+	            uploadMap.put("originalFileName", ""); // 없으면 공백 기본값
+	        }
+	        if (!uploadMap.containsKey("originalBannerName")) {
+	            uploadMap.put("originalBannerName", "");
+	        }
+
+	        // 첨부파일 삭제 처리
+	        if ("true".equals(uploadMap.get("deleteFile"))) {
+	            // 첨부파일만 삭제
+	            uploadMap.put("newFileName", ""); // 첨부파일 삭제
+	        } else {
+	            // 삭제되지 않으면 기존 파일 유지
+	            if ("".equals(uploadMap.get("newFileName"))) {
+	                uploadMap.put("newFileName", uploadMap.get("originalFileName"));
+	            }
+	        }
+
+	        // 배너 이미지 삭제 처리
+	        if ("true".equals(uploadMap.get("deleteBanner"))) {
+	            // 배너이미지만 삭제
+	            uploadMap.put("newBannerName", ""); // 배너 이미지 삭제
+	        } else {
+	            // 삭제되지 않으면 기존 배너 유지
+	            if ("".equals(uploadMap.get("newBannerName"))) {
+	                uploadMap.put("newBannerName", uploadMap.get("originalBannerName"));
+	            }
+	        }
+
+	    } catch (FileUploadException e) {
+	        System.err.println("파일 업로드 실패: " + e.getMessage());
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        System.err.println("파일 처리 중 오류 발생: " + e.getMessage());
+	        e.printStackTrace();
+	        throw new ServletException("파일 업로드 중 오류 발생", e);
+	    }
+
+	    return uploadMap; // 업로드된 데이터(제목, 내용, 파일명 등) 반환
 	}
+
+
+
+
+
 
 	// 임시 폴더의 파일을 실제 저장 폴더로 이동시키는 메소드
 	private void moveFileToDestination(String fileName, int boardId, String fileType) {
@@ -384,99 +436,111 @@ public class boardController extends HttpServlet {
 		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
 		// 요청주소 "/bbs/noticeModify.do"
 		if (action.equals("/noticeModify.do")) {
-			System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
+		    System.out.println("공지사항 글 수정페이지로 이동 요청 시작...");
 
-			// 파일 업로드를 포함한 수정된 폼 데이터 처리
-			// 수정 폼에서도 파일첨부가 가능하므로 uploadFile() 메소드를 호출
-			// 반환된 Map에는 수정된 글 제목, 내용, 첨부파일 등등의 정보가 담겨있습니다.
-			Map<String, String> boardMap = uploadFile(request, response);
-			System.out.println("uploadFile()메소드 Map (수정): " + boardMap);
+		    // 파일 업로드를 포함한 수정된 폼 데이터 처리
+		    Map<String, String> boardMap = uploadFile(request, response);
+		    System.out.println("uploadFile()메소드 Map (수정): " + boardMap);
 
-			// Map에서 수정 정보 추출
-			String boardIdParam = boardMap.get("boardId"); // 수정할 글 번호
-			// 글 번호 유효성 검사
-			if (boardIdParam == null || boardIdParam.isEmpty()) {
-				System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
-				throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
-			}
-			int boardId = Integer.parseInt(boardIdParam); // 글 번호를 int형으로 변환
-			String title = boardMap.get("title"); // 수정된 제목 추출
-			String content = boardMap.get("content"); // 수정된 내용 추출
-			String file = boardMap.get("file"); // 수정된 첨부파일 추출
-			String originalFileName = boardMap.get("originalFileName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 파일 // 삭제용)
-			String bannerImage = boardMap.get("bannerImage"); // 수정된 배너 이미지 추출
-			String originalBannerName = boardMap.get("originalBannerName"); // 폼에 hidden 필드로 전달된 기존 첨부 파일 이름 (파일 변경 시 기존 // 파일 삭제용)
-			System.out.println("추출된 수정 정보 : " + "boardId=" + boardId + ", title=" + title + ", content=" + content
-					+ ", file=" + file + ", bannerImage=" + bannerImage);
+		    // Map에서 수정 정보 추출
+		    String boardIdParam = boardMap.get("boardId");
+		    if (boardIdParam == null || boardIdParam.isEmpty()) {
+		        System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
+		        throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+		    }
+		    int boardId = Integer.parseInt(boardIdParam);
+		    String title = boardMap.get("title");
+		    String content = boardMap.get("content");
 
-			// boardVO 객체에 수정된 정보 저장
-			// 데이터베이스에 업데이트를 하기위해 수정된 정보와 글 번호를 boardVO 객체에 저장합니다.
-			// 주의 : 멤버 변수 boardVO 재사용시, 스레드 안전 문제 가능성이 있으므로 새 객체를 생성하는것이 안전합니다.
-			boardVO modVO = new boardVO();// 수정 정보를 담을 새 VO객체
-			modVO.setBoardId(boardId); // 수정할 글 번호 (WHERE절에서 사용됩니다.)
-			modVO.setTitle(title); // 수정된 제목
-			modVO.setContent(content); // 수정된 내용
-			modVO.setFile(file); // 수정된 첨부파일
-			modVO.setBannerImg(bannerImage); // 수정된 배너 이미지
-			modVO.setSecret(false); // 공지사항은 무조건 공개글로 처리
-			// 그 외 작성자, 작성일 등은 수정하지 않으므로 그대로 둡니다.
+		    String file = boardMap.get("newFileName");
+		    String originalFileName = boardMap.get("originalFileName");
+		    String deleteFile = boardMap.get("deleteFile");
 
-			// boardService를 통해 글 수정 처리 요청
-			// boardService에게 movVO 객체를 전달하여 DB에서 해당 글의 내용을 업데이트 하도록 요청합니다.
-			boardService.modifyBoard(modVO);
-			System.out.println("공지사항 글 수정 완료"); // 수정 완료 로그
+		    String bannerImage = boardMap.get("newBannerName");
+		    String originalBannerName = boardMap.get("originalBannerName");
+		    String deleteBanner = boardMap.get("deleteBanner");
 
-			// 첨부파일 처리
-			// 수정된 첨부파일이 있는 경우 파일 이동
-			if (file != null && !file.isEmpty()) {
-				// 새 파일을 임시 폴더(temp)에서 최종 폴더(글번호 폴더)로 이동
-				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);// 임시 폴더에 저장된
-																											// 파일
-				File destDir = new File(BOARD_FILE_REPO + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
+		    // boardVO 객체에 수정된 정보 저장
+		    boardVO modVO = new boardVO();
+		    modVO.setBoardId(boardId);
+		    modVO.setTitle(title);
+		    modVO.setContent(content);
+		    modVO.setFile(file);
+		    modVO.setBannerImg(bannerImage);
+		    modVO.setSecret(false);
 
-				// 최종 폴더가 없다면 생성
-				if (!destDir.exists()) {
-					destDir.mkdirs();
-				}
-				// 임시 파일 존재 확인 후 이동
-				if (srcFile.exists()) {
-					FileUtils.moveFileToDirectory(srcFile, destDir, true); // 파일 이동
-					System.out.println("첨부파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath()); // 이동 완료 로그
-				} else {
-					System.out.println("오류 : 임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
-				}
+		    // 첨부파일 처리
+		    if (file != null && !file.isEmpty()) {
+		        File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);
+		        File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
+		        if (!destDir.exists()) {
+		            destDir.mkdirs();
+		        }
+		        if (srcFile.exists()) {
+		            FileUtils.moveFileToDirectory(srcFile, destDir, true);
+		            System.out.println("첨부파일 이동 완료: " + srcFile.getPath() + " -> " + destDir.getPath());
+		        } else {
+		            System.out.println("오류 : 임시 파일을 찾을 수 없습니다: " + srcFile.getPath());
+		        }
 
-				// 기존 첨부파일 처리 :
-				// 기존 파일이 있었고, 새로 첨부된 파일과 이름이 다른 경우에만 기존 파일 삭제
-				if (originalFileName != null && !originalFileName.isEmpty() && !originalFileName.equals(file)) {
-					File oldFile = new File(destDir, originalFileName);
-					// 기존 파일이 존재하는 경우 삭제
-					if (oldFile.exists()) {
-						boolean deleted = oldFile.delete();
-						System.out.println("기존 첨부 파일 삭제 ( " + oldFile.getPath() + " ) : " + deleted);// 삭제 결과 로그
-					}
-				}
+		        if (originalFileName != null && !originalFileName.isEmpty() && !originalFileName.equals(file)) {
+		            File oldFile = new File(destDir, originalFileName);
+		            if (oldFile.exists()) {
+		                boolean deleted = oldFile.delete();
+		                System.out.println("기존 첨부 파일 삭제: " + deleted + " - " + oldFile.getPath());
+		            }
+		        }
+		    }
 
-			}
+		    if ((file == null || file.isEmpty()) && "true".equals(deleteFile)) {
+		        if (originalFileName != null && !originalFileName.isEmpty()) {
+		            File oldFile = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalFileName);
+		            if (oldFile.exists()) {
+		                boolean deleted = oldFile.delete();
+		                System.out.println("삭제 요청된 기존 첨부 파일 삭제: " + deleted + " - " + oldFile.getPath());
+		            }
+		        }
+		    }
 
-			// 수정된 배너 이미지가 있는 경우 파일 이동
-			if (bannerImage != null && !bannerImage.isEmpty()) {
-				if (originalBannerName != null && !originalBannerName.isEmpty()) {
-					File oldBanner = new File(
-							BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
-					if (oldBanner.exists()) {
-						oldBanner.delete();
-						System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
-					}
-				}
+		    if ("true".equals(deleteFile) && (file == null || file.isEmpty())) {
+		        modVO.setFile(null);
+		    }
 
-				moveFileToDestination(bannerImage, boardId, "배너 이미지");
-			}
+		    // 배너 이미지 처리
+		    if (bannerImage != null && !bannerImage.isEmpty()) {
+		        if (originalBannerName != null && !originalBannerName.isEmpty()) {
+		            File oldBanner = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
+		            if (oldBanner.exists()) {
+		                oldBanner.delete();
+		                System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
+		            }
+		        }
+		        moveFileToDestination(bannerImage, boardId, "배너 이미지");
+		    }
 
-			// 수정 후 상세페이지로 리디렉션
-			response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
+		    if ((bannerImage == null || bannerImage.isEmpty()) && "true".equals(deleteBanner)) {
+		        if (originalBannerName != null && !originalBannerName.isEmpty()) {
+		            File oldBanner = new File(BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
+		            if (oldBanner.exists()) {
+		                boolean deleted = oldBanner.delete();
+		                System.out.println("삭제 요청된 기존 배너 이미지 삭제: " + deleted + " - " + oldBanner.getPath());
+		            }
+		        }
+		    }
 
-		} // end of noticeModify.do
+		    if ("true".equals(deleteBanner) && (bannerImage == null || bannerImage.isEmpty())) {
+		        modVO.setBannerImg(null);
+		    }
+
+		    // 수정된 정보를 DB에 반영
+		    boardService.modifyBoard(modVO);  // DB 수정 요청
+		    System.out.println("공지사항 글 수정 완료");
+
+		    // 수정 후 상세페이지로 리디렉션
+		    response.sendRedirect(request.getContextPath() + "/bbs/noticeInfo.do?boardId=" + boardId);
+		}
+
+		// end of noticeModify.do
 
 		
 
@@ -841,8 +905,7 @@ public class boardController extends HttpServlet {
 			// 수정된 첨부파일이 있는 경우 파일 이동
 			if (file != null && !file.isEmpty()) {
 				// 새 파일을 임시 폴더(temp)에서 최종 폴더(글번호 폴더)로 이동
-				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);// 임시 폴더에 저장된
-																											// 파일
+				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);// 임시 폴더에 저장된 파일
 				File destDir = new File(BOARD_FILE_REPO + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
 
 				// 최종 폴더가 없다면 생성
@@ -867,9 +930,10 @@ public class boardController extends HttpServlet {
 						System.out.println("기존 첨부 파일 삭제 ( " + oldFile.getPath() + " ) : " + deleted);// 삭제 결과 로그
 					}
 				}
-
 			}
 
+			
+			
 			// 수정된 배너 이미지가 있는 경우 파일 이동
 			if (bannerImage != null && !bannerImage.isEmpty()) {
 				if (originalBannerName != null && !originalBannerName.isEmpty()) {
@@ -952,13 +1016,162 @@ public class boardController extends HttpServlet {
 		    request.setAttribute("section", section);
 		    request.setAttribute("pageNum", pageNum);
 
-			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			// 메인화면 중앙에 보여줄 myReviewList.jsp를 request에 "center"라는 이름으로 저장하기
 			request.setAttribute("center", "board/myReviewList.jsp");
 
 			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
 			nextPage = "/main.jsp";
 
 		}
+		
+		
+		
+		
+		
+		// 내서평 상세페이지
+		// 요청주소 "/bbs/myReviewInfo.do"
+		if (action.equals("/myReviewInfo.do")) {
+
+			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
+
+			// 조회할 글번호 파라미터 수신
+			// URL 쿼리 파라미터(?boardId=...)로 전달된 조회할 글의 번호를 읽어옵니다.
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
+			boardVO viewedBoard = boardService.viewBoard(boardId);
+
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));// 조회
+																														// 결과
+																														// 로그
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (viewedBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
+
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBoardId(boardId, category);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBoardId(boardId, category);
+			request.setAttribute("getNextBoardId", getNextBoardId);
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", viewedBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 myReviewInfo.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/myReviewInfo.jsp");
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		} // end of myReviewInfoInfo.do
+
+		
+		
+		// 내서평 글 수정하기
+		// 상세페이지에서 수정 버튼을 눌렀을때 수정페이지 요청
+		// 요청주소 "/bbs/myReviewModifyForm.do"
+		if (action.equals("/myReviewModifyForm.do")) {
+			System.out.println("내서평 글 수정 페이지 요청 시작...");
+
+			// 글번호 파라미터 수신
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
+				throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			boardVO modBoard = boardService.viewBoard(boardId);
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (modBoard != null ? "BoardId=" + modBoard.getBoardId() : "null"));// 조회 결과
+																												// 로그
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (modBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", modBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 noticeModifyForm.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/myReviewModifyForm.jsp");
+
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		} // end of myReviewModifyForm.do
+
+		// 수정페이지에서 (수정을 다 하고,) 수정버튼 눌렀을때 수정처리 요청
+		// 요청주소 "/bbs/myReviewModify.do"
+		if (action.equals("/myReviewModify.do")) {
+		    System.out.println("내서평 글 수정페이지로 이동 요청 시작...");
+
+		    // 파일 업로드를 포함한 수정된 폼 데이터 처리
+		    Map<String, String> boardMap = uploadFile(request, response);
+		    System.out.println("uploadFile()메소드 Map (수정): " + boardMap);
+
+		    // Map에서 수정 정보 추출
+		    String boardIdParam = boardMap.get("boardId");
+		    if (boardIdParam == null || boardIdParam.isEmpty()) {
+		        System.out.println("오류 : 글 수정 요청에 글번호(boardId) 파라미터 누락.");
+		        throw new ServletException("글 수정 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+		    }
+		    int boardId = Integer.parseInt(boardIdParam);
+		    String title = boardMap.get("title");
+		    String content = boardMap.get("content");
+
+		    // boardVO 객체에 수정된 정보 저장
+		    boardVO modVO = new boardVO();
+		    modVO.setBoardId(boardId);
+		    modVO.setTitle(title);
+		    modVO.setContent(content);
+		    modVO.setSecret(false);
+
+		    // 수정된 정보를 DB에 반영
+		    boardService.modifyBoard(modVO);  // DB 수정 요청
+		    System.out.println("내서평 글 수정 완료");
+
+		    // 수정 후 상세페이지로 리디렉션
+		    response.sendRedirect(request.getContextPath() + "/bbs/myReviewInfo.do?boardId=" + boardId);
+		}
+
+		// end of myReviewModify.do
+		
+		
+		
+	
 	
 		
 		
@@ -1012,7 +1225,7 @@ public class boardController extends HttpServlet {
             request.setAttribute("section", section);
             request.setAttribute("pageNum", pageNum);
 
-			// 메인화면 중앙에 보여줄 noticeList.jsp를 request에 "center"라는 이름으로 저장하기
+			// 메인화면 중앙에 보여줄 eventList.jsp를 request에 "center"라는 이름으로 저장하기
 			request.setAttribute("center", "board/eventList.jsp");
 
 			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
@@ -1021,16 +1234,7 @@ public class boardController extends HttpServlet {
 		}
 		
 		
-		
-		
-		
 
-		
-		
-		
-		
-		
-	
 		
 		
 		
@@ -1073,6 +1277,7 @@ public class boardController extends HttpServlet {
 		Map<String, String> redirectMap = new HashMap<>();
 		redirectMap.put("/removeQuestion.do", "/bbs/questionList.do");
 		redirectMap.put("/removeNotice.do", "/bbs/noticeList.do");
+		redirectMap.put("/removeReviewList.do", "/bbs/myReviewList.do");
 //		redirectMap.put("/removeEvent.do", "/bbs/eventList.do");  추후 다른걸로 추가예정
 
 		// 해당 요청이 매핑에 있는지 확인

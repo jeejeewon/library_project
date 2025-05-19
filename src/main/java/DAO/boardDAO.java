@@ -292,12 +292,19 @@ public class boardDAO {
 
             String sql = "UPDATE board SET title = ?, content = ?, secret = ?";
 
+            // file과 bannerImg가 null이 아닐 경우에만 업데이트
             if (file != null && !file.isEmpty()) {
                 sql += ", file = ?";
+            } else {
+                sql += ", file = NULL"; // 파일 삭제 시 NULL로 설정
             }
+
             if (bannerImg != null && !bannerImg.isEmpty()) {
                 sql += ", banner_img = ?";
+            } else {
+                sql += ", banner_img = NULL"; // 배너 이미지 삭제 시 NULL로 설정
             }
+
             sql += " WHERE board_id = ?";
 
             pstmt = con.prepareStatement(sql);
@@ -305,6 +312,7 @@ public class boardDAO {
             pstmt.setString(2, content);
             pstmt.setBoolean(3, secret);
 
+            // 파일 처리
             if (file != null && !file.isEmpty()) {
                 pstmt.setString(4, file);
                 if (bannerImg != null && !bannerImg.isEmpty()) {
