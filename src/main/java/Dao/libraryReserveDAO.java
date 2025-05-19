@@ -489,7 +489,7 @@ public class libraryReserveDAO {
 		System.out.println("allReservedList DAO 호출됨===================");
 		
 		// 0:이용중, 1:이용전, 2:이용완료
-		String sql = "select r.*, m.tel as tel, "
+		String sql = "select r.*, m.tel as tel, m.email as email, "
 		           + "case when now() between date_add(r.reserve_date, interval r.reserve_start hour) "
 		           + "and date_add(r.reserve_date, interval r.reserve_end hour) then 0 "
 		           + "when now() < date_add(r.reserve_date, interval r.reserve_start hour) then 1 "
@@ -519,6 +519,7 @@ public class libraryReserveDAO {
 						           rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));		
 			
 				libraryReserveVO.setTel(rs.getString("tel"));
+				libraryReserveVO.setEmail(rs.getString("email"));				
 				
 				reservedList.add(libraryReserveVO);
 				

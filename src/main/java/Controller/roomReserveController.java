@@ -121,7 +121,7 @@ public class roomReserveController extends HttpServlet{
 			//로그인한 사용자의 예약내역을 List로 받아오기
 			List<libraryReserveVO> reserveList = roomReserveService.selectReserveList(userId);
 			
-			System.out.println("예약내역 리스트 : " + reserveList);
+			System.out.println("예약내역 리스트 : " + reserveList);		
 			
 			//List를 request에 바인딩
 			request.setAttribute("reserveList", reserveList);
@@ -145,7 +145,7 @@ public class roomReserveController extends HttpServlet{
 			//관리자가 아닐 경우 
 			if(userId == null || !userId.equals("admin")) {
 				response.setContentType("text/html;charset=utf-8");
-				out.println("<script>alert('접근 권한이 없습니다. 관리자에게 문의하세요.');  location.href='" + contextPath + "/member/login';</script>");
+				out.println("<script>alert('접근 권한이 없습니다. 관리자에게 문의하세요.');  location.href='" + contextPath + "/view/main';</script>");
 				out.flush();
 				out.close();
 				return;
@@ -448,14 +448,6 @@ public class roomReserveController extends HttpServlet{
 			
 			//예약완료 후 예약내역 페이지로 이동
 			nextPage = "/reserve/reserveCheck";
-			
-			
-		//관리자메뉴에서 시설예약관리 메뉴 클릭했을 때 보여줄 뷰페이지 이동	
-		}else if(action.equals("/reserveAdmin")) {			
-			
-			request.setAttribute("center", "/libReserve/reserveAdmin.jsp");			
-			nextPage = "/main.jsp";							
-			
 			
 		//전체 시설 예약 내역 조회
 		}else if(action.equals("/allReservedList")){

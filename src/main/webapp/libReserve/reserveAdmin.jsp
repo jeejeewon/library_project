@@ -58,9 +58,15 @@
 			white-space: nowrap;		 
         }
         
-        .action-link {
+        .mod-link {
 			text-decoration: none;
 			cursor: pointer;
+			color: blue;
+        }
+        .cancel-link{
+        	text-decoration: none;
+			cursor: pointer;
+			color: red;
         }
         
         .upcoming{
@@ -92,7 +98,7 @@
 			font-weight: bold;
 			color: #F29661; /* 강조 색 */
 		}
-        
+    
 	</style>
 </head>
 <body>
@@ -131,7 +137,7 @@
 		        </tr>
 		    </thead>
 		    <tbody id="reserveList">
-		        <!-- 동적으로 예약 리스트가 들어갈 자리 -->
+		        <!-- 동적으로 예약 리스트가 들어갈 자리 -->				          
 		    </tbody>
         </table>
         <div id="pagination" style="margin-top: 20px;">
@@ -157,7 +163,7 @@
 				renderTable();  //예약 리스트 출력 함수 호출
 				renderPagination(); //페이징 출력 함수 호출
 			    //체크박스 '전체'에 트리거
-			   	$("input[type='checkbox']:checked").trigger("change");
+			   	$("input[type='checkbox']:checked").trigger("change");		
 			},
 			error: function(err) {
 				console.error('예약 데이터 로딩 실패', err);
@@ -168,10 +174,20 @@
 	//예약 리스트 출력 함수
 	function renderTable() {
 		$("#reserveList").empty(); 
+		
+		if (filteredData.length === 0) {
+			$("#reserveList").append(
+				"<tr id='noResultMsg'><td colspan='9' style='text-align:center;'>검색된 결과가 없습니다.</td></tr>"
+			);
+		    return;
+		} else {
+			$("#noResultMsg").remove();
+		}	
+		
 		let start = (currentPage - 1) * pageSize; 
 		let end = start + pageSize;
 		let pageData = filteredData.slice(start, end); 
-		
+							
 		//현재 시간을 비교하여 이용현황 보여줄 Date객체 생성
 		let now = new Date();
 		
@@ -205,6 +221,16 @@
 			var dateTime = vo.reserveTime.split(" ");
 			var date = dateTime[0];
 			var time = dateTime[1];
+			var seat = vo.reserveSeat != 0 ? "-" + vo.reserveSeat + "번" : "";
+
+			
+			//이용현황에 따른 수정 가능 여부 판단
+			let actionTd = "";
+			if(status === "이용전"){
+				actionTd = "<a href='#' class='mod-link'>수정</a><br><a href='#' class='cancel-link'>삭제</a>";
+			}else{
+				actionTd = "수정불가";
+			}
 			
 			//동적으로 테이블 생성
 			$("#reserveList").append(
@@ -212,13 +238,12 @@
 				+ "<td>" + vo.reserveNum + "</td>"
 				+ "<td>" + vo.reserveDate + "</td>"
 				+ "<td>" + vo.reserveStart + ":00 ~ " + vo.reserveEnd + ":00</td>"
-				+ "<td>" + vo.reserveRoom + "</td>"
+				+ "<td>" + vo.reserveRoom + seat + "</td>"
 				+ "<td>" + vo.reserveName + "</td>"
 				+ "<td>" + vo.tel + "</td>"
 				+ "<td>" + date + "<br>" + time + "</td>"
 				+ "<td><span class='" + spanClass + "'>" + status + "</span></td>"
-				+ "<td><a href='#' class='action-link'>수정</a><br>"
-				+ "<a href='#' class='action-link' style='color: red;'>삭제</a></td>"
+				+ "<td>" + actionTd + "</td>"
 				+ "</tr>"
 			);
 		});
@@ -234,29 +259,90 @@
 			//'전체' 외의 체크박스 체크시 배열에 value값 저장
 			if (value !== "all") selectedStatuses.push(value);
 		});
-
-		//배열에 값이 없거나, '전체'버튼 체크할 경우 
-		if (selectedStatuses.length === 0 || checked.filter('[value="all"]').is(':checked')) {
-			return [...allData]; //전체 리턴
+		
+		let baseData = [...allData];
+		
+		//배열의 길이가 0이 아니거나, 체크박스 중 '전체'를 클릭하지 않았을 경우
+		if (selectedStatuses.length !== 0 && !checked.filter('[value="all"]').is(':checked')) {		
+			//전체 리스트 중 선택한 체크박스의 값에 따라 데이터 리턴
+			baseData = baseData.filter(vo => {
+				
+				let now = new Date();
+				let reserveDate = new Date(vo.reserveDate);
+				let startTime = new Date(reserveDate);
+				startTime.setHours(vo.reserveStart, 0, 0, 0);
+				let endTime = new Date(reserveDate);
+				endTime.setHours(vo.reserveEnd, 0, 0, 0);
+				
+				let status = '';
+				if (now < startTime) status = 'upcoming';
+				else if (now >= startTime && now <= endTime) status = 'in-use';
+				else status = 'completed';
+				
+				return selectedStatuses.includes(status);	
+			});				
+		} //if문 끝
+		
+		//날짜 검색 필터링
+		const startDate = $("#startDate").val();
+		const endDate = $("#endDate").val();
+		
+		//검색 시작 날짜와 종료 날짜 중 하나가 있을 경우
+		if (startDate || endDate) {
+		    baseData = baseData.filter(vo => {
+		        const resDate = new Date(vo.reserveDate);
+		        if (startDate && resDate < new Date(startDate)) return false;
+		        if (endDate && resDate > new Date(endDate)) return false;
+		        return true;
+		    });
 		}
 		
-		//전체 리스트 중 선택한 체크박스의 값에 따라 데이터 리턴
-		return allData.filter(vo => {
-			let now = new Date();
-			let reserveDate = new Date(vo.reserveDate);
-			let startTime = new Date(reserveDate);
-			startTime.setHours(vo.reserveStart, 0, 0, 0);
-			let endTime = new Date(reserveDate);
-			endTime.setHours(vo.reserveEnd, 0, 0, 0);
-			
-			let status = '';
-			if (now < startTime) status = 'upcoming';
-			else if (now >= startTime && now <= endTime) status = 'in-use';
-			else status = 'completed';
-			
-			return selectedStatuses.includes(status);
-		});
-	}  
+		//검색어 필터링 
+		const keyword = $("#keyword").val(); //검색 조건 값
+		const searchVal = $("#search").val().toLowerCase(); //사용자가 입력한 검색어의 값
+		
+		//사용자가 검색어를 입력했다면?
+		if(searchVal){
+			baseData = baseData.filter(vo => {				
+				//모든 값을 소문자 문자열로 변환해서 검사
+				const lowerSearchVal = searchVal.toLowerCase();
+				
+				if(keyword === "name"){ //검색 조건을 '예약자명'으로 했을 경우
+					//DB의 예약자명에 사용자가 입력한 검색어가 포함되어 있는지 검사하고 결과값 반환
+					// vo.reserveName?. 의 값이 null이거나 undefined일 경우 에러 날 수 있으므로 이를 방지함 (undefined 반환)
+					return (vo.reserveName ?? "").toLowerCase().includes(lowerSearchVal);
+				}else if(keyword === "room"){ //검색 조건을 '예약시설명'으로 했을 경우
+					return (vo.reserveRoom ?? "").toLowerCase().includes(lowerSearchVal);
+				}else if(keyword === "all"){ //검색 조건을 '전체'로 했을 경우
+
+					return Object.values(vo).some(val =>
+						 //Object.values(vo) vo 객체의 값들만 배열로 뽑아옴
+						 //some() 배열 중 하나라도 조건을 만족하면 true
+	                	String(val ?? "").toLowerCase().includes(lowerSearchVal)
+	                );	
+				}				
+			});	
+		}		
+		return baseData;	
+	} //filterData() 끝 
+	
+	
+	//'검색'버튼 click 이벤트
+	$("#searchBtn").on("click", function () {
+		currentPage = 1;
+		filteredData = filterData(); //체크박스 필터링 함수 호출
+		renderTable(); //예약 리스트 출력 함수 호출
+		renderPagination(); //페이징 출력 함수 호출
+	});
+	
+	
+	//검색어를 입력하고 엔터를 눌렀을 경우 이벤트
+	$("#search").on("keypress", function (e) {
+		if (e.which === 13) {
+			$("#searchBtn").click();
+		}
+	});
+	
   
 	//페이징 출력 함수
 	function renderPagination() {
@@ -308,9 +394,7 @@
 		renderTable();
 		renderPagination();
 	});
-  
-  
-  
+	
 
 </script>
 </html>
