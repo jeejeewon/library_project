@@ -94,5 +94,13 @@ input[type="submit"] {
 	padding: 8px 18px;
 	color: #fff;
 	cursor: pointer;
-	font-weight: 600;
+	font-weight: 600;   
+}
+
+a {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
 }

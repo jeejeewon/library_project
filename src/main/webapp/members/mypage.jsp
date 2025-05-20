@@ -18,11 +18,13 @@ if (id == null) { // 로그인하지 않은 경우
 }
 %>
 
-<div id="myPageMain" class="mypage">
-	<jsp:include page="mypageMenu.jsp" />
-	<div class="page">
-		<div class="inner">		
-		마이페이지 기본 메인
+<div class="container">
+	<div id="myPageMain" class="mypage">
+		<jsp:include page="mypageMenu.jsp" />
+		<div class="page">
+			<div class="inner">		
+			마이페이지 기본 메인
+			</div>
 		</div>
 	</div>
 </div>

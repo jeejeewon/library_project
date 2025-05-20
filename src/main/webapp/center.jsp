@@ -12,7 +12,7 @@
 				<form action="">
 					<input type="text" placeholder="검색어를 입력하세요.">
 					<button type="submit">
-						<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="35"height="35" viewBox="0,0,256,256">
+						<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30"height="30" viewBox="0,0,256,256">
 						<g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1"
 								stroke-linecap="butt" stroke-linejoin="miter"
 								stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
