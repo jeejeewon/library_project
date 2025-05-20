@@ -20,6 +20,10 @@
     <title>전체 대여 목록</title>
     <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
     <style>
+        body {
+            background-color: #fafafa;
+        }
+
         .content-box {
             max-width: 1200px;
             margin: 0 auto;
@@ -54,33 +58,64 @@
 
         table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 14px;
+        }
+
+        colgroup col {
+            width: auto;
         }
 
         th, td {
-            text-align: center;
-            padding: 6px 6px;
+            padding: 10px;
+            font-size: 14px;
             border: 1px solid #ccc;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            text-align: center;
+            vertical-align: middle;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
 
         th {
-            background-color: #f8f8f8;
+            background-color: #f0f0f0;
+            color: #333;
         }
 
         .thumbnail {
-            width: 40px;
+            width: 45px;
             height: 60px;
             object-fit: cover;
             border-radius: 4px;
         }
 
+        .returned {
+            color: green;
+            font-weight: bold;
+        }
+
+	
+	    .not-returned {
+	        color: red;
+	        font-weight: bold;
+	    }
+        
+        .not-returned-row {
+        background-color: #fff3f3; /* 연한 빨강 */
+	    }
+
+	
+        .user-link {
+            color: #003c83;
+            text-decoration: underline;
+        }
+
+        .user-link:hover {
+            color: #002c66;
+        }
+
         .pagination {
             text-align: center;
+            margin-top: 30px;
         }
 
         .pagination a {
@@ -88,7 +123,6 @@
             margin: 0 4px;
             padding: 6px 10px;
             border-radius: 4px;
-            font-size: 14px;
             background-color: #eee;
             color: #333;
             text-decoration: none;
@@ -123,6 +157,16 @@
 
     <% if (rentalList != null && !rentalList.isEmpty()) { %>
         <table>
+            <colgroup>
+                <col style="width: 6%;">
+                <col style="width: 8%;">
+                <col style="width: 20%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 14%;">
+                <col style="width: 10%;">
+            </colgroup>
             <thead>
                 <tr>
                     <th>대여번호</th>
@@ -135,32 +179,38 @@
                     <th>상태</th>
                 </tr>
             </thead>
-            <tbody>
-                <% for (RentalVo rental : rentalList) {
-                    BookVo book = rental.getBook();
-                %>
-                    <tr>
-                        <td><%= rental.getRentNo() %></td>
-                        <td>
-                            <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
-                                 class="thumbnail"
-                                 onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
-                        </td>
-                        <td><%= book.getTitle() %></td>
-                        <td><%= rental.getUserId() %></td>
-                        <td><%= sdf.format(rental.getStartDate()) %></td>
-                        <td><%= sdf.format(rental.getReturnDue()) %></td>
-                        <td><%= rental.getReturnDate() != null ? sdf.format(rental.getReturnDate()) : "-" %></td>
-                        <td>
-                            <% if (rental.getReturnState() == 1) { %>
-                                ✔ 반납
-                            <% } else { %>
-                                ❌ 미반납
-                            <% } %>
-                        </td>
-                    </tr>
-                <% } %>
-            </tbody>
+            
+			<tbody>
+			<% for (RentalVo rental : rentalList) {
+			    BookVo book = rental.getBook();
+			    boolean isReturned = rental.getReturnState() == 1;
+			%>
+			    <tr class="<%= isReturned ? "" : "not-returned-row" %>">
+			        <td><%= rental.getRentNo() %></td>
+			        <td>
+			            <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
+			                 class="thumbnail"
+			                 onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
+			        </td>
+			        <td><%= book.getTitle() %></td>
+			        <td>
+			            <a href="<%= contextPath %>/members/userDetail.jsp?userId=<%= rental.getUserId() %>" class="user-link">
+			                <%= rental.getUserId() %>
+			            </a>
+			        </td>
+			        <td><%= sdf.format(rental.getStartDate()) %></td>
+			        <td><%= sdf.format(rental.getReturnDue()) %></td>
+			        <td><%= rental.getReturnDate() != null ? sdf.format(rental.getReturnDate()) : "-" %></td>
+			        <td>
+			            <% if (isReturned) { %>
+			                <span class="returned">✔ 반납</span>
+			            <% } else { %>
+			                <span class="not-returned">❌ 미반납</span>
+			            <% } %>
+			        </td>
+			    </tr>
+			<% } %>
+			</tbody>
         </table>
 
         <div class="pagination">
@@ -180,7 +230,6 @@
                 <a href="<%= contextPath %>/books/allRental.do?page=<%= currentPage + 1 %>">▶</a>
             <% } %>
         </div>
-
     <% } else { %>
         <div class="empty-message">대여 기록이 없습니다.</div>
     <% } %>

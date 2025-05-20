@@ -9,6 +9,7 @@
     int pageSize = (int) request.getAttribute("pageSize");
     int totalPage = (int) Math.ceil((double) totalCount / pageSize);
     String message = (String) request.getAttribute("message");
+    Boolean fromUpdate = (Boolean) request.getAttribute("fromUpdate");
 %>
 
 <!DOCTYPE html>
@@ -18,34 +19,31 @@
     <title>도서 수정/삭제</title>
     <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
     <style>
+        body {
+            background-color: #fafafa;
+        }
+
         .content-box {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
         .title {
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             margin-bottom: 30px;
             color: #003c83;
         }
 
-        .message {
-            color: green;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        
         .toolbar {
             text-align: right;
             margin-bottom: 20px;
         }
-        
+
         .toolbar a {
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-size: 14px;
             border-radius: 4px;
             background-color: #003c83;
@@ -57,57 +55,45 @@
             background-color: #002c66;
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-        }
-
-        .card img {
+        table {
             width: 100%;
-            max-width: 140px;
-            height: auto;
-            aspect-ratio: 3 / 4;
-            object-fit: cover;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .card .title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .card .author {
+            table-layout: fixed;
+            border-collapse: collapse;
             font-size: 14px;
-            color: #666;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .title-link {
+            color: #003c83;
+            text-decoration: underline;
+        }
+
+        .title-link:hover {
+            color: #002c66;
         }
 
         .btn {
-            margin-top: 10px;
-            padding: 8px 14px;
-            font-size: 14px;
+            padding: 6px 12px;
+            font-size: 13px;
+            border: none;
             border-radius: 4px;
             background-color: #003c83;
             color: white;
             text-decoration: none;
-            display: inline-block;
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -115,14 +101,14 @@
         }
 
         .pagination {
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
         }
 
         .pagination a {
             display: inline-block;
-            margin: 0 6px;
-            padding: 6px 12px;
+            margin: 0 4px;
+            padding: 6px 10px;
             border-radius: 4px;
             font-size: 14px;
             background-color: #eee;
@@ -152,50 +138,69 @@
 <body>
 <div class="content-box">
     <div class="title">도서 수정 및 삭제</div>
-    
+
     <div class="toolbar">
-        <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a>
-    </div>    
-        
-	<%
-	    Boolean fromUpdate = (Boolean) request.getAttribute("fromUpdate");
-	    if (fromUpdate != null && fromUpdate && message != null) {
-	%>
-	<script>
-	    alert("<%= message.replaceAll("\"", "\\\\\"") %>");
-	</script>
-	<%
-	    }
-	%>     
+        <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a> 
+    </div>
+    <br><br>
+
+    <% if (fromUpdate != null && fromUpdate && message != null) { %>
+    <script>
+        alert("<%= message.replaceAll("\"", "\\\\\"") %>");
+    </script>
+    <% } %>
 
     <% if (bookList != null && !bookList.isEmpty()) { %>
-        <div class="grid-container">
-            <% for (BookVo book : bookList) { %>
-                <div class="card">
-                    <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>">
-                        <img src="<%= contextPath %>/<%= book.getThumbnail() %>"
-                             onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="도서 썸네일">
-                    </a>
-                    <div class="title"><%= book.getTitle() %></div>
-                    <div class="author"><%= book.getAuthor() %></div>
-                    <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn">수정/삭제</a>
-                </div>
-            <% } %>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 8%;">책NO</th>
+                    <th style="width: 30%;">도서명</th>
+                    <th style="width: 14%;">저자</th>
+                    <th style="width: 14%;">출판사</th>
+                    <th style="width: 10%;">분야</th>
+                    <th style="width: 10%;">출판년도</th>                    
+                    <th style="width: 10%;">도서상태</th>                    
+                    <th style="width: 10%;">관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (BookVo book : bookList) { %>
+                <tr>
+                    <td><%= book.getBookNo() %></td>
+                    <td><%= book.getTitle() %></td>
+                    <td><%= book.getAuthor() %></td>
+                    <td><%= book.getPublisher() %></td>
+                    <td><%= book.getCategory() %></td>
+                    <td><%= book.getPublishYear() %></td>
+                    <td>
+			            <% if (book.getRentalState() == 0) { %>
+			                <span style="color: green;">대출가능</span>
+			            <% } else if (book.getRentalState() == 1) { %>
+			                <span style="color: red;">대출 중</span>
+			            <% } else { %>
+			            	<span style="color: gray;">분실 또는 이용 불가</span>
+			            <% } %>
+                    </td>
+                    <td>
+                        <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn">수정/삭제</a>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
 
         <div class="pagination">
             <% if (currentPage > 1) { %>
                 <a href="<%= contextPath %>/books/updateBook.do?page=<%= currentPage - 1 %>">◀</a>
             <% } %>
-
             <% for (int i = 1; i <= totalPage; i++) { %>
                 <% if (i == currentPage) { %>
                     <a class="active"><%= i %></a>
                 <% } else { %>
-                    <a href="<%= contextPath %>/books/updateBook.do?page=<%= i %>"><%= i %></a>
+                    <a href="<%= contextPath %>/books/updateBook.do?page=<%= i %>"> <%= i %> </a>
                 <% } %>
             <% } %>
-
             <% if (currentPage < totalPage) { %>
                 <a href="<%= contextPath %>/books/updateBook.do?page=<%= currentPage + 1 %>">▶</a>
             <% } %>

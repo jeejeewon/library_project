@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="<%= contextPath %>/css/common.css">
     <style>
         .content-box {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }

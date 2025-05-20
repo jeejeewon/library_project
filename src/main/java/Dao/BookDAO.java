@@ -46,7 +46,13 @@ public class BookDAO{
                 book.setBookNo(rs.getInt("book_no"));
                 book.setTitle(rs.getString("title"));
                 book.setAuthor(rs.getString("author"));
+                book.setPublisher(rs.getString("publisher"));      
+                book.setPublishYear(rs.getInt("publish_year"));
+                book.setIsbn(rs.getString("isbn"));                
+                book.setCategory(rs.getString("category"));          
+                book.setBookInfo(rs.getString("book_info"));  
                 book.setThumbnail(rs.getString("thumbnail"));
+                book.setRentalState(rs.getInt("rental_state"));  
                 list.add(book);
             }
         } catch (Exception e) {
@@ -56,7 +62,8 @@ public class BookDAO{
         }
 
         return list;
-    }    
+    }
+   
     
     // 도서 상세정보
     public BookVo getBook(int bookNo) {
@@ -243,6 +250,8 @@ public class BookDAO{
     }
     
     // 도서 대여
+    // rental_book 테이블에 return 날짜와 return 상태 반영
+    // book 테이블에 rental 상태 반영과 대여횟수 추가
     public boolean rentBook(String userId, int bookNo) {
         boolean result = false;
         String insertSql = "INSERT INTO rental_book (user_id, book_no, "
@@ -349,7 +358,6 @@ public class BookDAO{
         }
         return list;
     }
-
     
     // 도서 등록
     public boolean addBook(BookVo book) {
@@ -363,7 +371,7 @@ public class BookDAO{
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getAuthor());
             pstmt.setString(3, book.getPublisher());
-            pstmt.setInt(4, book.getPublishYear());
+            pstmt.setInt(4, book.getPublishYear()); // 출간년도만 입력
             pstmt.setString(5, book.getIsbn());
             pstmt.setString(6, book.getCategory());
             pstmt.setString(7, book.getBookInfo());
@@ -376,7 +384,27 @@ public class BookDAO{
         }
         return result;
     }
-
+    
+    // isbn 중복 확인
+    public boolean isIsbnExists(String isbn) {
+        boolean exists = false;
+        String sql = "SELECT COUNT(*) FROM book WHERE isbn = ?";
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, isbn);
+            rs = pstmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                exists = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+        return exists;
+    }
+ 
     // 도서 수정
     public boolean updateBook(BookVo book) {
         boolean result = false;
@@ -390,7 +418,7 @@ public class BookDAO{
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getAuthor());
             pstmt.setString(3, book.getPublisher());
-            pstmt.setInt(4, book.getPublishYear());
+            pstmt.setInt(4, book.getPublishYear());  // 출간년도만 입력
             pstmt.setString(5, book.getIsbn());
             pstmt.setString(6, book.getCategory());
             pstmt.setString(7, book.getBookInfo());

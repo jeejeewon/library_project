@@ -22,6 +22,13 @@
             margin: 0 auto;
             padding: 40px 20px;
         }
+        
+        .category-select {
+		    padding: 8px 12px;
+		    font-size: 14px;
+		    border-radius: 4px;
+		    border: 1px solid #ccc;
+		}		        
 
         .toolbar {
             display: flex;
@@ -160,13 +167,24 @@
 </head>
 <body>
 <div class="content-box">
-    <div class="toolbar">
-        <form action="<%= contextPath %>/books/bookSearch.do" method="get" class="search-form">
-            <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색" />
-            <button type="submit" class="btn btn-green">검색</button>
-        </form>
-        <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
-    </div>
+
+	<div class="toolbar">
+	    <form action="<%= contextPath %>/books/bookSearch.do" method="get" class="search-form">
+	        <select name="keyword" class="category-select">
+	            <option value="">분야</option>
+	            <option value="문학">문학</option>
+	            <option value="과학">과학</option>
+	            <option value="IT">IT</option>
+	            <option value="자격증">자격증</option>
+	            <option value="어학">어학</option>
+	            <option value="어린이">어린이</option>
+	            <option value="기타">기타</option>
+
+	        </select>
+	        <button type="submit" class="btn btn-green">검색</button>
+	    </form>
+	    <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
+	</div>
 
     <div class="title">전체 도서</div>
 

@@ -66,24 +66,29 @@ public class BookService {
     // 도서 대여
     public boolean rentBook(String userId, int bookNo) {
         return bookDao.rentBook(userId, bookNo);
-    }
+    }    
     
-    
-    // 사용자별 대출 내역
+    // 사용자별 대여 전체 수
     public int myRentalCount(String userId) {
         return bookDao.countRentalsByUser(userId);
     }
 
+    // 사용자별 대여 페이징 목록
     public Vector<RentalVo> rentalsByUserByPage(String userId, int page, int pageSize) {
         int offset = (page - 1) * pageSize;
         return bookDao.getRentalsByUserByPage(userId, offset, pageSize);
     }
 
-
     // 도서 등록
     public boolean addBook(BookVo book) {
         return bookDao.addBook(book);
     }
+
+    // isbn 중복 확인
+    public boolean isIsbnExists(String isbn) {
+        return bookDao.isIsbnExists(isbn);
+    }
+
 
     // 도서 수정
     public boolean updateBook(BookVo book) {
@@ -95,29 +100,33 @@ public class BookService {
         return bookDao.deleteBook(bookNo);
     }
 
-    // 반납 처리 및 페이징 처리
+    // 반납 처리
     public boolean returnBook(int rentNo) {
         return bookDao.processReturn(rentNo);
     }
 
+    // 반납 처리 목록
     public Vector<RentalVo> getPendingRentals() {
         return bookDao.getPendingRentals();
     }
    
+    // 반납 처리 수
     public int pendingRentalCount() {
         return bookDao.countPendingRentals();
     }
 
+    // 반납 처리 페이징 목록
     public Vector<RentalVo> pendingRentalsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
         return bookDao.selectPendingRentalsByPage(offset, pageSize);
     }
 
-    // 전체 대출 내역(페이징 처리까지 함께)
+    // 전체 대여 수
     public int allRentalCount() {
         return bookDao.allRentalCount();
     }
     
+    // 전체 대여 페이징 목록
     public Vector<RentalVo> allRentalsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
         return bookDao.allRentalsByPage(offset, pageSize);

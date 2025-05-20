@@ -19,23 +19,36 @@
             background-color: #f8f9fa;
         }
 
-        .admin-wrapper {
-            max-width: 1100px;
-            margin: 60px auto;
-            padding: 30px 20px;
+        .content-box {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .admin-header h2 {
-            font-size: 26px;
+        .title {
+            text-align: center;
+            font-size: 28px;
             font-weight: bold;
+            margin-bottom: 30px;
             color: #003c83;
+        }
+        
+        .toolbar {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .toolbar a {
+            padding: 6px 14px;
+            font-size: 16px;
+            border-radius: 4px;
+            background-color: #003c83;
+            color: white;
+            text-decoration: none;
+        }
+
+        .toolbar a:hover {
+            background-color: #002c66;
         }
 
         .btn-main {
@@ -105,16 +118,21 @@
     </style>
 </head>
 <body>
-<div class="admin-wrapper">
-    <div class="admin-header">
+<div class="content-box">
+    <div class="title">
         <h2>관리자 도서 관리</h2>
+    </div>
+    
+    <div class="toolbar">
         <a href="<%= contextPath %>/main.jsp" class="btn-main">메인으로</a>
     </div>
-
+	
+	<br><br>
+	
     <div class="grid">
         <div class="card">
             <h3>📕 도서 등록</h3>
-            <p>신규 도서 추가</p>
+            <p>신규 입고 도서 추가</p>
             <a href="<%= contextPath %>/books/addBookForm.do" class="btn">등록하기</a>
         </div>
 

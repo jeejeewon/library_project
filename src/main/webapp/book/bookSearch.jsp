@@ -158,7 +158,7 @@
 <body>
 <div class="content-box">
     <div class="toolbar">
-        <a href="<%= contextPath %>/books/searchForm.do" class="btn btn-blue">이전으로</a>
+        <a href="javascript:history.back();" class="btn btn-blue">이전으로</a>
     </div>
 
     <div class="title">"<%= keyword %>" 검색 결과</div>

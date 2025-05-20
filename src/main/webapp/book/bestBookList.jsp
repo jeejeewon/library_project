@@ -157,10 +157,10 @@
 <body>
 <div class="content-box">
     <div class="toolbar">
-        <form action="<%= contextPath %>/books/bookSearch.do" method="get">
-            <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색">
-            <button type="submit" class="btn btn-green">검색</button>
-        </form>
+<%--         <form action="<%= contextPath %>/books/bookSearch.do" method="get"> --%>
+<!--             <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색"> -->
+<!--             <button type="submit" class="btn btn-green">검색</button> -->
+<!--         </form> -->
         <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
     </div>
 
