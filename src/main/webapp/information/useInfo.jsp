@@ -20,8 +20,13 @@
 </style>
 </head>
 <body>
-	<div align="center" style="margin-top: 300px; color: red;">
+	<div align="center">
 		<h2>도서관 이용안내</h2>
+		<p>도서관 이용시간</p>
+		<p>휴관일</p>
+		<p>정기휴관 : 매주 월요일.<br>
+		<p>일요일을 제외한 법정공휴일(단, 공휴일이 일요일인 경우 개관)</p>
+		
 	</div>
 </body>
 </html>

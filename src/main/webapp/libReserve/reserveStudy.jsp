@@ -109,7 +109,14 @@
 
 <body>
 	<div align="center" style="margin-top: 50px;">
-		<h2>스터디룸 예약</h2>
+		<c:choose>
+			<c:when test="${not empty param.reserveNum}">
+				<h2>스터디룸 예약 수정</h2>
+			</c:when>
+			<c:otherwise>
+				<h2>스터디룸 예약</h2>
+			</c:otherwise>
+		</c:choose>		
 		<form method="post" align="left" style="margin-left: 30%;">			
 			<c:if test="${not empty param.reserveNum}">				
 				<p>▪ 예약내역</p>

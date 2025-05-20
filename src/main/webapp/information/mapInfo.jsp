@@ -28,7 +28,7 @@
 	}
 	
 	.floor-btn {
-		background-color: #87CEEB;
+		background-color: #828282;
 		border: none;
 		color: white;
 		padding: 10px 15px;
@@ -44,11 +44,11 @@
 	}
 		
 	.floor-btn:hover {
-      background-color: #50B8E2;    
+      background-color: #2d3081;    
     }
     
     .floor-btn.active{
-    	background-color: #50B8E2; 
+    	background-color: #2d3081; 
     }
     
 	html, body {
@@ -145,9 +145,11 @@
 		font-size: 0.95rem;
 	}
 	
-
-
+	#mapImg{
+		margin-bottom: 50px;
+	}
 	
+
 </style>
 </head>
 <body onload="showDefaultMap()">	
@@ -176,10 +178,9 @@
 		<h2>도서관 안내</h2>
 		<div style="display: flex; width: 50%;">
 			<div id="infoBtn" style="display: flex; flex-direction: column; align-items: flex-start; margin-right: 20px;">
-				<button class="floor-btn" value="1F" onclick="mapImgClick(this)" >1층</button>
-				<button class="floor-btn" value="2F" onclick="mapImgClick(this)">2층</button>
-				<button class="floor-btn" value="3F" onclick="mapImgClick(this)">3층</button>	 			
-				<button class="floor-btn" value="4F" onclick="mapImgClick(this)">4층</button>	 			
+					<button class="floor-btn" value="1F" onclick="mapImgClick(this)" >1F</button>
+					<button class="floor-btn" value="2F" onclick="mapImgClick(this)">2F</button>
+					<button class="floor-btn" value="3F" onclick="mapImgClick(this)">3F</button>						 			
 			</div>	
 			<div id="mapImg"><!-- 시설 배치도 보여줄 자리 --></div>
 		</div>	
@@ -208,7 +209,7 @@
 					<tr>
 						<td>본관</td>
 						<td>22,466㎡</td>
-						<td>철근콘크리트 슬라브· 지하2층,지상4층</td>
+						<td>철근콘크리트 슬라브·지상4층</td>
 						<td>6,260㎡</td>
 						<td>개관 '1990.4.28</td>
 					</tr>
@@ -242,69 +243,69 @@
 		      <tr>
 		        <td>제 2 열람실</td>
 		        <td>2층</td>
-		        <td>146</td>
-		        <td>24</td>
+		        <td>210</td>
+		        <td>73</td>
 		      </tr>
 		      <tr>
 		        <td rowspan="3">자료실</td>
 		        <td>어린이실</td>
 		        <td>1층</td>
 		        <td>216</td>
-		        <td>24</td>
-		      </tr>
-		      <tr>
-		        <td>종합자료실</td>
-		        <td>3층</td>
-		        <td>424</td>
-		        <td>50</td>
+		        <td>73</td>
 		      </tr>
 		      <tr>
 		        <td>디지털자료실</td>
-		        <td>4층</td>
-		        <td>80</td>
-		        <td>20</td>
+		        <td>3층</td>
+		        <td>183</td>
+		        <td>60</td>
 		      </tr>
 		      <tr>
-		        <td rowspan="8">기타 시설</td>
+		        <td>보존서고</td>
+		        <td>2층</td>
+		        <td>80</td>
+		        <td>-</td>
+		      </tr>
+		      <tr>
+		        <td rowspan="10">기타 시설</td>
 		        <td>미팅룸 A</td>
 		        <td>1층</td>
-		        <td>121</td>
-		        <td>30</td>
+		        <td>82</td>
+		        <td>10</td>
 		      </tr>
 		      <tr>
 		        <td>미팅룸 B</td>
-		        <td>2층</td>
-		        <td>57</td>
+		        <td>3층</td>
+		        <td>132</td>
 		        <td>15</td>
 		      </tr>
 		      <tr>
 		        <td>미팅룸 C</td>
 		        <td>3층</td>
-		        <td>120</td>
-		        <td>17</td>
+		        <td>124</td>
+		        <td>15</td>
 		      </tr>
 		      <tr>
 		        <td>스터디룸 A</td>
-		        <td>3층</td>
-		        <td>234</td>
+		        <td>2층</td>
+		        <td>173</td>
 		        <td>30</td>
 		      </tr>
 		      <tr>
 		        <td>스터디룸 B</td>
-		        <td>3층</td>
-		        <td>240</td>
-		        <td>34</td>
+		        <td>2층</td>
+		        <td>182</td>
+		        <td>30</td>
 		      </tr>
 		      <tr>
 		        <td>스터디룸 C</td>
-		        <td>4층</td>
-		        <td>95</td>
-		        <td>10</td>
+		        <td>2층</td>
+		        <td>194</td>
+		        <td>30</td>
 		      </tr>
 		      <tr>
 		        <td>제 1휴게실</td>
 		        <td>1층</td>
-		        <td>102</td>
+		        <td>96</td>
 		        <td>32</td>
 		      </tr>
 		      <tr>
@@ -314,10 +315,16 @@
 		        <td>38</td>
 		      </tr>
 		      <tr>
-		        <td colspan="2">서고</td>
-		        <td>지하 1층</td>
-		        <td>311</td>
-		        <td>-</td>
+		        <td>문화강좌실</td>
+		        <td>3층</td>
+		        <td>98</td>
+		        <td>20</td>
+		      </tr>
+		      <tr>
+		        <td>북카페</td>
+		        <td>2층</td>
+		        <td>153</td>
+		        <td>38</td>
 		      </tr>
 		    </tbody>
 		  </table>
@@ -341,19 +348,17 @@
         btn.classList.add('active');
         
         if (btnValue == "1F") {
-            mapImg.innerHTML = "<img src='../information/img/mapImg1F.PNG' alt='1F Map'>";
+            mapImg.innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";
         } else if (btnValue == "2F") {
-            mapImg.innerHTML = "<img src='../information/img/mapImg2F.PNG' alt='2F Map'>";
+            mapImg.innerHTML = "<img src='../information/img/mapImg_2F.png' alt='2F Map'>";
         } else if (btnValue == "3F") {
-            mapImg.innerHTML = "<img src='../information/img/mapImg3F.PNG' alt='3F Map'>";
-        } else if (btnValue == "4F") {
-            mapImg.innerHTML = "<img src='../information/img/mapImg4F.PNG' alt='4F Map'>";
-    	}
+            mapImg.innerHTML = "<img src='../information/img/mapImg_3F.png' alt='3F Map'>";
+        } 
 	}//mapImgClick
 	
 	//층버튼을 누르지 않아도 기본적으로 1F 시설 배치도 보여주는 함수
 	function showDefaultMap() {
-		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg1F.PNG' alt='1F Map'>";
+		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";
 	}
 	
 	//층버튼 클릭시 버튼 효과

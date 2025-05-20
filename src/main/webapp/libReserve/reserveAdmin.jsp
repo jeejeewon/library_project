@@ -69,12 +69,12 @@
 			color: red;
         }
         
-        .upcoming{
-        	color: #F29661;
+        .upcoming{      	
+        	color: #28a745;
         }
         
         .in-use{
-        	color: #28a745;
+        	color: #F29661;
         }
         
         .completed-bg {
@@ -227,7 +227,12 @@
 			//이용현황에 따른 수정 가능 여부 판단
 			let actionTd = "";
 			if(status === "이용전"){
-				actionTd = "<a href='#' class='mod-link'>수정</a><br><a href='#' class='cancel-link'>삭제</a>";
+				if(vo.reserveRoom.includes("study")){
+					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveStudy' class='mod-link'>수정</a>";
+				}else if(vo.reserveRoom.includes("meeting")){
+					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveMeeting' class='mod-link'>수정</a>";
+				}
+				actionTd += "<br><a href='#' class='cancel-link'>삭제</a>";
 			}else{
 				actionTd = "수정불가";
 			}
@@ -245,6 +250,10 @@
 				+ "<td><span class='" + spanClass + "'>" + status + "</span></td>"
 				+ "<td>" + actionTd + "</td>"
 				+ "</tr>"
+				+ "<input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
+				+ "<input type='hidden' class='end-time' value='" + vo.reserveEnd + "'/>"
+				+ "<input type='hidden' class='room' value='" + vo.reserveRoom + "'/>"
+				+ "<input type='hidden' class='seat' value='" + seat + "'/>"
 			);
 		});
 	}
@@ -393,6 +402,26 @@
 		filteredData = filterData();
 		renderTable();
 		renderPagination();
+	});
+	
+	
+	//수정 버튼을 누를 경우
+	$("#reserveList").on("click", ".mod-link", function(e){
+		e.preventDefault(); //기본동작방지
+	  
+		//수정을 누른 행의 정보 바인딩
+		const reserveNum = $(this).closest("tr").find("td").eq(0).text(); 
+		const reserveDate = $(this).closest("tr").find("td").eq(1).text(); 
+//		const startTime = 
+//		const endTime = 
+//		const roomName = 
+//		const roomSeat =	
+
+	  
+	  
+	  
+	
+	  // 여기에 수정 로직 추가하거나, 모달창 띄우기, 페이지 이동 등등
 	});
 	
 
