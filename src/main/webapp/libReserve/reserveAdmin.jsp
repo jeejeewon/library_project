@@ -417,7 +417,7 @@
 			$("#reserveList tr").show();
 		}
 	});
-  
+	
 	
 	//나머지 체크박스 누르면 '전체' 체크 해제
 	$("input[type='checkbox']").not("[value='all']").on("change", function() {
@@ -481,6 +481,57 @@
 		window.location.href = nextPage + "?" + params.toString();
 
 	});
+	
+	
+	
+	//삭제버튼 누를 경우
+	$("#reserveList").on("click", ".cancel-link", function(e){
+		e.preventDefault(); //기본동작방지
+		
+		//삭제 버튼 누른 행의 정보 저장
+		const row = $(this).closest("tr");			
+		const reserveNum = row.find("td").eq(0).text(); 
+		const reserveDate = row.find("td").eq(1).text(); 
+		const startTime = row.find(".start-time").val();
+		const endTime = row.find(".end-time").val();
+		const roomName = row.find(".room").val();
+		const roomSeat = row.find(".seat").val().replace("-", "").replace("번", "");
+		const reserveId = row.find(".id").val();
+		const reserveNotice = row.find(".admin-notice").val();
+		
+        //확인용 컨펌창 띄우기
+        const confirmResult = confirm("아래 예약을 삭제하시겠습니까?\n\n" +       
+    	            "- 이용자ID : " + reserveId + "\n" +
+    	            "- 이용일자 : " + reserveDate + "\n" +
+    	            "- 이용시간 : " + startTime + ":00 ~ " + endTime + ":00 \n" +
+    	            "- 이용시설 : " + roomName + 
+    	            (roomSeat != 0 ? "-" + roomSeat + "번 좌석" : ""));      
+        
+        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+        if(!confirmResult){return;}
+			
+		//AJAX 요청
+        $.ajax({
+            url: "<%=request.getContextPath()%>/reserve/deleteReserve",   
+            type: "POST",
+            data: {
+                reserve_id: reserveId,
+                reserve_num: reserveNum
+            },
+            success: function(response) {
+                alert("예약이 삭제되었습니다.");
+                window.location.replace = "<%=request.getContextPath()%>/reserve/reserveAdmin";
+                window.location.reload();
+            },
+            error: function(error) {
+                alert("예약 삭제에 실패하였습니다.");
+            }
+        });
+		
+		
+		
+	});
+	
 	
 	//모달창 열기
 	function openModal(content) {
