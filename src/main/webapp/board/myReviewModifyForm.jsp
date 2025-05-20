@@ -1,25 +1,10 @@
-<%@page import="VO.boardVO"%>
+<%@page import="Vo.boardVO"%>
 <%@page import="java.util.Vector"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%-- 이 페이지를 관리자만 접근가능하게하는 코드
-<%
-request.setCharacterEncoding("UTF-8");
-String contextPath = request.getContextPath();
-String id = (String) session.getAttribute("id"); 
-System.out.println(id);
-if (id == null || !id.equals("admin")) {
-%>
-<script>
-   alert("접근 권한이 없습니다."); 
-   history.back(); 
-</script>
-<%
-}
-%>
---%>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%
@@ -41,7 +26,7 @@ request.setCharacterEncoding("UTF-8");
 	padding: 5px 10px;
 }
 
-.file-name {
+.file-name {r
 	font-style: italic;
 	color: #333;
 }

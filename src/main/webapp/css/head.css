@@ -1,0 +1,170 @@
+#header {
+	z-index: 99;
+	position: relative;
+}
+
+#header .top {
+	width: 100%;
+	border-bottom: 1px solid #dedede;
+}
+
+#header .top .container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.625rem;
+	width: 100%;
+	height: 70px;
+}
+
+#header .top #logo {
+	width: auto;
+}
+
+#header .top #logo a {
+	display: flex;
+}
+
+#header .top #login {
+	width: 30%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+#header .top #login .inner {
+	display: flex;
+	gap: 10px;
+}
+
+#header .top #login .inner .item {
+	font-size: 14px;
+	font-weight: 600;
+	color: #7c7c7c;
+}
+
+#header .header_wrap {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#header .menu-wrap {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 60px;
+	border-bottom: 1px solid #dedede;
+	position: relative;
+}
+
+#header .menu {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	width: 100%;
+	height: 100%;
+}
+
+#header .menu>li {
+	width: calc(100%/ 4);
+	text-align: center;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#header .menu>li span {
+	font-weight: 700;
+	transition: .3s;
+	cursor: pointer;
+}
+
+#header .menu>li span:hover, #header .menu>li.on span {
+	color: #003c83;
+}
+
+#header .sub-menu {
+	position: absolute;
+	top: 60px;
+	left: 0;
+	height: 200px;
+	width: 100%;
+	background: #fff;
+	z-index: 1;
+	display: none;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
+	background-color: #f3f3f3;
+}
+
+#header .sub-menu .inner {
+	display: flex;
+	height: 100%;
+}
+
+#header .sub-menu-tit {
+	text-align: left;
+	width: 20%;
+	width: calc(50vw - 700px + 280px + 50px);
+	padding: 1rem 2rem 1rem calc(50vw - 700px);
+	color: #fff;
+	background-color: #64B1CC;
+}
+
+#header .sub-menu-tit h3 {
+	font-size: 1.875rem;
+	padding-bottom: 10px;
+}
+
+#header .sub-menu-tit p,
+.sub-menu-wrap li {
+	font-size: 1rem;
+}
+
+#header .sub-menu-wrap {
+	width: calc(50vw - 700px + ( 100% - ( 850px)));
+	padding: 1rem calc(50vw - 700px) 1rem 2rem;
+	text-align: left;
+}
+
+#footer {
+	border-top: 1px solid #dedede;
+	background: #272727;
+	color: #dcdcdc;
+	min-height: 150px;
+	padding: 10px 0;
+}
+
+#footer .container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 50px;
+}
+
+#footer .menu {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 0.625rem;
+	width: 100%;
+	height: 70px;
+}
+
+#footer .menu ul {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	width: 100%;
+}
+
+#footer .menu ul li {
+	width: calc(100%/ 5);
+	cursor: pointer;
+	font-size: 14px;
+}
+
+#footer .adress {
+	font-size: 12px;
+}

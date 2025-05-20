@@ -9,8 +9,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import DAO.boardDAO;
-import VO.boardVO;
+import Dao.boardDAO;
+import Vo.boardVO;
 
 public class boardService {
 

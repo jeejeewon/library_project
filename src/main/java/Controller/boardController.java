@@ -1,6 +1,7 @@
 package Controller;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -29,9 +30,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.FutureRequestExecutionService;
 import org.json.simple.JSONObject;
 
-import DAO.boardDAO;
+import Dao.boardDAO;
 import Service.boardService;
-import VO.boardVO;
+import Vo.boardVO;
 
 @WebServlet("/bbs/*")
 public class boardController extends HttpServlet {
