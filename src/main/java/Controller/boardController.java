@@ -333,7 +333,7 @@ public class boardController extends HttpServlet {
 			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
 			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
 			boardVO.setUserId("admin");// 추가할 새글 작성자 ID를 admin으로 저장 (참고. t_member테이블에 ID가 admin이 저장되어 있어야함)
-			boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
+//			boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
 			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
@@ -640,7 +640,7 @@ public class boardController extends HttpServlet {
 			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
 			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
 			boardVO.setUserId("admin");// 추가할 새글 작성자 ID를 admin으로 저장 (참고. t_member테이블에 ID가 admin이 저장되어 있어야함)
-			boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
+//			boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
 			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정

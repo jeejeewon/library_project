@@ -154,7 +154,15 @@ public class boardDAO {
     	        pstmt.setString(2, title);
     	        pstmt.setString(3, content);
     	        pstmt.setString(4, userId);
-    	        pstmt.setInt(5, bookNo);
+    	        
+    	        // bookNo가 0이면 NULL로 처리, 아니면 해당 값으로 처리
+    	        // (주의: boardVO의 bookNo가 int 타입이고 0이 '없음'을 의미한다고 가정)
+    	        if (bookNo == 0) {
+    	            pstmt.setNull(5, java.sql.Types.INTEGER); // book_no 컬럼 타입에 맞게 Types.INTEGER 사용
+    	        } else {
+    	            pstmt.setInt(5, bookNo);
+    	        }
+    	        
     	        pstmt.setString(6, file);
     	        pstmt.setString(7, bannerImg);
     	        pstmt.setTimestamp(8, createdAt);
