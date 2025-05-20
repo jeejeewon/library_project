@@ -93,7 +93,7 @@ public class libraryReserveDAO {
 	
 	
 	//미팅룸 예약 메소드
-	public void reserveMeetingRoom(libraryReserveVO vo) {
+	public int reserveMeetingRoom(libraryReserveVO vo) {
 		
 		System.out.println("reserveMeetingRoom DAO 호출됨===================");
 		
@@ -116,6 +116,7 @@ public class libraryReserveDAO {
 		//DB에 예약정보 저장 쿼리문
 		String sql = "insert into room_reserve(reserve_num, reserve_room, reserve_id, reserve_name, reserve_date, reserve_start, reserve_end, reserve_time) " +
 					 "values(?, ?, ?, (select name from member where id = ? ), ?, ?, ?, sysdate())";
+		int result = 0;
 		
 		try {
 			con = DbcpBean.getConnection();
@@ -130,14 +131,17 @@ public class libraryReserveDAO {
 			pstmt.setInt(7, vo.getReserveEnd()); //예약종료시간
 			
 			//쿼리문 실행
-			pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 			
 		} catch (Exception e) {
 			System.err.println("미팅룸 예약 실패" + e);
-			e.printStackTrace();			
+			e.printStackTrace();		
+			result = 0;
 		}finally {
 			DbcpBean.close(con, pstmt); //DB 연결 해제
-		}		
+		}
+		
+		return result;
 		
 	} //reserveMeetingRoom 메소드 끝
 	

@@ -21,9 +21,9 @@ public class roomReserveService {
 	
 
 	//미팅룸 예약을 진행하는 메소드
-	public void reserveMeetingRoom(libraryReserveVO vo) {		
+	public int reserveMeetingRoom(libraryReserveVO vo) {		
 		//DB에 예약정보 저장 명령
-		libraryReserveDAO.reserveMeetingRoom(vo);
+		return libraryReserveDAO.reserveMeetingRoom(vo);
 	}
 
 	

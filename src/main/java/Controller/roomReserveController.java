@@ -234,10 +234,20 @@ public class roomReserveController extends HttpServlet{
 			vo.setRoomName(roomName);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.reserveMeetingRoom(vo);
+			int result = roomReserveService.reserveMeetingRoom(vo);
+			System.out.println(result);
 			
-			//예약완료 후 예약내역 페이지로 이동
-			nextPage = "/reserve/reserveCheck";
+			if(result == 1) {
+				response.setStatus(response.SC_OK);
+				out.write("OK");
+			}else {
+				response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+				out.write("FAIL");
+			}
+			   out.flush();
+			   out.close();  
+			
+			return;
 			
 			
 		//시설 예약 삭제 	

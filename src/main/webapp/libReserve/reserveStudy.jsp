@@ -113,7 +113,7 @@
 			<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
 				<h2>스터디룸 예약 수정</h2>
 			</c:when>
-			<c:when test="${sessionScope.id == 'admin'}">
+			<c:when test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
 				<h2>스터디룸 예약 수정 - 관리자용</h2>
 			</c:when>
 			<c:otherwise>
