@@ -3,13 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-<c:out value="${contextPath}" />
-
 <div class="header_wrap">
 	<div class="top">
 		<div class="container">
 			<div id="logo">
-				<a href="${contextPath}/index.jsp"><img src="https://home.pen.go.kr/images/web/siminlib/main/logo.png"></a>
+				<a href="${contextPath}/index.jsp"><img
+					src="https://home.pen.go.kr/images/web/siminlib/main/logo.png"></a>
 			</div>
 			<div id="login">
 				<div class="inner">
@@ -21,6 +20,11 @@
 						<c:otherwise>
 							<p class="item">환영합니다 ${sessionScope.id}님</p>
 							<a href="${contextPath}/member/mypage" class="item">마이페이지</a>
+							<c:choose>
+								<c:when test="${sessionScope.id == 'admin'}">
+								<a href="${contextPath}/adm/home.jsp" class="item">관리자</a>
+								</c:when>
+							</c:choose>
 							<a href="${contextPath}/member/logout.me" class="item">로그아웃</a>
 						</c:otherwise>
 					</c:choose>
@@ -39,12 +43,13 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>아직 없음~</li>
+								<li><a href="${contextPath}/books/searchForm.do">도서검색</a></li>
+								<li><a href="${contextPath}/books/newBooks.do">신착도서</a></li>
+								<li><a href="${contextPath}/books/bestBooks.do">인기도서</a></li>
 							</ul>
 						</div>
 					</div>
-				</ul>
-			</li>
+				</ul></li>
 			<li><span>도서관안내</span>
 				<ul class="sub-menu">
 					<div class="inner">
@@ -61,8 +66,7 @@
 							</ul>
 						</div>
 					</div>
-				</ul>
-			</li>
+				</ul></li>
 			<li><span>도서관소식</span>
 				<ul class="sub-menu">
 					<div class="inner">
@@ -72,12 +76,13 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>아직 없음~</li>
+								<li><a href="${contextPath}/bbs/noticeList.do">공지사항</a></li>
+								<li><a href="${contextPath}/bbs/eventList.do">행사안내</a></li>								
+								<li><a href="${contextPath}/bbs/questionList.do">문의게시판</a></li>
 							</ul>
 						</div>
 					</div>
-				</ul>
-			</li>
+				</ul></li>
 			<li><span>내 서재</span>
 				<ul class="sub-menu">
 					<div class="inner">
@@ -87,10 +92,10 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>희망 도서</li>
-								<li>최근 조회한 도서</li>
+								<li><a href="${contextPath}/books/myRentalList.do">내 대여 내역</a></li>								
 								<li>내 서평 관리</li>
-								<li><a href="${contextPath}/reserve/reserveCheck">시설 예약 관리</a></li>
+								<li><a href="${contextPath}/reserve/reserveCheck">시설 예약
+										관리</a></li>
 							</ul>
 						</div>
 					</div>
@@ -111,13 +116,18 @@
 			$('.sub-menu').hide();
 			$('.sub-menu').eq(idx).slideDown();
 		});
-	});			
-	
-	$(document).on('click', function(event) {	 		
-		var $targetArea = $('.sub-menu.on');
-		var $header = $('#header');
-	    if (!$targetArea.is(event.target) && $targetArea.has(event.target).length === 0 && !$header.is(event.target) && $header.has(event.target).length === 0) {	
-	    	$targetArea.hide();
-	    } 		
 	});
+
+	$(document).on(
+			'click',
+			function(event) {
+				var $targetArea = $('.sub-menu.on');
+				var $header = $('#header');
+				if (!$targetArea.is(event.target)
+						&& $targetArea.has(event.target).length === 0
+						&& !$header.is(event.target)
+						&& $header.has(event.target).length === 0) {
+					$targetArea.hide();
+				}
+			});
 </script>

@@ -10,7 +10,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-/*
+/**
  * JNDI를 통해 DataSource(Connection Pool)를 얻어오고,
  * 필요할 때 Connection 객체를 제공하고,
  * 사용 후 자원을 반납하는 유틸리티 클래스.
@@ -20,15 +20,17 @@ public class DbcpBean {
     // DataSource (Connection Pool)를 담을 static 필드
     private static DataSource ds;
 
+    // static 초기화 블록: 클래스 로딩 시 한 번만 실행됨
     static {
         try {
-            // 1. JNDI 서버 객체 생성 
+            // 1. JNDI 서버 객체 생성 (InitialContext)
             Context initContext = new InitialContext();
             
-            // 2. Context 객체를 얻어옴 
+            // 2. Context 객체를 얻어옴 (java:comp/env)
             Context envContext = (Context) initContext.lookup("java:comp/env");
             
-            // 3. DataSource 객체 찾기 
+            // 3. DataSource 객체 찾기 (JNDI 이름: "jdbc/oracle")
+            //    context.xml 에 설정된 name 값 ("jdbc/oracle")을 사용합니다.
             ds = (DataSource) envContext.lookup("jdbc/jspbeginner");
             System.out.println("DataSource lookup 성공!");
 
@@ -40,9 +42,9 @@ public class DbcpBean {
         }
     }
 
-    /*
+    /**
      * Connection Pool 로부터 Connection 객체 하나를 빌려옵니다.
-     
+     *
      * @return Connection 객체
      * @throws SQLException DB 접근 오류 발생 시
      */
@@ -138,3 +140,10 @@ public class DbcpBean {
         return ds;
     }
 }
+
+
+
+
+
+
+
