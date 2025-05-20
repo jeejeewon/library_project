@@ -3,14 +3,17 @@
 
 <%--  만약 Controller에서 "center" 값을 넘겨주지 않아 'center' 변수가 비어있다면(null 또는 빈 문자열),
     - 기본적으로 보여줄 중앙 화면을 "center.jsp"로 설정. (웹 애플리케이션의 초기 화면 등에 해당) --%>
-
+<%
+request.setCharacterEncoding("UTF-8");
+String contextPath = request.getContextPath();
+%>
 
 <div class="center_wrap">
 	<div class="main-search-wrap">
 		<div class="main-search-form container">
 			<div class="inner">
-				<form action="">
-					<input type="text" placeholder="검색어를 입력하세요.">
+				<form action="<%= contextPath %>/books/bookSearch.do" method="get">
+					 <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색" required />
 					<button type="submit">
 						<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30"height="30" viewBox="0,0,256,256">
 						<g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1"
