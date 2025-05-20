@@ -3,22 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%-- 이 페이지를 관리자만 접근가능하게하는 코드
-<%
-request.setCharacterEncoding("UTF-8");
-String contextPath = request.getContextPath();
-String id = (String) session.getAttribute("id"); 
-System.out.println(id);
-if (id == null || !id.equals("admin")) {
-%>
-<script>
-   alert("접근 권한이 없습니다."); 
-   history.back(); 
-</script>
-<%
-}
-%>
---%>
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%
@@ -29,147 +14,27 @@ request.setCharacterEncoding("UTF-8");
 <head>
 	<title>문의글 글쓰기 - questionWrite.jsp</title>
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-	<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			background-color: #f9f9f9;
-			margin: 0;
-			padding: 20px;
-		}
-
-		.container {
-			max-width: 700px;
-			margin: 0 auto;
-			background-color: #fff;
-			border-radius: 8px;
-			box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-			padding: 30px;
-		}
-
-		.form-title {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 20px;
-		}
-
-		.form-title h2 {
-			margin: 0;
-			font-size: 24px;
-		}
-
-		input[type="text"],
-		textarea {
-			width: 100%;
-			padding: 10px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			margin-bottom: 15px;
-			font-size: 14px;
-			box-sizing: border-box;
-		}
-
-		textarea {
-			resize: vertical;
-			min-height: 150px;
-		}
-
-		input[type="submit"],
-		input[type="button"] {
-			padding: 10px 20px;
-			border: none;
-			border-radius: 4px;
-			background-color: #007BFF;
-			color: white;
-			cursor: pointer;
-			font-size: 14px;
-			margin-left: 10px;
-		}
-
-		input[type="button"] {
-			background-color: #6c757d;
-		}
-
-		input[type="submit"]:hover,
-		input[type="button"]:hover {
-			opacity: 0.9;
-		}
-
-		.file-group {
-			margin-bottom: 15px;
-		}
-
-		.file-upload-label {
-			display: inline-block;
-			font-weight: bold;
-			background-color: #e9ecef;
-			padding: 8px 12px;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-
-		.file-name {
-			margin-left: 10px;
-			color: #555;
-		}
-
-		.file-input {
-			display: none;
-		}
-
-
-		.checkbox-label {
-			font-size: 14px;
-		}
-	</style>
 </head>
 <body>
-	<div class="container">
-		<form name="questionWriteForm" method="post" action="${contextPath}/bbs/AddQuestion.do" enctype="multipart/form-data">
-			<div class="form-title">
-				<h2>문의글 글쓰기</h2>
-				<div>
-					<input type="button" value="취소" onclick="history.back();">
-					<input type="submit" value="등록">
-				</div>
-			</div>
-
-			<input type="text" name="title" placeholder="제목을 입력하세요">
-
-			<div class="file-group">
-				<label for="file" class="file-upload-label">첨부파일 업로드</label>
-				<span class="file-name" id="fileName">선택된 파일 없음</span>
-				<input type="file" name="file" id="file" class="file-input">
-			</div>
-
-			<textarea name="content" placeholder="내용을 입력하세요"></textarea>
-
-
-			<div class="checkbox-group">
-				<label for="secret" class="checkbox-label">
-					<input type="checkbox" name="secret" id="secret">
-					비밀글로 설정
-				</label>
-			</div>
-		</form>
-	</div>
-
-	<script>
-		function setupFileNameDisplay(inputId, spanId) {
-			const input = document.getElementById(inputId);
-			const span = document.getElementById(spanId);
-
-			input.addEventListener('change', function () {
-				if (input.files.length > 0) {
-					span.textContent = input.files[0].name;
-				} else {
-					span.textContent = '선택된 파일 없음';
-				}
-			});
-		}
-
-		setupFileNameDisplay('file', 'fileName');
-
-	</script>
+	<form name="WriteForm" action="${contextPath}/bbs/myReviewWrite.do" method="post">
+		<!-- bookNo전달 -->
+		<input type="hidden" name="bookNo" value="${param.bookNo}">
+		
+		<!-- 제목 입력 -->
+		<div>
+			<label for="title">제목:</label>
+       		<input type="text" placeholder="제목을 입력하세요." id="title" name="title" required> <%-- required는 필수 입력 필드로 만드는 HTML5 속성 --%>
+		</div>
+		<!-- 내용 입력 -->
+		<div>
+			<label for="content">내용:</label>
+			<textarea name="content" placeholder="내용을 입력하세요."  rows="5" required></textarea>
+		</div>
+		
+		<%-- 서평 등록 버튼 --%>
+    	<div>
+        	<button type="submit">서평 등록</button>
+    	</div>
+	</form>
 </body>
 </html>

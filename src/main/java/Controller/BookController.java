@@ -15,8 +15,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import Service.BookService;
+import Service.boardService;
 import Vo.BookVo;
 import Vo.RentalVo;
+import Vo.boardVO;
 
 @WebServlet("/books/*")
 public class BookController extends HttpServlet {
@@ -68,6 +70,11 @@ public class BookController extends HttpServlet {
             int bookNo = Integer.parseInt(request.getParameter("bookNo"));
             BookVo book = bookService.bookDetail(bookNo);
             request.setAttribute("book", book);
+            
+            boardService reviewService = new boardService(); //boardService 임포트 해주세요
+            List<boardVO> reviewList = reviewService.getReviewsByBookNo(bookNo);
+            request.setAttribute("reviewList", reviewList);
+            
             request.setAttribute("center", "/book/bookDetail.jsp");
             nextPage = "/main.jsp";
         
