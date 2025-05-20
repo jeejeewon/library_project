@@ -54,9 +54,10 @@ public class roomReserveService {
 
 	
 	//스터디룸 예약하는 메소드
-	public void reserveStudyRoom(libraryReserveVO vo) {	
+	public int reserveStudyRoom(libraryReserveVO vo) {	
 		//DB에 예약정보 저장 명령
-		libraryReserveDAO.reserveStudyRoom(vo);	
+		return libraryReserveDAO.reserveStudyRoom(vo);	
+		
 	}
 	
 	

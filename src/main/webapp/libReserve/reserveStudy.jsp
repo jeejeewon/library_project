@@ -131,10 +131,16 @@
 			</c:if>
 			<p>▪ 이용자정보</p>
 			<c:choose>
-				<c:when test="${sessionScope.id == 'admin'}">
+				<c:when test="${sessionScope.id == 'admin' && empty param.reserveNum}"> <!-- 관리자 아이디로 스터디룸 예약 -->
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>
+				<c:when test="${sessionScope.id == 'admin' && empty param.reserveId}"><!-- 관리자가 마이페이지에서 관리자 예약 수정시 -->
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>
+				<c:when test="${sessionScope.id == 'admin'&& param.reserveId != 'admin'}"><!-- 관리자 아이디로 회원 예약 수정시 -->
 					<input type="text" name="userID" id="userID" value="${param.reserveId}" readonly>
 				</c:when>
-				<c:when test="${not empty param.reserveNum || sessionScope.id != 'admin'}">
+				<c:when test="${not empty param.reserveNum || sessionScope.id != 'admin'}"><!-- 회원이 예약 수정할 경우 -->
 					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
 				</c:when>			
 			</c:choose>
@@ -257,7 +263,7 @@
 				</div>     
              </div>   		
             <br>
-            <c:if test="${sessionScope.id == 'admin'}">
+            <c:if test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
             	<p>▪ 관리자 메모</p>
 				<textarea id="adminMemo" rows="6" cols="70" placeholder="관리자 메모 작성란"></textarea><br>
 			</c:if>	
@@ -513,12 +519,16 @@
 	                seat : seat
 	            },
 	            success: function(response) {
-	                alert("예약이 완료되었습니다.");
-	                //예약이 완료되면 예약 확인 페이지로 이동
-	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	            	if(response.trim() === "OK"){
+	                	alert("예약이 완료되었습니다.");
+		                //예약이 완료되면 예약 확인 페이지로 이동
+		                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	            	}else{
+	            		alert("예약에 실패하였습니다. 다시 시도해주세요.");
+	            	}
 	            },
 	            error: function(xhr, status, error) {
-	                alert("예약에 실패하였습니다. " + error);
+	                alert("서버 오류 발생!" + error);
 	            }     	
 	        });		
 		})

@@ -358,10 +358,20 @@ public class roomReserveController extends HttpServlet{
 			vo.setReserveSeat(seat);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.reserveStudyRoom(vo);
+			int result = roomReserveService.reserveStudyRoom(vo);		
+			System.out.println(result);
 			
-			//예약완료 후 예약내역 페이지로 이동
-			nextPage = "/reserve/reserveCheck";
+			if(result == 1) {
+				response.setStatus(response.SC_OK);
+				out.write("OK");
+			}else {
+				response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+				out.write("FAIL");
+			}
+			   out.flush();
+			   out.close();  
+			
+			return;
 			
 			
 		//스터디룸 예약 수정 진행
