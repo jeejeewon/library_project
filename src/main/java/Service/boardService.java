@@ -79,15 +79,44 @@ public class boardService {
 
 		return board;
 	}
+	
+	public boardVO viewBannerBoard(int boardId) {
+		System.out.println("BoardService - viewBannerBoard 호출됨 (글번호: " + boardId + ")");
+
+		// 먼저 글이 실제로 존재하는지 확인
+		boardVO board = boardDao.selectBannerBoard(boardId);
+		// DAO에게 해당 글번호에 대한 상세 정보를 요청하기 전에 먼저,
+		// 해당 글 번호에 뷰 수를 1 증가키는 작업을 수행합니다.
+		// 존재하는 글일 경우에만 조회수 증가
+		if (board != null) {
+			boardDao.increaseViewCount(boardId);
+		}
+
+		return board;
+	}
+
+	
 
 	// 이전 글 번호를 조회하는 메소드
 	public int getPreBoardId(int currentBoardId, int category) {
 		return boardDao.getPreBoardId(currentBoardId, category); // DAO에 category 전달
 	}
-
+	
 	// 다음 글 번호를 조회하는 메소드
 	public int getNextBoardId(int currentBoardId, int category) {
 		return boardDao.getNextBoardId(currentBoardId, category); // DAO에 category 전달
+	}
+	
+	
+	
+	// 이전 글 번호를 조회하는 메소드 (행사게시판)
+	public int getPreBannerBoardId(int currentBoardId) {
+		return boardDao.getPreBannerBoardId(currentBoardId);
+	}
+	
+	// 다음 글 번호를 조회하는 메소드 (행사게시판)
+	public int getNextBannerBoardId(int currentBoardId) {
+		return boardDao.getNextBannerBoardId(currentBoardId);
 	}
 
 	// 게시글 수정을 위한 메소드
@@ -159,6 +188,7 @@ public class boardService {
 	    return resultMap;
 		
 	}
+
 
 
 	

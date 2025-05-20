@@ -88,6 +88,13 @@ request.setCharacterEncoding("UTF-8");
 				</tr>
 				<tr>
 					<td colspan="2">
+						<p>배너 이미지를 등록하면 행사안내 게시판과 메인슬라이드에 노출됩니다.</p>
+    					<p>배너 이미지 권장 사이즈 1200px * 900px (4:3)</p>
+    					<div id="bannerPreview">
+        					<c:if test="${not empty board.bannerImg}">
+            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
+        					</c:if>
+    					</div>
 						<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
     					<span class="file-name" id="bannerFileName">
         					<c:choose>
@@ -102,12 +109,6 @@ request.setCharacterEncoding("UTF-8");
     					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
 		                <button type="button" id="deleteBannerBtn" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
     					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
-    					
-    					<div id="bannerPreview" style="display: inline-block; margin-left: 20px;">
-        					<c:if test="${not empty board.bannerImg}">
-            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
-        					</c:if>
-    					</div>
 					</td>
 				</tr>
 			</table>

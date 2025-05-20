@@ -18,7 +18,7 @@ request.setCharacterEncoding("UTF-8");
 
 <html>
 <head>
-	<title>공지사항 상세페이지 - noticeInfo.jsp</title>
+	<title>행사안내 상세페이지 - eventInfo.jsp</title>
 	<style>
 		/* 기본 리셋 */
 		* {
@@ -246,8 +246,8 @@ request.setCharacterEncoding("UTF-8");
 			
 			<!-- 목록 버튼 -->
 		    <c:choose>
-		        <c:when test="${fromPage == 'noticeList'}">
-		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		        <c:when test="${fromPage == 'eventList'}">
+		            <form action="${contextPath}/bbs/eventList.do" method="get">
 		                <button type="submit">목록</button>
 		            </form>
 		        </c:when>
@@ -257,7 +257,7 @@ request.setCharacterEncoding("UTF-8");
 		            </form>
 		        </c:when>
 		        <c:otherwise>
-		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		            <form action="${contextPath}/bbs/eventList.do" method="get">
 		                <button type="submit">목록</button>
 		            </form>
 		        </c:otherwise>
@@ -295,73 +295,15 @@ request.setCharacterEncoding("UTF-8");
 
 		<div class="board-info-bottom">
 			<div class="board-info-bottom-left">
-				<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
-				<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeNotice.do', ${board.boardId})">삭제</a>
-				<!--  아래는 운영자에게만 글쓰기 버튼이 보이게하는 코드.. 추후 이걸로 사용할 예정
-				<c:if test="${sessionScope.userId == 'admin'}">
-		    		<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
-					<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeNotice.do', ${board.boardId})">삭제</a>
-				</c:if>
-				-->
 			</div>
 			<div class="board-info-bottom-right">
-				<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
+				<form action="${pageContext.request.contextPath}/bbs/eventList.do" method="get">
 					<button type="submit">목록</button>
 				</form>
 				<button onclick="scrollToTop()">TOP</button>
 			</div>
 		</div>
 	</div>
-	
-	<script type="text/javascript">
-	    // fn_remove_board 함수 정의
-	    function fn_remove_board(url, boardId) {
-	        // 삭제하려는 글의 URL과 boardId 값을 콘솔에 출력하여 확인
-	        console.log("fn_remove_board called with URL:", url, "and boardId:", boardId);
-	
-	        // 삭제 확인을 위한 팝업
-	        if (!confirm("정말 삭제하시겠어요?")) return; // 사용자가 취소를 클릭하면 함수 종료
-	
-	        // fetch를 사용해 서버에 삭제 요청을 보냄
-	        fetch(url, {
-	            method: "POST", // POST 방식으로 요청
-	            headers: {
-	                "Content-Type": "application/x-www-form-urlencoded" // 폼 데이터 형식으로 전송
-	            },
-	            body: new URLSearchParams({ boardId: boardId }) // boardId를 URL 파라미터로 보냄
-	        })
-	        .then(res => {
-	            // 응답 상태가 정상인지 확인
-	            console.log("Remove Response Status:", res.status); // 응답 상태 코드 로그
-	            if (!res.ok) { // 응답이 정상적이지 않으면 에러 처리
-	                throw new Error('HTTP error! status: ' + res.status); // 에러 발생
-	            }
-	            return res.json(); // 정상 응답일 경우, JSON 형식으로 변환
-	        })
-	        .then(data => {
-	            // 서버로부터 받은 JSON 데이터 출력
-	            console.log("Remove Response Data:", data); // 응답 데이터 로그
-	
-	            // 삭제 성공 여부 확인
-	            if (data.result === 'success') {
-	                // 삭제 성공 메시지
-	                alert(data.message || "글을 삭제했습니다.");
-	                // 삭제 후 리다이렉트할 URL로 이동 (기본값은 공지사항 목록 페이지)
-	                window.location.href = data.redirect || "${contextPath}/bbs/noticeList.do"; 
-	            } else {
-	                // 삭제 실패 시 오류 로그 출력
-	                console.error("삭제 응답 오류 또는 실패:", data);
-	                alert("삭제 중 문제가 발생했습니다."); // 사용자에게 오류 메시지 알림
-	            }
-	        })
-	        .catch(err => {
-	            // fetch 요청 중 오류가 발생하면 로그에 출력
-	            console.error("fn_remove_board fetch 오류:", err);
-	            alert("삭제 요청 중 오류가 발생했습니다: " + err.message); // 오류 메시지 사용자에게 알림
-	        });
-	    }
-	</script>
-
 </body>
 </html>
 

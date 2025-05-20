@@ -227,6 +227,42 @@ public class boardDAO {
 
         return boardVO;
     }
+    
+    // 배너이미지가 등록된 공지사항만 조회
+    public boardVO selectBannerBoard(int boardId) {
+        boardVO boardVO = null;
+
+        try {
+            con = DbcpBean.getConnection();
+            String sql = "SELECT * FROM board WHERE board_id = ? AND category = 0 AND banner_img IS NOT NULL";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, boardId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                boardVO = new boardVO(
+                    rs.getInt("board_id"),
+                    rs.getInt("category"),
+                    rs.getString("title"),
+                    rs.getString("content"),
+                    rs.getString("user_id"),
+                    rs.getInt("book_no"),
+                    rs.getString("file"),
+                    rs.getString("banner_img"),
+                    rs.getTimestamp("created_at"), // 수정된 부분
+                    rs.getInt("views"),
+                    rs.getBoolean("secret"),
+                    rs.getString("reply")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
+        return boardVO;
+    }
+
 
     // 현재 상세페이지의 바로 앞 글 번호를 조회하여 리턴하는 메소드
     public int getPreBoardId(int currentBoardId, int category) {
@@ -276,6 +312,57 @@ public class boardDAO {
         }
 
         return boardId;
+    }
+    
+    
+    
+    
+    // (행사게시판)현재 상세페이지의 바로 앞 글 번호를 조회하여 리턴하는 메소드
+    public int getPreBannerBoardId(int currentBoardId) {
+    	int boardId = 0;
+    	
+    	try {
+    		con = DbcpBean.getConnection();
+    		String sql = "SELECT board_id FROM board WHERE board_id < ? AND category = 0 AND banner_img IS NOT NULL ORDER BY board_id DESC LIMIT 1";
+    		pstmt = con.prepareStatement(sql);
+    		pstmt.setInt(1, currentBoardId);
+    		rs = pstmt.executeQuery();
+    		
+    		if (rs.next()) {
+    			return rs.getInt("board_id");
+    		}
+    		
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	} finally {
+    		DbcpBean.close(con, pstmt, rs);
+    	}
+    	
+    	return boardId;
+    }
+    
+    // 현재 상세페이지의 바로 뒤 글 번호를 조회하여 리턴하는 메소드
+    public int getNextBannerBoardId(int currentBoardId) {
+    	int boardId = 0;
+    	
+    	try {
+    		con = DbcpBean.getConnection();
+    		String sql = "SELECT board_id FROM board WHERE board_id > ? AND category = 0 AND banner_img IS NOT NULL ORDER BY board_id ASC LIMIT 1";
+    		pstmt = con.prepareStatement(sql);
+    		pstmt.setInt(1, currentBoardId);
+    		rs = pstmt.executeQuery();
+    		
+    		if (rs.next()) {
+    			return rs.getInt("board_id");
+    		}
+    		
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	} finally {
+    		DbcpBean.close(con, pstmt, rs);
+    	}
+    	
+    	return boardId;
     }
 
     // 게시글 수정
@@ -474,5 +561,7 @@ public class boardDAO {
 
 	    return totalCount;
 	}
+
+
 
 }

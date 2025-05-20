@@ -23,17 +23,37 @@ request.setCharacterEncoding("UTF-8");
         padding: 20px;
         margin: 0;
     }
-
-    /* .board-head 등 기존 스타일 유지 */
-
+	
+	
+	.board-topbar{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 80%;
+			margin-bottom: 25px;
+		}
+		
+	    .board-head{
+        	width:80%;
+        	display: flex;
+        	align-items: center;
+        }
+        .board-head h2{
+        	font-size: 20px;
+        }
+        .board-head p{
+        	margin-left: 10px;
+        }
+        
     /* 행사 카드 스타일 */
     .event-card {
         width: 80%;
         max-width: 1440px;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 20px;
+/*		justify-content: space-between; */
+		justify-content: flex-start;
+		gap: 3rem;
         margin: 0 auto;
     }
 
@@ -44,8 +64,8 @@ request.setCharacterEncoding("UTF-8");
 
     /* 카드 기본 스타일 */
     .card {
+     	flex-basis: calc((100% - 2 * 3rem) / 3);
         position: relative;
-        width: 100%;
         background-color: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
@@ -143,13 +163,7 @@ request.setCharacterEncoding("UTF-8");
             color: white;
         }
 		
-		.board-topbar{
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			width: 80%
-		}
-		
+
 		
 		.write-btn {
             margin: 20px 0;
@@ -169,16 +183,13 @@ request.setCharacterEncoding("UTF-8");
 </head>
 <body>
     <center>
-        <div class="board-head">
-            <h2>행사안내</h2>
-            <p>도서관소식 > 행사안내</p>
-        </div>
-
         <div class="board-topbar">
-            <!-- 총 게시글 수 표시 -->
-            <p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
-            <!-- 글쓰기 버튼 -->
-        	<a href="${contextPath}/bbs/noticeWrite.do" class="write-btn">글쓰기</a><!-- 공지사항의 글쓰기로 가짐 -->
+			<div class="board-head">
+				<h2>행사안내</h2>
+				<p>도서관소식 > 행사안내</p>
+			</div>
+			<!-- 총 게시글 수 표시 -->
+			<p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
         </div>
 
         <!-- 행사안내 리스트 카드 -->
@@ -192,7 +203,7 @@ request.setCharacterEncoding("UTF-8");
             <c:forEach var="board" items="${boardList}">
                 <c:if test="${not empty board.bannerImg}">
                     <!-- 배너 이미지가 있는 경우에만 -->
-                    <a href="${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}" class="card">
+                    <a href="${contextPath}/bbs/eventInfo.do?boardId=${board.boardId}" class="card">
                         <div>
                             <img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" alt="배너 이미지">
                             <p>${board.title}</p>

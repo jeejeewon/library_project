@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import javax.servlet.ServletContext;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -68,7 +69,7 @@ public class boardController extends HttpServlet {
 	}
 
 	// 업로드 파일이 저장될 기본 경로 상수
-	public static final String BOARD_FILE_REPO = "C:\\workspace_libraryProject\\library_project\\src\\main\\webapp\\board\\board_file_repo";
+//	public static final String BOARD_FILE_REPO = "C:\\workspace_libraryProject\\library_project\\src\\main\\webapp\\board\\board_file_repo";
 
 	// 업로드 파일을 저장하는 메소드
 	public Map<String, String> uploadFile(HttpServletRequest request, HttpServletResponse response)
@@ -77,12 +78,23 @@ public class boardController extends HttpServlet {
 	    Map<String, String> uploadMap = new HashMap<>();
 	    String encoding = "utf-8";
 
+	    // 1. 웹 애플리케이션의 실제 루트 경로를 가져옴 (예: C:\...\webapp)
+	    String webappRootPath = request.getServletContext().getRealPath("/");
+	    // 2. 업로드 파일이 저장될 실제 최종 경로를 만듦
+        // webappRootPath + "board" + "board_file_repo" 이런 식으로 연결해야 함
+        // 윈도우(\)와 리눅스(/) 폴더 구분자를 자동으로 맞춰주는 File.separator 사용
+	    String finalUploadPath = webappRootPath + "board" + File.separator + "board_file_repo";
+	    // 3. 임시 파일이 저장될 폴더 경로를 만듦 (최종 저장 폴더 아래에 temp 폴더)
+        String tempUploadPath = finalUploadPath + File.separator + "temp";
+	    // 업로드할 파일을 임시로 저장할 폴더 생성 (이제 tempUploadPath 사용)
+	    File tempDir = new File(tempUploadPath);
+	    
 	    // 업로드할 파일을 임시로 저장할 폴더 생성
-	    File currentDirPath = new File(BOARD_FILE_REPO);
-	    File tempDir = new File(currentDirPath, "temp");
+//	    File currentDirPath = new File(BOARD_FILE_REPO);
+//	    File tempDir = new File(currentDirPath, "temp");
 
 	    if (!tempDir.exists()) {
-	        tempDir.mkdirs(); // temp 폴더가 없으면 생성
+	        tempDir.mkdirs(); // temp 폴더와 그 상위 폴더들까지 없으면 생성
 	    }
 
 	    // 파일 업로드 환경 설정
@@ -194,20 +206,28 @@ public class boardController extends HttpServlet {
 
 
 	// 임시 폴더의 파일을 실제 저장 폴더로 이동시키는 메소드
-	private void moveFileToDestination(String fileName, int boardId, String fileType) {
+	private void moveFileToDestination(ServletContext context, String fileName, int boardId, String fileType) {
 		if (fileName != null && !fileName.isEmpty()) {
-
+			// ServletContext 객체에서 getRealPath 사용
+	        String webappRootPath = context.getRealPath("/");
+	        
+            // 웹 애플리케이션 루트 경로 + 업로드 폴더 상대 경로 = 최종 업로드 기본 경로
+            String finalUploadBasePath = webappRootPath + "board" + File.separator + "board_file_repo";
+			// 임시 저장된 파일 위치 (이제 BOARD_FILE_REPO 대신 finalUploadBasePath 사용)
+			File srcFile = new File(finalUploadBasePath + File.separator + "temp" + File.separator + fileName);
+			// 최종 저장 폴더 경로 (글 번호를 폴더 이름으로 사용) (여기도 finalUploadBasePath 사용)
+			File destDir = new File(finalUploadBasePath + File.separator + boardId);
+			
+			
 			// 임시 저장된 파일 위치
-			File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + fileName);
-
+//			File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + fileName);
 			// 최종 저장 폴더 경로 (글 번호를 폴더 이름으로 사용)
-			File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
+//			File destDir = new File(BOARD_FILE_REPO + File.separator + boardId);
 
 			// 최종 폴더가 없다면 생성
 			if (!destDir.exists()) {
 				destDir.mkdirs();
 			}
-
 			// 파일이 실제로 존재한다면 이동 처리
 			if (srcFile.exists()) {
 				try {
@@ -325,11 +345,22 @@ public class boardController extends HttpServlet {
 			int boardId = boardService.addBoard(boardVO);
 
 			// 첨부파일이 있는 경우 파일 이동
-			moveFileToDestination(file, boardId, "첨부파일");
-
+//			moveFileToDestination(file, boardId, "첨부파일");
 			// 배너 이미지가 있는 경우 파일 이동
-			moveFileToDestination(bannerImage, boardId, "배너 이미지");
-
+//			moveFileToDestination(bannerImage, boardId, "배너 이미지");
+			
+			// ServletContext 객체를 가져오기
+			ServletContext servletContext = request.getServletContext();
+			// 첨부파일이 있는 경우 파일 이동
+			if (file != null && !file.isEmpty()) { // 파일이 있는 경우에만 호출하도록
+			    moveFileToDestination(servletContext, file, boardId, "첨부파일"); // <-- 첫 번째 인자로 servletContext 넘겨줌
+			}
+			// 배너 이미지가 있는 경우 파일 이동
+			if (bannerImage != null && !bannerImage.isEmpty()) {
+			    moveFileToDestination(servletContext, bannerImage, boardId, "배너 이미지");
+			}
+			
+			
 			// 글 등록 후, 새로 등록된 글 번호를 사용하여 해당 글을 조회하는 페이지로 리다이렉트합니다.
 			// 전체글을 다시 DB에서 겅색하여 보여주기 위해 다음과 같은 주소를 저장
 			nextPage = "/bbs/noticeList.do";
@@ -474,10 +505,13 @@ public class boardController extends HttpServlet {
 		    modVO.setFile(finalFileName);
 		    modVO.setBannerImg(finalBannerName);
 		    modVO.setSecret(false);
-
+		    
+		    
+		    // ServletContext 객체 가져오기
+		    ServletContext servletContext = request.getServletContext();
 		    // 새로운 첨부 파일이 있다면 이동
 		    if (!"".equals(finalFileName) && !finalFileName.equals(originalFileName)) { // 새 파일이 있고 원래 이름과 다를 경우에만 (실제로 업로드된 경우)
-		        moveFileToDestination(finalFileName, boardId, "file");
+		        moveFileToDestination(servletContext, finalFileName, boardId, "file");
 		        System.out.println("새 첨부파일 이동 완료: " + finalFileName);
 		    } else if ("".equals(finalFileName) && !"".equals(originalFileName) && "true".equals(deleteFile)){
 		        // 첨부파일 삭제 요청으로 finalFileName이 ""이 됐고 원래 파일이 있었을 때, moveFileToDestination 호출 안 함 (삭제만 함)
@@ -490,7 +524,7 @@ public class boardController extends HttpServlet {
 
 		    // 새로운 배너 이미지가 있다면 이동
 		    if (!"".equals(finalBannerName) && !finalBannerName.equals(originalBannerName)) { // 새 파일이 있고 원래 이름과 다를 경우에만
-		        moveFileToDestination(finalBannerName, boardId, "banner");
+		        moveFileToDestination(servletContext, finalBannerName, boardId, "banner");
 		        System.out.println("새 배너 이미지 이동 완료: " + finalBannerName);
 		    } else if ("".equals(finalBannerName) && !"".equals(originalBannerName) && "true".equals(deleteBanner)){
 		        // 배너 이미지 삭제 요청으로 finalBannerName이 ""이 됐고 원래 배너가 있었을 때
@@ -618,10 +652,19 @@ public class boardController extends HttpServlet {
 			int boardId = boardService.addBoard(boardVO);
 
 			// 첨부파일이 있는 경우 파일 이동
-			moveFileToDestination(file, boardId, "첨부파일");
-
+//			moveFileToDestination(file, boardId, "첨부파일");
 			// 배너 이미지가 있는 경우 파일 이동
-			moveFileToDestination(bannerImage, boardId, "배너 이미지");
+//			moveFileToDestination(bannerImage, boardId, "배너 이미지");
+			// ServletContext 객체를 가져오기
+			ServletContext servletContext = request.getServletContext();
+			// 첨부파일이 있는 경우 파일 이동
+			if (file != null && !file.isEmpty()) { // 파일이 있는 경우에만 호출하도록
+			    moveFileToDestination(servletContext, file, boardId, "첨부파일"); // <-- 첫 번째 인자로 servletContext 넘겨줌
+			}
+			// 배너 이미지가 있는 경우 파일 이동
+			if (bannerImage != null && !bannerImage.isEmpty()) {
+			    moveFileToDestination(servletContext, bannerImage, boardId, "배너 이미지");
+			}
 
 			// 글 등록 후, 새로 등록된 글 번호를 사용하여 해당 글을 조회하는 페이지로 리다이렉트합니다.
 			// 전체글을 다시 DB에서 겅색하여 보여주기 위해 다음과 같은 주소를 저장
@@ -870,13 +913,23 @@ public class boardController extends HttpServlet {
 			boardService.modifyBoard(modVO);
 			System.out.println("문의사항 글 수정 완료"); // 수정 완료 로그
 
+			
+			
+			
+			// ServletContext 객체를 가져옴!
+			ServletContext servletContext = request.getServletContext(); // <-- 여기서 가져옴!
+			// 웹 애플리케이션 루트 경로 가져오기
+			String webappRootPath = servletContext.getRealPath("/"); // <-- 실제 루트 경로!
+			// 최종 업로드 기본 경로 계산 (BOARD_FILE_REPO 대신 사용)
+			String finalUploadBasePath = webappRootPath + "board" + File.separator + "board_file_repo";
+			
 			// 첨부파일 처리
 			// 수정된 첨부파일이 있는 경우 파일 이동
 			if (file != null && !file.isEmpty()) {
 				// 새 파일을 임시 폴더(temp)에서 최종 폴더(글번호 폴더)로 이동
-				File srcFile = new File(BOARD_FILE_REPO + File.separator + "temp" + File.separator + file);// 임시 폴더에 저장된 파일
-				File destDir = new File(BOARD_FILE_REPO + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
-
+				File srcFile = new File(finalUploadBasePath + File.separator + "temp" + File.separator + file); // 임시 폴더에 저장된 파일
+				File destDir = new File(finalUploadBasePath + File.separator + boardId); // 최종 저장 폴더 (글번호 폴더)
+				
 				// 최종 폴더가 없다면 생성
 				if (!destDir.exists()) {
 					destDir.mkdirs();
@@ -905,17 +958,41 @@ public class boardController extends HttpServlet {
 			
 			// 수정된 배너 이미지가 있는 경우 파일 이동
 			if (bannerImage != null && !bannerImage.isEmpty()) {
+
+                // 1-1. 기존 배너 이미지가 있었다면 파일 시스템에서 삭제
 				if (originalBannerName != null && !originalBannerName.isEmpty()) {
 					File oldBanner = new File(
-							BOARD_FILE_REPO + File.separator + boardId + File.separator + originalBannerName);
+							finalUploadBasePath + File.separator + boardId + File.separator + originalBannerName);
 					if (oldBanner.exists()) {
-						oldBanner.delete();
-						System.out.println("기존 배너 이미지 삭제됨: " + oldBanner.getPath());
+						boolean deleted = oldBanner.delete(); // 기존 배너 이미지 삭제
+						System.out.println("기존 배너 이미지 삭제됨 ( " + oldBanner.getPath() + " ) : " + deleted);
 					}
 				}
 
-				moveFileToDestination(bannerImage, boardId, "배너 이미지");
-			}
+                // 1-2. uploadFile 메소드에서 임시 폴더에 저장된 새 배너 이미지를 최종 폴더로 이동
+				moveFileToDestination(servletContext, bannerImage, boardId, "배너 이미지"); 
+
+
+            } else if (originalBannerName != null && !originalBannerName.isEmpty() && "true".equals(request.getParameter("deleteBanner"))) { // 배너 이미지 삭제만 요청한 경우
+                // 2. 새 배너 이미지는 없고, 기존 배너 이미지가 있었는데 삭제 요청이 들어온 경우
+                System.out.println("배너 이미지 삭제 요청됨.");
+                
+                 String webappRootPathForDelete = servletContext.getRealPath("/");
+                 
+                 String finalUploadBasePathForDelete = webappRootPathForDelete + "board" + File.separator + "board_file_repo";
+                 
+                 File originalBannerFileToDelete = new File(finalUploadBasePathForDelete + File.separator + boardId, originalBannerName);
+                 if (originalBannerFileToDelete.exists()) {
+                      if (originalBannerFileToDelete.delete()) {
+                          System.out.println("요청에 따라 원래 배너 이미지 삭제 완료: " + originalBannerName);
+                      } else {
+                          System.err.println("요청에 따라 원래 배너 이미지 삭제 실패: " + originalBannerName);
+                      }
+                 } else {
+                      System.err.println("삭제하려 했으나 원래 배너 이미지를 찾을 수 없습니다: " + originalBannerName);
+                 }
+            }
+            // 3. 배너 이미지 변경/삭제 요청이 없는 경우 (그대로 유지)
 
 			// 수정 후 상세페이지로 리디렉션
 			response.sendRedirect(request.getContextPath() + "/bbs/questionInfo.do?boardId=" + boardId);
@@ -1203,7 +1280,61 @@ public class boardController extends HttpServlet {
 		}
 		
 		
+		// 행사안내 상세페이지
+		// 요청주소 "/bbs/eventInfo.do"
+		if (action.equals("/eventInfo.do")) {
 
+			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
+
+			// 조회할 글번호 파라미터 수신
+			// URL 쿼리 파라미터(?boardId=...)로 전달된 조회할 글의 번호를 읽어옵니다.
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
+			boardVO viewedBoard = boardService.viewBannerBoard(boardId);
+
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (viewedBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
+
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBannerBoardId(boardId);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBannerBoardId(boardId);
+			request.setAttribute("getNextBoardId", getNextBoardId);
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", viewedBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 noticeInfo.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/eventInfo.jsp");
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+
+		} // end of noticeInfo.do
 
 
 		
@@ -1266,7 +1397,19 @@ public class boardController extends HttpServlet {
 		    int deletedBoardId = boardService.removeBoard(boardID);
 		    System.out.println("Service로 부터 반환된 삭제된 글 번호 : " + deletedBoardId);
 
-		    File fileDir = new File(BOARD_FILE_REPO + File.separator + deletedBoardId);
+		    
+		    // ServletContext 객체를 가져옴
+		    ServletContext servletContext = request.getServletContext();
+            // 웹 애플리케이션 루트 경로 가져오기
+		    String webappRootPath = servletContext.getRealPath("/"); // <-- 실제 루트 경로!
+            // 최종 업로드 기본 경로 계산 (BOARD_FILE_REPO 대신 사용)
+		    String finalUploadBasePath = webappRootPath + "board" + File.separator + "board_file_repo";
+            // 삭제할 파일 폴더 경로 계산 (BOARD_FILE_REPO 대신 finalUploadBasePath 사용)
+            // 삭제된 글 번호(deletedBoardId)로 폴더를 찾음!
+		    
+		    File fileDir = new File(finalUploadBasePath + File.separator + deletedBoardId);
+		    
+		    // 파일 폴더 존재 확인 및 삭제 로직
 		    if (fileDir.exists()) {
 		        try {
 		            File[] files = fileDir.listFiles();

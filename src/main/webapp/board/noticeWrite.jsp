@@ -133,6 +133,8 @@ request.setCharacterEncoding("UTF-8");
 			<textarea name="content" placeholder="내용을 입력하세요"></textarea>
 
 			<div class="file-group">
+				<p>배너 이미지를 등록하면 행사안내 게시판과 메인슬라이드에 노출됩니다.</p>
+				<p>배너 이미지 권장 사이즈 1200px * 900px (4:3)</p>
 				<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
 				<span class="file-name" id="bannerFileName">선택된 파일 없음</span>
 				<input type="file" onchange="readURL(this)" name="bannerImage" id="bannerImage" class="file-input">

@@ -19,9 +19,13 @@ request.setCharacterEncoding("UTF-8");
             padding: 20px;
         }
 
-        .board-head{
+	    .board-head{
         	width:80%;
         	display: flex;
+        	align-items: center;
+        }
+        .board-head h2{
+        	font-size: 20px;
         }
         .board-head p{
         	margin-left: 10px;
