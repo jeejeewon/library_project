@@ -16,7 +16,7 @@ public final class NaverMailSend {
 
 	private final String host = "smtp.naver.com";
 	private final String user = "calculon@naver.com";
-	private final String password = "";
+	private final String password = "HCHKH8L3L5WL";
 
 	public String sendEmail(String to) throws Exception {
 

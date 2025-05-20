@@ -43,7 +43,9 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>아직 없음~</li>
+								<li><a href="${contextPath}/books/searchForm.do">도서검색</a></li>
+								<li><a href="${contextPath}/books/newBooks.do">신착도서</a></li>
+								<li><a href="${contextPath}/books/bestBooks.do">인기도서</a></li>
 							</ul>
 						</div>
 					</div>
@@ -74,7 +76,9 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>아직 없음~</li>
+								<li><a href="${contextPath}/bbs/noticeList.do">공지사항</a></li>
+								<li><a href="${contextPath}/bbs/eventList.do">행사안내</a></li>								
+								<li><a href="${contextPath}/bbs/questionList.do">문의게시판</a></li>
 							</ul>
 						</div>
 					</div>
@@ -88,15 +92,15 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
-								<li>희망 도서</li>
-								<li>최근 조회한 도서</li>
+								<li><a href="${contextPath}/books/myRentalList.do">내 대여 내역</a></li>								
 								<li>내 서평 관리</li>
 								<li><a href="${contextPath}/reserve/reserveCheck">시설 예약
 										관리</a></li>
 							</ul>
 						</div>
 					</div>
-				</ul></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
 </div>
