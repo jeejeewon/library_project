@@ -98,6 +98,26 @@
 			font-weight: bold;
 			color: #F29661; /* 강조 색 */
 		}
+		
+		#noticeModal {
+			position: fixed; 
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%); 
+			z-index: 999;
+			background: white;
+			border: 1px solid #ccc;
+			padding: 20px 20px 50px 20px;
+			display: none;
+			width: 300px;
+			box-sizing: border-box;
+			border-radius: 8px;
+			text-align: center;
+		}
+		
+		#noticeModal button{
+			bottom: 10px;   	
+		}
     
 	</style>
 </head>
@@ -134,6 +154,7 @@
 		            <th>예약일시</th>                               
 		            <th>이용현황</th>                               
 		            <th>예약관리</th>                               
+		            <th>메모</th>                               
 		        </tr>
 		    </thead>
 		    <tbody id="reserveList">
@@ -143,7 +164,15 @@
         <div id="pagination" style="margin-top: 20px;">
         	<!-- 페이징 처리 구역 -->
         </div>
-	</div>
+        <!-- 모달창 -->
+		<div id="noticeModal">
+		  <p id="modalContent"><!-- 관리자 메모 들어갈 자리 --></p><br>
+		  <button onclick="closeModal()">닫기</button>
+		</div>
+		<!-- 모달 뒷배경 -->
+		<div id="modalBackdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+		background:rgba(0,0,0,0.3); z-index:998;"></div>
+</div>
 </body>
 <script>
 	//페이징 처리에 필요한 변수 선언
@@ -232,6 +261,14 @@
 				actionTd = "수정불가";
 			}
 			
+			let isNotice = vo.reserveNotice;
+			
+			if(isNotice && isNotice.trim() !== ""){
+				isNotice = "<a href='#' class='notice' style='text-decoration: none; color: black; '>보기</a>";
+			}else{
+				isNotice = "";
+			}		
+			
 			//동적으로 테이블 생성
 			$("#reserveList").append(
 				"<tr class='" + trClass + "'>"
@@ -244,10 +281,12 @@
 				+ "<td>" + date + "<br>" + time + "</td>"
 				+ "<td><span class='" + spanClass + "'>" + status + "</span></td>"
 				+ "<td>" + actionTd + "</td>"
-				+ "<td><input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
+				+ "<td>" + isNotice + "</td>"
+				+ "<td style='display: none;'><input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
 				+ "<input type='hidden' class='end-time' value='" + vo.reserveEnd + "'/>"
 				+ "<input type='hidden' class='room' value='" + vo.reserveRoom + "'/>"
 				+ "<input type='hidden' class='id' value='" + vo.reserveId + "'/>"
+				+ "<input type='hidden' class='admin-notice' value='" + vo.reserveNotice + "'/>"
 				+ "<input type='hidden' class='seat' value='" + seat + "'/></td>"
 				+ "</tr>"
 			);
@@ -414,6 +453,9 @@
 		const roomName = row.find(".room").val();
 		const roomSeat = row.find(".seat").val().replace("-", "").replace("번", "");
 		const reserveId = row.find(".id").val();
+		const reserveNotice = row.find(".admin-notice").val();
+		
+		sessionStorage.setItem("reserveNotice", reserveNotice);
 
 		//파라미터 생성
 		const params = new URLSearchParams({
@@ -439,6 +481,40 @@
 		window.location.href = nextPage + "?" + params.toString();
 
 	});
+	
+	//모달창 열기
+	function openModal(content) {
+	  document.getElementById("modalContent").innerText = content;
+	  document.getElementById("noticeModal").style.display = "block";
+	  document.getElementById("modalBackdrop").style.display = "block";
+	}
+
+	//모달창 닫기
+	function closeModal() {
+	  document.getElementById("noticeModal").style.display = "none";
+	  document.getElementById("modalBackdrop").style.display = "none";
+	}
+	
+	
+	//메모열의 '보기' 눌렀을 경우
+	$("#reserveList").on("click", ".notice", function(e){
+	    e.preventDefault();
+	    
+	    const row = $(this).closest("tr");	    
+	    const noticeText = row.find(".admin-notice").val();
+	    
+	    $("#modalContent").text(noticeText);
+	     	
+	    //모달창 보여주기
+	    $("#noticeModal, #modalBackdrop").show();
+	    
+	});
+	
+	//모달창에서 '닫기'버튼 클릭했을 경우
+	$("#closeModal, #modalOverlay").on("click", function(){
+	    $("#memoModal, #modalOverlay").hide();
+	});
+	
 	
 
 </script>

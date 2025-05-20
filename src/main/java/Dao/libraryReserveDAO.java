@@ -521,7 +521,8 @@ public class libraryReserveDAO {
 						           rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));		
 			
 				libraryReserveVO.setTel(rs.getString("tel"));
-				libraryReserveVO.setEmail(rs.getString("email"));				
+				libraryReserveVO.setEmail(rs.getString("email"));	
+				libraryReserveVO.setReserveNotice(rs.getString("reserve_notice"));
 				
 				reservedList.add(libraryReserveVO);
 				

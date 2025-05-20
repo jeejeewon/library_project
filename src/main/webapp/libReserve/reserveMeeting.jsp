@@ -86,12 +86,13 @@
 			</c:if>
 			<p>▪ 이용자정보</p>
 			<c:choose>
-				<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
-					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
-				</c:when>			
 				<c:when test="${sessionScope.id == 'admin'}">
 					<input type="text" name="userID" id="userID" value="${param.reserveId}" readonly>
 				</c:when>
+				<c:when test="${not empty param.reserveNum || sessionScope.id != 'admin'}">
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>			
+
 			</c:choose>			
 			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
@@ -326,13 +327,18 @@
 	        const roomName = selectedRoom.getAttribute("roomName");
 	        const roomCode = selectedRoom.getAttribute("roomCode");
 	       
-	        const adminMemo = document.getElementById("adminMemo").value;
 	        const adminId = "${sessionScope.id}";
 	        const userId = "${param.reserveId}";
 	        
+	        const adminMemoElement = document.getElementById("adminMemo");
+	        let adminMemo = "";
+	        if(adminId === "admin"){
+	        	adminMemo = adminMemoElement ? adminMemoElement.value : "";
+	        }
+
 	        //관리자가 메모를 적지 않았을 경우
 	        if(adminId === "admin"){
-	        	if(!adminMemo.trim()){
+	        	if(typeof adminMemo !== "string" || !adminMemo.trim()){
 	        		alert("관리자 메모란을 기입해주세요.");
 	        		return;
 	        	}
@@ -352,15 +358,15 @@
 	        }else{
 	 	       //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
 	 	       //확인용 컨펌창 띄우기
-	 	       const confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
+	 	       confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
 	 		            "- 이용일자 : " + reserveDate + "\n" +
 	 		            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
 	 		            "- 이용시설 : " + roomName);             	
-	        }
-	       
+	        }      
 	   
 	       //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
-	       if(!confirmResult){return;}        
+	       if(!confirmResult){return;}  
+	           
 	        $.ajax({
 	        	url: "<%=request.getContextPath()%>/reserve/meetingRoomUpdate",
 	            type: "POST",
@@ -389,6 +395,21 @@
 		})
 	} //예약 수정
     
+	
+	//관리자 메모 동적으로 값 넣기
+	window.addEventListener('DOMContentLoaded', () => {
+		const memo = sessionStorage.getItem("reserveNotice");	
+		const adminId = "${sessionScope.id}";
+		if(adminId === "admin"){
+			console.log(memo);
+			if (memo != "null") {
+				document.getElementById("adminMemo").value = memo;
+			}else{
+			  document.getElementById("adminMemo").value = "";
+			}	
+		}
+	});
+		
     
 </script>
 

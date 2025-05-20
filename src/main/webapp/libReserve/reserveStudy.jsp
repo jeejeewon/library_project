@@ -131,12 +131,12 @@
 			</c:if>
 			<p>▪ 이용자정보</p>
 			<c:choose>
-				<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
-					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
-				</c:when>			
 				<c:when test="${sessionScope.id == 'admin'}">
 					<input type="text" name="userID" id="userID" value="${param.reserveId}" readonly>
 				</c:when>
+				<c:when test="${not empty param.reserveNum || sessionScope.id != 'admin'}">
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>			
 			</c:choose>
 			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
@@ -538,10 +538,17 @@
 	        const roomName = document.querySelector(".selected-btn").innerText;
 	        const roomCode = document.querySelector(".selected-btn").value;
 	        const selectedSeat = document.querySelector(".selected-seat-btn");      
-      
-	        const adminMemo = document.getElementById("adminMemo").value;
+      			
 	        const adminId = "${sessionScope.id}";
 	        const userId = "${param.reserveId}";
+	        
+	        const adminMemoElement = document.getElementById("adminMemo");
+	        let adminMemo = "";
+	        if(adminId === "admin"){
+	        	adminMemo = adminMemoElement.value;
+	        }
+   
+
 	      
 	        if (!selectedSeat) { //선택된 좌석이 없을 경우
 	            alert("이용할 좌석을 선택해주세요.");
@@ -552,7 +559,7 @@
 	            
 	        //관리자가 메모를 적지 않았을 경우
 	        if(adminId === "admin"){
-	        	if(!adminMemo.trim()){
+	        	if(typeof adminMemo !== "string" || !adminMemo.trim()){
 	        		alert("관리자 메모란을 기입해주세요.");
 	        		return;
 	        	}
@@ -610,6 +617,21 @@
 	        });		 
 		})
 	}
+	
+	//관리자 메모 동적으로 값 넣기
+	window.addEventListener('DOMContentLoaded', () => {
+		const memo = sessionStorage.getItem("reserveNotice");
+		const adminId = "${sessionScope.id}";
+		console.log(memo);
+		if(adminId === "admin"){
+			console.log(memo);
+			if (memo != "null") {
+				document.getElementById("adminMemo").value = memo;
+			}else{
+			  document.getElementById("adminMemo").value = "";
+			}	
+		}
+	});
     
     
 </script>
