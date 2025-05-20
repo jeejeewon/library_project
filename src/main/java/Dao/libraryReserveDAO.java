@@ -408,21 +408,22 @@ public class libraryReserveDAO {
 				
 		
 		String sql = "update room_reserve "
-				   + "set reserve_num = ?, reserve_room = ?, reserve_seat = ?, reserve_date = ?, reserve_start = ?, reserve_end = ?, reserve_time = sysdate() "
+				   + "set reserve_num = ?, reserve_room = ?, reserve_seat = ?, reserve_date = ?, reserve_start = ?, reserve_end = ?, reserve_time = sysdate(), reserve_notice = ? "
 				   + "where reserve_id = ? and reserve_num = ?";
 		
 		try {
 			con = DbcpBean.getConnection();
 			pstmt = con.prepareStatement(sql);
 			
-			pstmt.setString(1, reserveNum); 		 //예약 번호
-			pstmt.setString(2, vo.getReserveRoom()); //예약 스터디룸
-			pstmt.setInt(3, vo.getReserveSeat());    //예약 좌석번호
-			pstmt.setDate(4, vo.getReserveDate());   //예약 날짜
-			pstmt.setInt(5, vo.getReserveStart());   //예약 시작시간
-			pstmt.setInt(6, vo.getReserveEnd());     //예약 종료시간
-			pstmt.setString(7, vo.getReserveId());	 //예약 수정 요청한 아이디
-			pstmt.setString(8, vo.getReserveNum());  //예약 수정 요청한 예약번호
+			pstmt.setString(1, reserveNum); 		   //예약 번호
+			pstmt.setString(2, vo.getReserveRoom());   //예약 스터디룸
+			pstmt.setInt(3, vo.getReserveSeat());      //예약 좌석번호
+			pstmt.setDate(4, vo.getReserveDate());     //예약 날짜
+			pstmt.setInt(5, vo.getReserveStart());     //예약 시작시간
+			pstmt.setInt(6, vo.getReserveEnd());       //예약 종료시간
+			pstmt.setString(7, vo.getReserveNotice()); //관리자메모
+			pstmt.setString(8, vo.getReserveId());	   //예약 수정 요청한 아이디
+			pstmt.setString(9, vo.getReserveNum());    //예약 수정 요청한 예약번호
 			
 			//쿼리문 실행
 			pstmt.executeUpdate();			

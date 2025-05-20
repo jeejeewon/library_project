@@ -110,8 +110,11 @@
 <body>
 	<div align="center" style="margin-top: 50px;">
 		<c:choose>
-			<c:when test="${not empty param.reserveNum}">
+			<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
 				<h2>스터디룸 예약 수정</h2>
+			</c:when>
+			<c:when test="${sessionScope.id == 'admin'}">
+				<h2>스터디룸 예약 수정 - 관리자용</h2>
 			</c:when>
 			<c:otherwise>
 				<h2>스터디룸 예약</h2>
@@ -127,7 +130,14 @@
 				</div>
 			</c:if>
 			<p>▪ 이용자정보</p>
-			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+			<c:choose>
+				<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>			
+				<c:when test="${sessionScope.id == 'admin'}">
+					<input type="text" name="userID" id="userID" value="${param.reserveId}" readonly>
+				</c:when>
+			</c:choose>
 			<p><br>▪ 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
 			<p>예약은 현재 날짜로부터 1개월까지만 가능합니다.</p><br>					
@@ -247,7 +257,11 @@
 				</div>     
              </div>   		
             <br>
-            <c:choose>			
+            <c:if test="${sessionScope.id == 'admin'}">
+            	<p>▪ 관리자 메모</p>
+				<textarea id="adminMemo" rows="6" cols="70" placeholder="관리자 메모 작성란"></textarea><br>
+			</c:if>	
+            <c:choose>		
             <c:when test="${not empty param.reserveNum}">
 				<button type="button" id="updateBtn">예약 수정하기</button>	
 			</c:when>
@@ -472,7 +486,8 @@
 	        if (!selectedSeat) { //선택된 좌석이 없을 경우
 	            alert("이용할 좌석을 선택해주세요.");
 	            return;
-	        }           
+	        }       
+  
 	        const seat = selectedSeat.dataset.seat;
 	              
 	        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
@@ -522,20 +537,47 @@
 	        const endTime = document.getElementById("EndTime").value;
 	        const roomName = document.querySelector(".selected-btn").innerText;
 	        const roomCode = document.querySelector(".selected-btn").value;
-	        const selectedSeat = document.querySelector(".selected-seat-btn");        
+	        const selectedSeat = document.querySelector(".selected-seat-btn");      
+      
+	        const adminMemo = document.getElementById("adminMemo").value;
+	        const adminId = "${sessionScope.id}";
+	        const userId = "${param.reserveId}";
+	      
 	        if (!selectedSeat) { //선택된 좌석이 없을 경우
 	            alert("이용할 좌석을 선택해주세요.");
 	            return;
-	        }           
+	        }        
+	        
 	        const seat = selectedSeat.dataset.seat;
-	              
-	        //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
-	        //확인용 컨펌창 띄우기
-	        const confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
-	 	            "- 이용일자 : " + reserveDate + "\n" +
-	 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
-	 	            "- 이용시설 : " + roomName + "\n" +
-	 	            "- 이용좌석 : " + seat);      
+	            
+	        //관리자가 메모를 적지 않았을 경우
+	        if(adminId === "admin"){
+	        	if(!adminMemo.trim()){
+	        		alert("관리자 메모란을 기입해주세요.");
+	        		return;
+	        	}
+	        }
+	                 
+	        let confirmResult = "";
+	        
+	        //관리자가 예약 내역을 수정할 경우
+	        if(adminId == 'admin'){        	
+		        confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +  
+		        		"- 이용자ID : " + userId + "\n" + 
+		 	            "- 이용일자 : " + reserveDate + "\n" +
+		 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+		 	            "- 이용시설 : " + roomName + "\n" +
+		 	            "- 이용좌석 : " + seat + "\n" +
+		 	            "- 관리자메모 : " + adminMemo);           	
+	        }else{
+		        //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
+		        //확인용 컨펌창 띄우기
+		        confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
+		 	            "- 이용일자 : " + reserveDate + "\n" +
+		 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+		 	            "- 이용시설 : " + roomName + "\n" +
+		 	            "- 이용좌석 : " + seat);           	
+	        }
 	        
 	        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
 	        if(!confirmResult){return;}
@@ -550,12 +592,17 @@
 	                EndTime: endTime,
 	                roomCode : roomCode,
 	                seat : seat,
-	                reserveNum : reserveNum
+	                reserveNum : reserveNum,
+	                reserveNotice : adminId === 'admin' ? adminMemo : ""                
 	            },
 	            success: function(response) {
 	                alert("예약이 수정되었습니다.");
-	                //예약이 수정되면 예약 확인 페이지로 이동
-	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	              	//예약이 수정되면 예약 확인 페이지로 이동
+	                if(adminId === 'admin'){
+	                	window.location.href = "<%=request.getContextPath()%>/reserve/reserveAdmin";
+	                }else{
+	                	window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	                }   
 	            },
 	            error: function(xhr, status, error) {
 	                alert("예약 수정에 실패하였습니다. " + error);

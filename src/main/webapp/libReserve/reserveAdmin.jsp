@@ -227,12 +227,7 @@
 			//이용현황에 따른 수정 가능 여부 판단
 			let actionTd = "";
 			if(status === "이용전"){
-				if(vo.reserveRoom.includes("study")){
-					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveStudy' class='mod-link'>수정</a>";
-				}else if(vo.reserveRoom.includes("meeting")){
-					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveMeeting' class='mod-link'>수정</a>";
-				}
-				actionTd += "<br><a href='#' class='cancel-link'>삭제</a>";
+				actionTd = "<a href='#' class='mod-link'>수정</a><br><a href='#' class='cancel-link'>삭제</a>";
 			}else{
 				actionTd = "수정불가";
 			}
@@ -249,11 +244,12 @@
 				+ "<td>" + date + "<br>" + time + "</td>"
 				+ "<td><span class='" + spanClass + "'>" + status + "</span></td>"
 				+ "<td>" + actionTd + "</td>"
-				+ "</tr>"
-				+ "<input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
+				+ "<td><input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
 				+ "<input type='hidden' class='end-time' value='" + vo.reserveEnd + "'/>"
 				+ "<input type='hidden' class='room' value='" + vo.reserveRoom + "'/>"
-				+ "<input type='hidden' class='seat' value='" + seat + "'/>"
+				+ "<input type='hidden' class='id' value='" + vo.reserveId + "'/>"
+				+ "<input type='hidden' class='seat' value='" + seat + "'/></td>"
+				+ "</tr>"
 			);
 		});
 	}
@@ -409,19 +405,39 @@
 	$("#reserveList").on("click", ".mod-link", function(e){
 		e.preventDefault(); //기본동작방지
 	  
-		//수정을 누른 행의 정보 바인딩
-		const reserveNum = $(this).closest("tr").find("td").eq(0).text(); 
-		const reserveDate = $(this).closest("tr").find("td").eq(1).text(); 
-//		const startTime = 
-//		const endTime = 
-//		const roomName = 
-//		const roomSeat =	
+		//수정 버튼 누른 행의 정보 저장
+		const row = $(this).closest("tr");			
+		const reserveNum = row.find("td").eq(0).text(); 
+		const reserveDate = row.find("td").eq(1).text(); 
+		const startTime = row.find(".start-time").val();
+		const endTime = row.find(".end-time").val();
+		const roomName = row.find(".room").val();
+		const roomSeat = row.find(".seat").val().replace("-", "").replace("번", "");
+		const reserveId = row.find(".id").val();
 
-	  
-	  
-	  
-	
-	  // 여기에 수정 로직 추가하거나, 모달창 띄우기, 페이지 이동 등등
+		//파라미터 생성
+		const params = new URLSearchParams({
+			reserveNum: reserveNum,
+			reserveDate: reserveDate,
+			startTime: startTime,
+			endTime: endTime,
+			roomName: roomName,
+			roomSeat: roomSeat,
+			reserveId: reserveId
+		});
+		
+		let nextPage = "";
+		
+		//조건문에 따라 예약 수정페이지 다르게 설정
+		if(roomName.includes("study")){
+			nextPage = "<%=request.getContextPath()%>/reserve/reserveStudy";
+		}else if(roomName.includes("meeting")){
+			nextPage = "<%=request.getContextPath()%>/reserve/reserveMeeting";
+		}
+		
+		//페이지 이동
+		window.location.href = nextPage + "?" + params.toString();
+
 	});
 	
 
