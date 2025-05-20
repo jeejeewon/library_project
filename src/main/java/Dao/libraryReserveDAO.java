@@ -97,7 +97,7 @@ public class libraryReserveDAO {
 		
 		System.out.println("reserveMeetingRoom DAO 호출됨===================");
 		
-		//예약번호 생성 (MA-0520-1314 형태 : 미팅룸코드-예약날짜-예약시작시간종료시간)
+		//예약번호 생성 (MA-0-0520-1314 형태 : 미팅룸코드-(좌석번호)-예약날짜-예약시작시간종료시간)
 		String numRoom = vo.getReserveRoom(); //예약한 미팅룸 코드 (예: meetingA)
 		String numDate = vo.getReserveDate().toString(); //예약날짜 (예: 2025-05-20)
 		
@@ -111,7 +111,7 @@ public class libraryReserveDAO {
 		numDate = datePart[1] + datePart[2];
 		
 		//최종 예약번호
-		String reserveNum = numRoom + "-" + numDate + "-" + vo.getReserveStart() + vo.getReserveEnd();
+		String reserveNum = numRoom + "-0-" + numDate + "-" + vo.getReserveStart() + vo.getReserveEnd();
 		
 		//DB에 예약정보 저장 쿼리문
 		String sql = "insert into room_reserve(reserve_num, reserve_room, reserve_id, reserve_name, reserve_date, reserve_start, reserve_end, reserve_time) " +
@@ -497,7 +497,7 @@ public class libraryReserveDAO {
 		System.out.println("allReservedList DAO 호출됨===================");
 		
 		// 0:이용중, 1:이용전, 2:이용완료
-		String sql = "select r.*, m.tel as tel, m.email as email, "
+		String sql = "select r.*, m.tel as tel, "
 		           + "case when now() between date_add(r.reserve_date, interval r.reserve_start hour) "
 		           + "and date_add(r.reserve_date, interval r.reserve_end hour) then 0 "
 		           + "when now() < date_add(r.reserve_date, interval r.reserve_start hour) then 1 "
@@ -527,7 +527,6 @@ public class libraryReserveDAO {
 						           rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));		
 			
 				libraryReserveVO.setTel(rs.getString("tel"));
-				libraryReserveVO.setEmail(rs.getString("email"));	
 				libraryReserveVO.setReserveNotice(rs.getString("reserve_notice"));
 				
 				reservedList.add(libraryReserveVO);
