@@ -424,6 +424,7 @@ public class roomReserveController extends HttpServlet{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			java.util.Date utilDate = null; //utilDate는 java.util.Date형
 			Date reserveDate = null;		//sqlDate는 java.sql.Date형
+			String reserveNotice = request.getParameter("reserveNotice");
 			
 			try {
 				utilDate = dateFormat.parse(selectedDate);
@@ -441,10 +442,12 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("예약 수정시간 : " + StartTime + " ~ " + EndTime);
 			System.out.println("예약 수정 미팅룸 : " + roomCode);
 			System.out.println("예약번호 : " + reserveNum);
+			System.out.println("관리자 메모 : " + reserveNotice);
 					
 			//받아온 정보를 VO객체에 저장
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
 			vo.setReserveNum(reserveNum);
+			vo.setReserveNotice(reserveNotice);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
 			roomReserveService.updateMeetingRoom(vo);
