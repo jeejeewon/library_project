@@ -222,7 +222,7 @@ public class BookDAO{
     // 인기 도서 페이징 조회
     public Vector<BookVo> bestBooksByPage(int offset, int limit) {
         Vector<BookVo> list = new Vector<>();
-        String sql = "SELECT * FROM book WHERE rent_count > 5 "
+        String sql = "SELECT * FROM book WHERE rent_count > 0 "
         		   + "ORDER BY rent_count DESC LIMIT ?, ?";
 
         try {

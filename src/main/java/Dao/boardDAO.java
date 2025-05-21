@@ -28,7 +28,7 @@ public class boardDAO {
     // 매개변수 int category = 게시글의 카테고리번호 0=공지사항, 1=문의게시판, 2=내서평
     // 매개변수 int startRow = 페이징의 시작위치
     // 매개변수 int endRow = 조회할 게시글의 마지막 핸 번호
-    public List<boardVO> getBoardList(int category, int startRow, int endRow, String searchKeyword, String searchType) {
+    public List<boardVO> getBoardList(int category, int startRow, int endRow, String searchKeyword, String searchType, String currentUserId) {
     	
         List<boardVO> boardList = new ArrayList<boardVO>(); // 게시글을 저장할 List 객체
        
@@ -38,14 +38,52 @@ public class boardDAO {
             con = DbcpBean.getConnection();
             
             // 검색어를 포함, 페이징 처리된 게시글 리스트를 조회하는 쿼리문
-            String sql = "SELECT * FROM board WHERE category = ? AND " + searchType + " LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
-            pstmt = con.prepareStatement(sql); // 쿼리문 준비
-            pstmt.setInt(1, category); // 카테고리 번호 설정
-            pstmt.setString(2, "%" + searchKeyword + "%"); // 검색어를 LIKE 쿼리로 포함
-            pstmt.setInt(3, endRow - startRow); // 조회할 게시글 수 (LIMIT에서 보여줄 갯수)
-            pstmt.setInt(4, startRow); // 조회 시작 행 번호 (OFFSET에서 시작점)
+//          String sql = "SELECT * FROM board WHERE category = ? AND " + searchType + " LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            // SQL 쿼리 빌드를 위한 StringBuilder 사용!
+            StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM board WHERE category = ? ");
+            
+            // '내 서평'(카테고리 2)이고 currentUserId가 넘어왔으면 user_id로 필터링 조건 추가
+            boolean useUserIdFilter = (category == 2 && currentUserId != null && !currentUserId.isEmpty());
+            if (useUserIdFilter) {
+                sqlBuilder.append(" AND user_id = ? "); // user_id 컬럼으로 필터링 조건 추가!
+            }
+            
+            // 검색어 조건 추가
+             if (searchType != null && !searchType.isEmpty()) { // searchType이 null이거나 비어있을 경우 대비 추가
+                 sqlBuilder.append(" AND ").append(searchType).append(" LIKE ? ");
+            }
+          
+            // 정렬, 페이징 조건 추가
+            sqlBuilder.append(" ORDER BY created_at DESC LIMIT ? OFFSET ?");
+            
+            // 최종 SQL 쿼리 확인
+            System.out.println("Generated SQL: " + sqlBuilder.toString());
+            
+            
+            String sql = sqlBuilder.toString();
+            // PreparedStatement 객체 생성 (필드 변수인 pstmt에 할당!)
+            pstmt = con.prepareStatement(sql);
 
-            rs = pstmt.executeQuery(); // 쿼리 실행
+            
+            int paramIndex = 1; // ? 는 1부터 시작!
+
+            // 1. category 값 설정
+            pstmt.setInt(paramIndex++, category);
+
+            // 2. '내 서평' 필터링을 사용할 경우에만 currentUserId 값 설정!
+            if (useUserIdFilter) {
+                pstmt.setString(paramIndex++, currentUserId);
+            }
+
+            // 3. 검색어 값 설정
+            pstmt.setString(paramIndex++, "%" + searchKeyword + "%"); // 검색어를 LIKE 쿼리로 포함
+
+            // 4. 페이징을 위한 LIMIT, OFFSET 값 설정
+            pstmt.setInt(paramIndex++, endRow - startRow); // 조회할 게시글 수 (LIMIT)
+            pstmt.setInt(paramIndex++, startRow); // 조회 시작 행 번호 (OFFSET)
+
+            // 쿼리 실행 (필드 변수인 rs에 할당!)
+            rs = pstmt.executeQuery();
 
             // 결과셋에서 각 게시글 정보를 boardVO 객체로 만들어 vector에 추가
             while (rs.next()) {
@@ -154,14 +192,15 @@ public class boardDAO {
     	        pstmt.setString(2, title);
     	        pstmt.setString(3, content);
     	        pstmt.setString(4, userId);
+    	        
     	        // bookNo가 0이면 NULL로 처리, 아니면 해당 값으로 처리
-                // (주의: boardVO의 bookNo가 int 타입이고 0이 '없음'을 의미한다고 가정)
-                if (bookNo == 0) {
-                    pstmt.setNull(5, java.sql.Types.INTEGER); // book_no 컬럼 타입에 맞게 Types.INTEGER 사용
-                } else {
-                    pstmt.setInt(5, bookNo);
-                }
-                
+    	        // (주의: boardVO의 bookNo가 int 타입이고 0이 '없음'을 의미한다고 가정)
+    	        if (bookNo == 0) {
+    	            pstmt.setNull(5, java.sql.Types.INTEGER); // book_no 컬럼 타입에 맞게 Types.INTEGER 사용
+    	        } else {
+    	            pstmt.setInt(5, bookNo);
+    	        }
+    	        
     	        pstmt.setString(6, file);
     	        pstmt.setString(7, bannerImg);
     	        pstmt.setTimestamp(8, createdAt);
@@ -206,7 +245,9 @@ public class boardDAO {
 
         try {
             con = DbcpBean.getConnection();
-            String sql = "SELECT * FROM board WHERE board_id = ?";
+            String sql = "SELECT b.*, bo.thumbnail " + // board의 모든 컬럼 (b.*) 와 book의 thumbnail (bo.thumbnail)
+                    "FROM board b LEFT JOIN book bo ON b.book_no = bo.book_no " + // book_no로 두 테이블 연결
+                    "WHERE b.board_id = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, boardId);
             rs = pstmt.executeQuery();
@@ -220,11 +261,14 @@ public class boardDAO {
                     rs.getInt("book_no"),
                     rs.getString("file"),
                     rs.getString("banner_img"),
-                    rs.getTimestamp("created_at"), // 수정된 부분
+                    rs.getTimestamp("created_at"),
                     rs.getInt("views"),
                     rs.getBoolean("secret"),
                     rs.getString("reply")
                 );
+                
+                String thumbnailValueFromDB = rs.getString("thumbnail"); // DB에서 thumbnail 값을 읽어옴
+                boardVO.setThumbnail(thumbnailValueFromDB);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -567,6 +611,43 @@ public class boardDAO {
 	    }
 
 	    return totalCount;
+	}
+
+	
+	//북 넘버에 맞는 서평 목록 조회
+	public List<boardVO> getReviewsByBookNo(int bookNo) {
+		List<boardVO> reviewList = new ArrayList<boardVO>();
+
+	        try {
+	            con = DbcpBean.getConnection();
+	            String sql = "SELECT * FROM board WHERE category = 2 AND book_no = ? ORDER BY created_at DESC";
+	            pstmt = con.prepareStatement(sql);
+	            pstmt.setInt(1, bookNo);
+	            rs = pstmt.executeQuery();
+	            while (rs.next()) {
+	                boardVO vo = new boardVO(
+	                    rs.getInt("board_id"),
+	                    rs.getInt("category"),
+	                    rs.getString("title"),
+	                    rs.getString("content"),
+	                    rs.getString("user_id"),
+	                    rs.getInt("book_no"),
+	                    rs.getString("file"),
+	                    rs.getString("banner_img"),
+	                    rs.getTimestamp("created_at"),
+	                    rs.getInt("views"),
+	                    rs.getBoolean("secret"),
+	                    rs.getString("reply")
+	                );
+	                reviewList.add(vo);
+	            }// end while
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } finally {
+	            DbcpBean.close(con, pstmt, rs);
+	        }
+
+	        return reviewList;
 	}
 
 

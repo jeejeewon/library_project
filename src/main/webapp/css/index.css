@@ -221,10 +221,22 @@
 	font-size: 1.625rem;
 	font-weight: 600;
 	padding-bottom: 1rem;
+	text-align: center;
+}
+
+.form-wrap.find-idpw p {
+	text-align: center;
+	padding-bottom: 1rem;
+}
+
+.form-wrap.find-idpw p a {
+	font-weight: 600;
 }
 
 .form-wrap.find-idpw .inner {
+	width: 50%;
 	min-width: 380px;
+	max-width: 440px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -238,9 +250,7 @@
 .form-wrap.find-idpw .input-wrap {
 	display: flex;
 	flex-direction: column;
-	gap: .5rem;
-	padding-bottom: 15px;
-	align-items: flex-end;
+	padding-bottom: .5rem;
 }
 
 .form-wrap.find-idpw .input-wrap input {
@@ -263,10 +273,68 @@
 }
 
 .form-wrap.find-idpw .find-id {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 600;
 	line-height: 1.2em;
 	padding-bottom: 1rem;
+	color: #003c83;
+}
+
+/* 비밀번호 변경 페이지 */
+.form-wrap.change-pw {
+	display: flex;
+	justify-content: center;
+	padding: 3rem 0;
+}
+
+.form-wrap.change-pw h3 {
+	font-size: 1.625rem;
+	padding-bottom: 1rem;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.form-wrap.change-pw h3 span {
+	font-weight: 600;
+}
+
+.form-wrap.change-pw .inner {
+	width: 50%;
+	min-width: 380px;
+	max-width: 440px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	display: flex;
+}
+
+.form-wrap.change-pw .inner form {
+	width: 100%;
+}
+
+.form-wrap.change-pw .input-wrap {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: .5rem;
+}
+
+.form-wrap.change-pw .input-wrap input {
+	width: 100%;
+	padding: 10px 18px;
+}
+
+.form-wrap.change-pw .input-wrap button {
+	width: 100%;
+	padding: 10px 18px;
+	background: #003c83;
+	border: 1px solid #003c83;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2em;
+	border-radius: 3px;
+	cursor: pointer;
+	line-height: 1.2em;
 }
 
 /* 회원가입*/
@@ -397,7 +465,7 @@
 	background-color: #003c83;
 	color: #fff;
 	border-radius: 5px;
-	font-size: 1.1rem;
+	font-size: 1rem;
 	font-weight: bold;
 }
 
@@ -503,7 +571,7 @@
 .mypage {
 	display: flex;
 	width: 100%;
-	padding: 2rem 0;
+	padding: 2rem 0 4rem;
 }
 
 .mypage .left_menu {
@@ -513,6 +581,7 @@
 
 .mypage .page {
 	width: 80%;
+	max-width: calc(100% - 235px);
 }
 
 .mypage .menu-section {
@@ -547,4 +616,126 @@
 
 .mypage .menu-section ul li {
 	padding-top: 10px;
+}
+
+/* 마이페이지 메인 */
+#myPageMain .my-info {
+	padding-bottom: 3rem;
+}
+
+#myPageMain .my-info p {
+	font-weight: 600;
+	font-size: 1.25rem;
+}
+
+#myPageMain .my-info .user-name {
+	font-size: 2rem;
+}
+
+#myPageMain .my-info p:nth-child(2) {
+	font-weight: 400;
+	color: #7c7c7c;
+}
+
+#myPageMain .my-book .tit {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	line-height: 1;
+	padding-bottom: .5rem;
+	border-bottom: 1px solid #dedede;
+}
+
+#myPageMain .my-book .tit h3 {
+	font-size: 1.250rem;
+	font-weight: 600;
+}
+
+#myPageMain .book-list {
+	display: flex;
+	height: auto;
+	width: 100%;
+	gap: 1rem;
+	padding-top: 1.25rem;
+}
+
+#myPageMain .book-list .card {
+	height: 100%;
+	position: relative;
+	width: calc(100%/ 6);
+	display: flex;
+	flex-direction: column;
+}
+
+#myPageMain .book-list .card img {
+	height: 90%;
+	width: 100%;
+	object-fit: cover;
+	min-height: 250px;
+}
+
+#myPageMain .book-list .card .book-tit {
+	height: 10%;
+	display: block;
+	font-weight: 600;
+	padding-top: 5px;
+}
+
+#myPageMain .my-review {
+	padding-top: 3rem;
+}
+
+#myPageMain .my-review .tit {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	line-height: 1;
+	padding-bottom: .5rem;
+	border-bottom: 1px solid #dedede;
+}
+
+#myPageMain .my-review .tit h3 {
+	font-size: 1.250rem;
+	font-weight: 600;
+}
+
+#myPageMain .review-list {
+	padding-top: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: .625rem
+}
+
+#myPageMain .review-list .item p:nth-child(1) {
+	font-weight: 600;
+}
+
+#myPageMain .review-list .item p:nth-child(2) {
+	font-size: 14px;
+	color: #7c7c7c;
+	line-height: 1.7;
+}
+
+/* 반응형 */
+@media ( max-width :1024px) {
+	.container {
+		width: 90%;
+		max-width: none;
+	}
+	#header .top .container {
+		width: 90%;
+	}
+	.mypage .left_menu {
+		min-width: 180px;
+	}
+	.mypage .menu-section {
+		width: 80%;
+	}
+	#myPageMain .book-list .card {
+		width: calc(100%/ 4);
+	}
+	#myPageMain .book-list .card:nth-child(5), #myPageMain .book-list .card:nth-child(6)
+		{
+		display: none;
+	}
 }

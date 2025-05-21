@@ -6,7 +6,7 @@
     BookVo book = (BookVo) request.getAttribute("book");
     String userId = (String) session.getAttribute("id");
 %>
-
+ 
 <!DOCTYPE html>
 <html>
 <head>
@@ -206,6 +206,8 @@
             </div>
         </div>
     </div>
+    <jsp:include page="../board/myReviewWrite.jsp" flush="true"/><%-- 서평입력폼 --%>
+    <jsp:include page="../board/bookReviewList.jsp" flush="true" /> <%-- 서평리스트 --%>
 </div>
 </body>
 </html>

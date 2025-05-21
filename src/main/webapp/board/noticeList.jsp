@@ -17,14 +17,17 @@ request.setCharacterEncoding("UTF-8");
 <head>
     <title>공지사항 리스트 - noticeList.jsp</title>
     <!-- 스타일 추가 -->
-    <style>
+  <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             padding: 20px;
         }
+ 
         
 	    .board-head{
+	    font-size: 28px;
+	    color: #003c83;
+	    font-weight: bold;
         	width:80%;
         	display: flex;
         	align-items: center;
@@ -156,7 +159,6 @@ request.setCharacterEncoding("UTF-8");
     <center>
     	<div class="board-head">
     		<h2>공지사항</h2>
-    		<p>도서관소식 > 공지사항</p>
     	</div>
 		<!-- 검색 기능의 폼 태그 -->
 		<form action="${contextPath}/bbs/noticeList.do" method="get" class="search-form">
@@ -173,12 +175,9 @@ request.setCharacterEncoding("UTF-8");
     		<!-- 총 게시글 수 표시 -->
     		<p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
         	<!-- 글쓰기 버튼 -->
-        	<a href="${contextPath}/bbs/noticeWrite.do" class="write-btn">글쓰기</a>
-	        <!--  아래는 운영자에게만 글쓰기 버튼이 보이게하는 코드.. 추후 이걸로 사용할 예정
-			<c:if test="${sessionScope.userId == 'admin'}">
+			<c:if test="${sessionScope.id == 'admin'}">
 	    		<a href="${contextPath}/bbs/noticeWrite.do" class="write-btn">글쓰기</a>
 			</c:if>
-			-->
     	</div>
 
         <!-- 공지사항 리스트 테이블 -->

@@ -1,6 +1,7 @@
 package Controller;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -277,7 +278,7 @@ public class boardController extends HttpServlet {
 			int category = 0; // 카테고리 0번 (공지사항)
 			
 			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
-			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, null);
 			
 			//페이징된 게시글 목록과 페이징정보 추출하기
 			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
@@ -332,8 +333,7 @@ public class boardController extends HttpServlet {
 			boardVO.setCategory(0);// 추가할 새글의 카테고리번호를 0으로 지정해서 공지사항으로 지정
 			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
 			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
-			boardVO.setUserId("admin");// 추가할 새글 작성자 ID를 admin으로 저장 (참고. t_member테이블에 ID가 admin이 저장되어 있어야함)
-			//boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
+			boardVO.setUserId((String) request.getSession().getAttribute("id"));
 			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
@@ -579,7 +579,7 @@ public class boardController extends HttpServlet {
 			int category = 1; // 카테고리 1번 (문의게시판)
 			
 			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
-			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, null);
 			
 			//페이징된 게시글 목록과 페이징정보 추출하기
 			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
@@ -639,8 +639,7 @@ public class boardController extends HttpServlet {
 			boardVO.setCategory(1);// 추가할 새글의 카테고리번호를 1으로 지정해서 문의글로 지정
 			boardVO.setTitle(title);// 추가하기위해 입력한 글제목 저장
 			boardVO.setContent(content);// 추가하기 위해 입력한 글내용 저장
-			boardVO.setUserId("admin");// 추가할 새글 작성자 ID를 admin으로 저장 (참고. t_member테이블에 ID가 admin이 저장되어 있어야함)
-			//boardVO.setBookNo(1);// 추가할 새글의 도서번호 - 임의로 0으로 지정. 추후 book BD랑 연결해야함
+			boardVO.setUserId((String) request.getSession().getAttribute("id"));
 			boardVO.setFile(file);// 새글 입력시 첨부해서 업로드한 파일명 저장
 			boardVO.setBannerImg(bannerImage);// 새글 입력시 첨부해서 업로드한 배너파일명 저장
 			boardVO.setCreatedAt(new Timestamp(System.currentTimeMillis())); // 게시글 작성일을 현재시간으로 지정
@@ -1016,10 +1015,9 @@ public class boardController extends HttpServlet {
 		
 		
 		/*-------------------------------------내서평게시판---------------------------------------*/
-		// 내서평 게시판 조회하기
+		// 내서평 게시판 조회하기 (마이메뉴에서 내서평을 눌렀을경우)
 		// 요청주소 "/bbs/myReviewList.do"
 		if (action.equals("/myReviewList.do")) {
-			
 			
 			
 			// 검색어와 검색타입 받기
@@ -1043,8 +1041,10 @@ public class boardController extends HttpServlet {
 			// 카테고리 설정 (현재 서평이므로 2번으로 설정함)
 			int category = 2; // 카테고리 2번 (내서평)
 			
+			// '내 서평' 페이지 컨트롤러
+			String currentUserId = (String) request.getSession().getAttribute("id");
 			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
-			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType);
+			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, currentUserId);
 			
 			//페이징된 게시글 목록과 페이징정보 추출하기
 			List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
@@ -1074,7 +1074,7 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		// 내서평 상세페이지
+		// 내서평 상세페이지 (마이메뉴에서 내서평 -> 게시글을 클릭했을 경우)
 		// 요청주소 "/bbs/myReviewInfo.do"
 		if (action.equals("/myReviewInfo.do")) {
 
@@ -1131,6 +1131,134 @@ public class boardController extends HttpServlet {
 			nextPage = "/main.jsp";
 
 		} // end of myReviewInfoInfo.do
+		
+		
+		
+		//일반 서평 상세페이지 
+		//bookDetail화면에서 서평[더보기]를 눌렀을 경우
+		if(action.equals("/reviewDetail.do")) {
+
+			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
+
+			// 조회할 글번호 파라미터 수신
+			// URL 쿼리 파라미터(?boardId=...)로 전달된 조회할 글의 번호를 읽어옵니다.
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
+			boardVO viewedBoard = boardService.viewBoard(boardId);
+
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));// 조회
+																														// 결과
+																														// 로그
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (viewedBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
+
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBoardId(boardId, category);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBoardId(boardId, category);
+			request.setAttribute("getNextBoardId", getNextBoardId);
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", viewedBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 myReviewInfo.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/reviewInfo.jsp");
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
+			
+		}
+		
+		
+		
+		
+		// 서평 등록하기
+		if (action.equals("/myReviewWrite.do")) {
+		    System.out.println("서평 글 등록 요청 시작 action: " + action);
+
+		    // 요청 파라미터에서 글정보들을 직접 가져옵니다.
+		    String title = request.getParameter("title");
+		    String content = request.getParameter("content");
+		    String bookNoStr = request.getParameter("bookNo");
+
+		    System.out.println("request.getParameter() 로 가져온 값들: title=" + title + ", content=" + content + ", bookNoStr=" + bookNoStr);
+
+		    // bookNo는 String으로 넘어오니 int로 변환
+		    int bookNo = 0; // 기본값 설정
+		    if (bookNoStr != null && !bookNoStr.isEmpty()) {
+		        try {
+		            bookNo = Integer.parseInt(bookNoStr);
+		        } catch (NumberFormatException e) {
+		            e.printStackTrace();
+		            return; // 오류 발생 시 처리 중단
+		        }
+		    } else {
+		         System.err.println("오류!! bookNo 파라미터 값이 null 이거나 비어있음");
+		         // bookNo가 없으면 서평 등록이 불가능하니 에러 처리
+		         return; // 오류 발생 시 여기서 처리 중단
+		    }
+
+		    String currentUserId = (String) request.getSession().getAttribute("id");
+		    System.out.println("세션에서 가져온 유저 ID: " + currentUserId);
+		    if (currentUserId == null) {
+		       System.err.println("오류 : 로그인된 유저 ID가 없음. 서평 등록 취소.");
+		    }
+
+		    // DB에 추가하기 위해 boardVO 객체에 값 설정
+		    boardVO vo = new boardVO();
+		    vo.setCategory(2);
+		    vo.setTitle(title);
+		    vo.setContent(content);
+		    vo.setUserId(currentUserId);
+		    vo.setBookNo(bookNo);
+		    vo.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		    vo.setViews(0);
+		    vo.setSecret(false);
+
+		    System.out.println("boardVO 객체에 값 설정 완료. userId=" + vo.getUserId() + ", bookNo=" + vo.getBookNo());
+
+		    System.out.println("boardService.addBoard 호출 전...");
+		    int boardId = -1;
+		    try {
+		        // boardService의 addBoard 메소드가 boardVO 객체를 인자로 받는다면 vo 객체를 넘겨줘!
+		        boardId = boardService.addBoard(vo);
+		        System.out.println("boardService.addBoard 호출 후. 등록된 boardId: " + boardId);
+		    } catch (Exception e) { // DB 저장 등 예외 발생 시
+		         System.err.println("오류 : boardService.addBoard 호출 중 예외 발생!");
+		         e.printStackTrace();
+		         return; // 에러 발생 시 여기서 처리 중단
+		    }
+
+		    String redirectUrl = request.getContextPath() + "/books/bookDetail.do?bookNo=" + bookNo;
+		    System.out.println("서평 등록 처리 완료. 리다이렉트 URL: " + redirectUrl);
+
+		    response.sendRedirect(redirectUrl); 
+
+		    return; 
+		}
 
 		
 		

@@ -26,7 +26,7 @@ request.setCharacterEncoding("UTF-8");
 	padding: 5px 10px;
 }
 
-.file-name {
+.file-name {r
 	font-style: italic;
 	color: #333;
 }

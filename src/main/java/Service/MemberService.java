@@ -136,6 +136,7 @@ public class MemberService {
 		return memberDao.memberInfo(id);
 	}
 
+
 	// 회원 정보 수정
 	public int serviceMemUpdate(HttpServletRequest request) {
 		MemberVo memberVo = new MemberVo();
@@ -436,6 +437,7 @@ public class MemberService {
 			// 포워딩
 			session.setAttribute("authenticationCode", authenticationCode);
 			request.setAttribute("id", id);
+			request.setAttribute("email", email);
 		}
 		return "/member/pwdChange.do";
 	}
