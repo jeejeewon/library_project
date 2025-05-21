@@ -78,7 +78,11 @@
 			</c:if>
 			<!-- 등록된 서평이 있을 때 -->
 	    	<c:forEach var="review" items="${requestScope.reviewList}">
-	    		<div class="review-item" data-board-id="${review.boardId}">
+	    		<div class="review-item" data-board-id="${review.boardId}"
+	    			<c:if test="${not empty sessionScope.id and sessionScope.id eq review.userId}">
+	    			 	<%-- 현재 로그인한 유저가 쓴 글이면 이 속성을 추가 --%>
+	    			 	data-is-my-review="true"
+	    			 </c:if>>
 	    			<div class="title-area">
 	    				<p class="title-cell">${review.title}</p>
 	                    <p class="content-clamp">${review.content}</p>
@@ -103,11 +107,17 @@
             $(".review-item").each(function() {
                 const $reviewItem = $(this);
                 
+                const isMyReview = $reviewItem.data('isMyReview') === true;
+                
                 const $contentP = $reviewItem.find('.content-clamp');
                 const $moreLink = $reviewItem.find('.more-link');
 
                 // 내용 요소가 있는지, 그리고 내용이 잘렸는지 확인
-                if ($contentP.length > 0 && $contentP[0].scrollHeight > $contentP[0].clientHeight) {
+                 const isContentTruncated = $contentP.length > 0 && $contentP[0].scrollHeight > $contentP[0].clientHeight;
+                 
+             	// 더보기 버튼을 보여줄 최종 조건 :
+                // 내용이 잘렸거나 (isContentTruncated) 또는 내가 쓴 글이면 (isMyReview) 보여줌
+                if (isContentTruncated || isMyReview) {
                     // 내용이 잘렸다면 '더보기' 링크를 보이게 함
                     $moreLink.css('display', 'inline-block');
                 } else {

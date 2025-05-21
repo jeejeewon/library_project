@@ -43,6 +43,7 @@
 						</div>
 						<div class="sub-menu-wrap">
 							<ul>
+								<li><a href="${contextPath}/books/bookList.do">전체도서</a></li>
 								<li><a href="${contextPath}/books/searchForm.do">도서검색</a></li>
 								<li><a href="${contextPath}/books/newBooks.do">신착도서</a></li>
 								<li><a href="${contextPath}/books/bestBooks.do">인기도서</a></li>

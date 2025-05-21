@@ -1190,7 +1190,6 @@ public class boardController extends HttpServlet {
 
 		    System.out.println("boardVO 객체에 값 설정 완료. userId=" + vo.getUserId() + ", bookNo=" + vo.getBookNo());
 
-		    // *** boardService.addBoard 호출 직전/직후 확인! ***
 		    System.out.println("boardService.addBoard 호출 전...");
 		    int boardId = -1;
 		    try {
