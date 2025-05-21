@@ -107,7 +107,7 @@
 			z-index: 999;
 			background: white;
 			border: 1px solid #ccc;
-			padding: 20px 20px 50px 20px;
+			padding: 20px 20px 20px 20px;
 			display: none;
 			width: 300px;
 			box-sizing: border-box;
@@ -116,7 +116,18 @@
 		}
 		
 		#noticeModal button{
-			bottom: 10px;   	
+			color: white;
+			background-color: #003c83;
+			padding: 10px 20px 10px 20px;
+			border-radius: 10px;
+			box-shadow: none;
+			border: none;
+			box-shadow: none;
+			cursor: pointer;	
+		}
+		
+		#noticeModal button:hover {
+			background-color: #002c66;
 		}
 		
 		#keyword {

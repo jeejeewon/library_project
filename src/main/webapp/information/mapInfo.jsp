@@ -36,7 +36,7 @@
 		text-decoration: none;
 		display: inline-block;
 		font-size: 20px;
-		margin: 6px 0;
+		margin: 2px 0;
 		cursor: pointer;
 		border-radius: 12px;
 		width: 70px;
