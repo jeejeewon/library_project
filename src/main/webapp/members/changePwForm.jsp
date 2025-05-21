@@ -6,45 +6,37 @@ String contextPath = request.getContextPath();
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 
-<div class="container">
-	<div>
-		<div>
-			<div>
-				<div>${id}
-					<form action="<%=contextPath%>/member/changePw.do">
-						<input type="hidden" name="id" value="${id}">
-
-						<div>
-							<input class="form-control" id=newAuthenCode name="newAuthenCode"
-								type="text" placeholder="인증번호를 입력하세요" /> <label for="inputId">인증번호를
-								입력하세요.</label>
-						</div>
-						<div>
-							<c:set var="abc" value="${requestScope.id}"></c:set>
-						</div>
-						<div>
-							<input cid="newPw" name="newPw" type="password"
-								placeholder="새 비밀번호를 입력하세요" /> <label for="inputPassword">새
-								비밀번호를 입력하세요.</label>
-						</div>
-						<div>
-							<input id="checkPw" name="checkPw" type="password"
-								placeholder="새 비밀번호를 한번 더 입력하세요" /> <label for="inputPassword">새
-								비밀번호를 한번 더 입력하세요.</label>
-						</div>
-						<div>
-							<input type="submit" id="btn" value="change"
-								onclick="return check();">
-						</div>
-					</form>
+<div class="container">	
+	<div class="form-wrap change-pw">
+		<div class="inner">
+			<form action="<%=contextPath%>/member/changePw.do">
+				<input type="hidden" name="id" value="${id}">
+				<c:set var="abc" value="${requestScope.id}"></c:set>	
+				<div>
+					<h3 class="description">
+						이메일 <span>${requestScope.email}</span> 으로 발송된</br> 인증 번호를 입력하세요.
+					</h3>
+				</div>	
+				<div class="input-wrap">
+					<input class="form-control" id=newAuthenCode name="newAuthenCode"
+						type="text" placeholder="인증번호를 입력하세요" /> 
+				</div>				
+				<div class="input-wrap">
+					<input cid="newPw" name="newPw" type="password"
+						placeholder="새 비밀번호를 입력하세요" />
 				</div>
-			</div>
+				<div class="input-wrap">
+					<input id="checkPw" name="checkPw" type="password"
+						placeholder="새 비밀번호를 한번 더 입력하세요" />
+				</div>
+				<div class="input-wrap">
+					<input type="submit" id="btn" value="비밀번호 변경"
+						onclick="return check();">
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
-
-
-
 
 <script src="<%=contextPath%>/js/scripts.js"></script>
 

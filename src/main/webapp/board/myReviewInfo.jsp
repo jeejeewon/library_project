@@ -207,7 +207,7 @@ request.setCharacterEncoding("UTF-8");
 		<div class="board-info-bottom">
 			<div class="board-info-bottom-left">
 				<a href="${contextPath}/bbs/myReviewModifyForm.do?boardId=${board.boardId}">수정</a>
-				<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeReviewList.do', ${board.boardId})">삭제</a>
+				<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeMyReviewList.do', ${board.boardId})">삭제</a>
 			</div>
 			<div class="board-info-bottom-right">
 				<form action="${pageContext.request.contextPath}/bbs/myReviewList.do" method="get">

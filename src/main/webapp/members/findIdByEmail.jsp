@@ -5,7 +5,7 @@
 <%@ page import="java.security.SecureRandom"%>
 <%@ page import="java.math.BigInteger"%>
 <%@ page import="java.sql.Date"%>
- 
+
 <%
 request.setCharacterEncoding("UTF-8");
 String contextPath = request.getContextPath();
@@ -19,7 +19,7 @@ String message = (String) request.getAttribute("message");
 		<div class="inner">
 			<h3>회원님의 아이디는 다음과 같습니다.</h3>
 			<p class="find-id"><%=memberId%></p>
-			<p>비밀번호를 잃어버리셨나요? <a href="">비밀번호 찾기</a><p>
+			<p>비밀번호를 잃어버리셨나요? <a href="<%=contextPath%>/member/forgotPwForm">비밀번호 찾기</a><p>
 		</div>
 	</div>
 </div>

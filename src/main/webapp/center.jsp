@@ -43,7 +43,6 @@ String contextPath = request.getContextPath();
 			</div>
 		</div>
 	</div>
-
 	<div class="container">center.jsp</div>
 </div>
 

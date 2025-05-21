@@ -1506,7 +1506,7 @@ public class boardController extends HttpServlet {
 		Map<String, String> redirectMap = new HashMap<>();
 		redirectMap.put("/removeQuestion.do", "/bbs/questionList.do");
 		redirectMap.put("/removeNotice.do", "/bbs/noticeList.do");
-		redirectMap.put("/removeReviewList.do", "/bbs/myReviewList.do");
+		redirectMap.put("/removeMyReviewList.do", "/bbs/myReviewList.do");
 //		redirectMap.put("/removeEvent.do", "/bbs/eventList.do");  추후 다른걸로 추가예정
 
 		// 해당 요청이 매핑에 있는지 확인
@@ -1569,7 +1569,7 @@ public class boardController extends HttpServlet {
 		    PrintWriter pw = response.getWriter();
 		    JSONObject jsonResponse = new JSONObject();
 		    jsonResponse.put("result", "success");
-		    jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다.");
+		    jsonResponse.put("message", "게시글이 삭제되었습니다.");
 		    jsonResponse.put("redirect", request.getContextPath() + redirectMap.get(action)); // 매핑된 경로 사용
 		    pw.print(jsonResponse.toString());
 		    pw.flush();
@@ -1582,8 +1582,92 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		
-		
+		// 서평 단독 삭제로직 (bookDetail->서평 더보기->서평 상세페이지->삭제 루트일 경우임)
+		if ("/removeReviewList.do".equals(action)) {
+		    try {
+                String boardIdParam = request.getParameter("boardId");
+                String bookNoParam = request.getParameter("bookNo");
+
+                if (boardIdParam == null || boardIdParam.isEmpty()) {
+                    throw new IllegalArgumentException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
+                }
+                int boardID = Integer.parseInt(boardIdParam);
+
+                if (bookNoParam == null || bookNoParam.isEmpty()) {
+                     throw new IllegalArgumentException("서평 삭제 요청시 책 번호(bookNo)가 필요합니다.");
+                }
+                int bookNo = Integer.parseInt(bookNoParam);
+
+
+	            int deletedBoardId = boardService.removeBoard(boardID);
+
+
+                ServletContext servletContext = request.getServletContext();
+                String webappRootPath = servletContext.getRealPath("/");
+                String finalUploadBasePath = webappRootPath + "board" + File.separator + "board_file_repo";
+                File fileDir = new File(finalUploadBasePath + File.separator + deletedBoardId);
+
+                if (fileDir.exists()) {
+                    try {
+                        File[] files = fileDir.listFiles();
+                        if (files != null) {
+                            for (File file : files) {
+                                if (file.exists()) {
+                                    file.delete();
+                                }
+                            }
+                        }
+                        fileDir.delete();
+                    } catch (Exception fileDeleteException) {
+                         // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                         System.err.println("오류: 첨부파일 삭제 중 예외 발생 (" + fileDir.getPath() + "): " + fileDeleteException.getMessage());
+                         fileDeleteException.printStackTrace();
+                    }
+                }
+
+
+                response.setContentType("application/json; charset=UTF-8");
+                try (PrintWriter pw = response.getWriter()) {
+                    JSONObject jsonResponse = new JSONObject();
+                    jsonResponse.put("result", "success");
+                    jsonResponse.put("message", "게시글이 삭제되었습니다.");
+
+                    String redirectUrl = request.getContextPath() + "/books/bookDetail.do?bookNo=" + bookNo;
+                    jsonResponse.put("redirect", redirectUrl);
+
+                    pw.print(jsonResponse.toString());
+                    pw.flush();
+                } catch (IOException ioException) {
+                    // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                    System.err.println("오류: 성공 응답 전송 중 IOException 발생: " + ioException.getMessage());
+                    ioException.printStackTrace();
+                }
+
+                return;
+
+            } catch (Exception e) {
+                // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                System.err.println("오류: 서평 삭제 중 예외 발생: " + e.getMessage());
+                e.printStackTrace();
+
+                response.setContentType("application/json; charset=UTF-8");
+                try (PrintWriter pw = response.getWriter()) {
+                     JSONObject jsonResponse = new JSONObject();
+                     jsonResponse.put("result", "fail");
+                     jsonResponse.put("message", "게시글 삭제 중 오류가 발생했습니다.");
+
+                     pw.print(jsonResponse.toString());
+                     pw.flush();
+                } catch (IOException ioException) {
+                    // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                    System.err.println("오류: 실패 응답 전송 중 IOException 발생: " + ioException.getMessage());
+                    ioException.printStackTrace();
+                }
+
+                return;
+            }
+		}
+
 		
 		
 		

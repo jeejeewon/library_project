@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 
 <div class="footer_wrap">
-	tail.jsp
 	<div class="container">
 		<div id="logo">
 			<img
@@ -21,9 +20,15 @@
 				UNIVERSITY LIBRARY ALL RIGHTS RESERVED.</p>
 		</div>
 		<ul class="sns">
-			<li></li>
-			<li></li>
-			<li></li>
+			<li><img width="30" height="30"
+				src="https://img.icons8.com/ios-glyphs/30/instagram-new.png"
+				alt="instagram-new" /></li>
+			<li><img width="30" height="30"
+				src="https://img.icons8.com/ios-glyphs/30/facebook-new.png"
+				alt="facebook-new" /></li>
+			<li><img width="30" height="30"
+				src="https://img.icons8.com/ios-glyphs/30/youtube-play.png"
+				alt="youtube-play" /></li>
 		</ul>
 	</div>
 </div>
