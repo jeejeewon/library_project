@@ -14,11 +14,11 @@
 		font-size: 25px;
 		font-weight: bold;
 		margin: 50px;
-		border-bottom: 1px solid #dedede;
+		border-bottom: 1px solid #7c7c7c;
 		width: 50%;
 		margin: 50px auto;
 		padding-bottom: 10px;		
-		color: #2d3081;
+		color: #002c66;
 		text-align: left;
 	}
 	
@@ -28,7 +28,7 @@
 	}
 	
 	.floor-btn {
-		background-color: #828282;
+		background-color: #7c7c7c;
 		border: none;
 		color: white;
 		padding: 10px 15px;
@@ -44,11 +44,11 @@
 	}
 		
 	.floor-btn:hover {
-      background-color: #2d3081;    
+      background-color: #002c66;    
     }
     
     .floor-btn.active{
-    	background-color: #2d3081; 
+    	background-color: #002c66; 
     }
     
 	html, body {
@@ -209,7 +209,7 @@
 					<tr>
 						<td>본관</td>
 						<td>22,466㎡</td>
-						<td>철근콘크리트 슬라브·지상4층</td>
+						<td>철근콘크리트 슬라브·지상3층</td>
 						<td>6,260㎡</td>
 						<td>개관 '1990.4.28</td>
 					</tr>
