@@ -31,7 +31,7 @@ String contextPath = request.getContextPath();
 			</p>
 			<ul>
 				<li><a href="<%=contextPath%>/member/modify">내 정보 관리</a></li>
-				<li>내 서평 관리</li>
+				<li><a href="<%=contextPath%>/bbs/myReviewList.do">내 서평 관리</a></li>
 				<li><a href="<%=contextPath%>/reserve/reserveCheck">시설 예약 관리</a></li>
 				<li>1:1 문의</li>
 			</ul>

@@ -138,13 +138,20 @@ $("#tel").focusout(function() {
 //회원가입 버튼 클릭시 호출되는 함수 
 function check() {
 
-	var checkbox = $(".agree-checkbox");
+	var checkboxes = $(".agree-checkbox");
 
-	//약관동의 체크했는지 검사	
-	if (!(checkbox.is(":checked"))) { //== 같은 true값을 반환 한다. if(!$("#agree").prop("checked"))
-		$("#agreeInput").text("약관에 동의해 주세요!").css("color", "red");
-		return false;
-	}
+	var checkboxes = $(".agree-checkbox");
+	   console.log("총 약관 체크박스 개수:", checkboxes.length); 
+	   console.log("체크된 약관 체크박스 개수:", checkboxes.filter(":checked").length); // 몇 개가 체크됐는지
+
+	   // 모든 약관 동의 체크했는지 최종 검사
+	   if (checkboxes.length !== checkboxes.filter(":checked").length) {
+	       $("#agreeInput").text("모든 약관에 동의해 주세요!").css("color", "red");
+	       console.log("약관 동의 검사 실패! 함수 종료."); 
+	       return; 
+	   }
+
+	   $("#agreeInput").text("약관 동의 완료!").css("color", "blue");
 
 	//====================================================================================================
 

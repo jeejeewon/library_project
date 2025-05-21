@@ -19,6 +19,8 @@ public class boardVO {
 	private Boolean secret;  //게시글 공개 여부 (0/false :공개 , 1/true:비공개)
 	private String reply;  //게시글 답변
 	
+	private String thumbnail; //책 이미지 경로 필드
+	
 	//기본생성자
 	public boardVO() {}
 	
@@ -40,7 +42,15 @@ public class boardVO {
 		this.reply = reply;
 		
 	}
+	
+    public String getThumbnail() {
+        return thumbnail;
+    }
 
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+	
 	public int getBoardId() {
 		return boardId;
 	}

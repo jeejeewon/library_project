@@ -21,7 +21,7 @@ public class boardService {
 	}
 
 	// 페이징된 게시글 목록과 관련 정보를 반환하는 메소드
-	public Map<String, Object> getBoardList(int category, int section, int pageNum, String searchKeyword, String searchType) {
+	public Map<String, Object> getBoardList(int category, int section, int pageNum, String searchKeyword, String searchType, String currentUserId) {
 		
 		// 기본게시판들일경우 - 한 페이지에 보여줄 게시글의 수는 10개
 		int pageSize = 10;
@@ -34,7 +34,7 @@ public class boardService {
 		int endRow = startRow + pageSize;
 		
 		// DAO를 통해 페이징된 게시글 목록을 가져오기
-		List<boardVO> boardList = boardDao.getBoardList(category, startRow, endRow, searchKeyword, searchType);
+		List<boardVO> boardList = boardDao.getBoardList(category, startRow, endRow, searchKeyword, searchType, currentUserId);
 		
 	    // 전체 게시글 수를 계산하여 전체 페이지 수 구하기
 	    int totalBoardCount = boardDao.getTotalBoardCount(category, searchKeyword, searchType); // 전체 게시글 수
@@ -187,6 +187,12 @@ public class boardService {
 	    
 	    return resultMap;
 		
+	}
+
+	//북 넘버에 맞는 서평 목록 조회
+	public List<boardVO> getReviewsByBookNo(int bookNo) {
+		
+		return boardDao.getReviewsByBookNo(bookNo);
 	}
 
 

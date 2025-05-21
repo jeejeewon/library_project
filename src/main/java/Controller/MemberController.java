@@ -3,6 +3,9 @@ package Controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,19 +15,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Service.BookService;
 import Service.MemberService;
+import Service.boardService;
 import Vo.MemberVo;
+import Vo.RentalVo;
+import Vo.boardVO;
 
 @WebServlet("/member/*")
 public class MemberController extends HttpServlet {
 
 	private MemberService memberservice;
 	private MemberVo memberVo;
+	private BookService bookService;
+	private boardService boardService;
 
 	@Override
 	public void init() throws ServletException {
 		memberservice = new MemberService();
 		memberVo = new MemberVo();
+		bookService = new BookService();
+		boardService = new boardService();
 	}
 
 	@Override
@@ -128,6 +139,54 @@ public class MemberController extends HttpServlet {
 
 			// 마이페이지 요청
 			case "/mypage":
+				HttpSession sessionId = request.getSession(false);
+				// 회원 정보 vo
+				String userId = (String) sessionId.getAttribute("id");
+				if (userId != null) {
+					memberVo = memberservice.getMember(userId);
+					request.setAttribute("memberVo", memberVo);
+					
+					// 대여 목록
+					Vector<RentalVo> myList = bookService.rentalsByUserByPage(userId, 1, 6);
+					request.setAttribute("rentalList", myList);
+					
+					// 내 서평 목록				
+					String searchType = request.getParameter("searchType");
+					String searchKeyword = request.getParameter("searchKeyword");		
+					
+					if (searchType == null) searchType = "title";
+					if (searchKeyword == null) searchKeyword = "";		
+					
+					String sectionParam = request.getParameter("section");
+					String pageNumParam = request.getParameter("pageNum");		
+				
+					int section = Integer.parseInt(sectionParam == null || sectionParam.isEmpty() ? "1" : sectionParam);
+					int pageNum = Integer.parseInt(pageNumParam == null || pageNumParam.isEmpty() ? "1" : pageNumParam);					
+					
+					int category = 2; // 카테고리 2번 (내서평)					
+				
+					String currentUserId = (String) request.getSession().getAttribute("id");					
+					Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, currentUserId);
+			
+					List<boardVO> boardList = (List<boardVO>)resultMap.get("boardList"); //게시글목록
+					int totalPage = (int) resultMap.get("totalPage"); // 총 페이지 수
+					int totalSection = (int) resultMap.get("totalSection"); //총 섹션 수
+					int totalBoardCount = (int) resultMap.get("totalBoardCount"); //총 게시글 수
+					
+					//정보들을 request에 저장하기
+				    request.setAttribute("searchKeyword", searchKeyword);
+				    request.setAttribute("searchType", searchType);
+				    request.setAttribute("boardList", boardList);
+				    request.setAttribute("totalPage", totalPage);
+				    request.setAttribute("totalSection", totalSection);
+				    request.setAttribute("totalBoardCount", totalBoardCount);
+				    request.setAttribute("section", section);
+				    request.setAttribute("pageNum", pageNum);					
+
+				} else {
+					System.out.println("로그인 정보가 없습니다.");
+				}
+
 				String mypage = memberservice.serviceMypage(request);
 				request.setAttribute("center", mypage);
 				nextPage = "/main.jsp";
@@ -215,7 +274,7 @@ public class MemberController extends HttpServlet {
 					System.out.println("회원 찾음!");
 					request.setAttribute("id", foundMember.getId());
 					request.setAttribute("message", "아이디를 찾았습니다!");
-					request.setAttribute("center", "members/findIdByEmail.jsp");					
+					request.setAttribute("center", "members/findIdByEmail.jsp");
 
 				} else {
 					System.out.println("회원 못 찾음!");
