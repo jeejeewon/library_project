@@ -152,24 +152,22 @@ public class libraryReserveDAO {
 		//예약정보를 저장할 List 객체 생성
 		List<libraryReserveVO> reserveList = new ArrayList<libraryReserveVO>();
 		
-		//예약정보 조회 쿼리문(미래예약정보)
-		String sql1 = "select * from room_reserve where reserve_id = ? "
-				   + "and reserve_date + interval reserve_start hour >= sysdate() "
-				   + "order by reserve_date asc";
+		String sql = "select *, "
+		           + "case when now() between date_add(reserve_date, interval reserve_start hour) "
+		           + "and date_add(reserve_date, interval reserve_end hour) then 0 "
+		           + "when now() < date_add(reserve_date, interval reserve_start hour) then 1 "
+		           + "else 2 end as status "
+		           + "from room_reserve "
+		           + "where reserve_id = ? "
+		           + "order by status asc, "
+		           + "reserve_date asc, reserve_start asc limit 10";
 		
-		//예약정보 조회 쿼리문(과거예약정보)
-		String sql2 = "select * from room_reserve where reserve_id = ? "
-					+ "and reserve_date + interval reserve_start hour < sysdate() "
-					+ "order by reserve_date desc";
-		
-		//오늘날짜를 기준으로 미래/과거 예약정보를 구분하기 위해 오늘 날짜를 가져옴
-		LocalDate today = LocalDate.now(); //오늘 날짜
 		
 		try {
 			con = DbcpBean.getConnection();
 			
 			//첫번째 쿼리문 실행
-			pstmt = con.prepareStatement(sql1);
+			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, userId); //예약자 아이디
 			
 			//조회된 결과를 ResultSet 객체에 저장
@@ -195,74 +193,16 @@ public class libraryReserveDAO {
 																  rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
 																  rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));
 				reserveVO.setRoomName(roomName);
-				
-				//예약날짜가 오늘 날짜보다 미래인지 확인
-				LocalDate reserveDate = reserveVO.getReserveDate().toLocalDate(); 
-				
-				int startHour = reserveVO.getReserveStart();
-				
-				LocalDateTime desiredDateTime = reserveDate.atTime(startHour, 0);
-				
-				//현재 날짜와 시간
-				LocalDateTime now = LocalDateTime.now();
-				
-				//비교
-				boolean isFuture = desiredDateTime.isAfter(now);				
-			
-				//예약날짜가 미래인지 여부를 VO 객체에 저장
-				reserveVO.setIsFuture(isFuture); 
 						
 				//예약정보를 List에 추가
 				reserveList.add(reserveVO);
-			}
-			
-			DbcpBean.close(rs);
-			DbcpBean.close(pstmt);
-			
-			//두번째 쿼리문 실행
-			pstmt = con.prepareStatement(sql2);
-			pstmt.setString(1, userId); //예약자 아이디
-			
-			//조회된 결과를 ResultSet 객체에 저장
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) { //조회된 결과가 있을 경우 
-				
-				String roomCode = rs.getString("reserve_room");
-				String roomName = "";
-				
-				switch (roomCode) {
-				    case "meetingA": roomName = "미팅룸A"; break;
-				    case "meetingB": roomName = "미팅룸B"; break;
-				    case "meetingC": roomName = "미팅룸C"; break;
-				    case "studyA":   roomName = "스터디룸A"; break;
-				    case "studyB":   roomName = "스터디룸B"; break;
-				    case "studyC":   roomName = "스터디룸C"; break;
-				    default:         roomName = "알수없음"; break;
-				}
-								
-				//DB에서 조회한 값을 VO 객체에 저장
-				libraryReserveVO reserveVO = new libraryReserveVO(rs.getString("reserve_num"), roomCode,  
-																  rs.getString("reserve_id"), rs.getString("reserve_name"), rs.getDate("reserve_date"), 
-																  rs.getInt("reserve_start"), rs.getInt("reserve_end"), rs.getTimestamp("reserve_time"), rs.getInt("reserve_seat"));
-				
-				reserveVO.setRoomName(roomName);
-				
-//				System.out.println("아이디 : " + rs.getString("reserve_id"));
-//				System.out.println("예약번호 : " + rs.getString("reserve_num"));
-						
-				//예약정보를 List에 추가
-				reserveList.add(reserveVO);
-			}
-						
+			}							
 		} catch (Exception e) {
 			System.err.println("예약정보 조회 실패" + e);
 			e.printStackTrace();
-
 		}finally {
 			DbcpBean.close(con, pstmt, rs);			
-		}		
-		
+		}				
 		return reserveList; //조회된 List를 Service로 반환
 		
 	}//selectReserveList 메소드 끝

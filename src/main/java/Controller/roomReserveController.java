@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,8 +122,32 @@ public class roomReserveController extends HttpServlet{
 			
 			//로그인한 사용자의 예약내역을 List로 받아오기
 			List<libraryReserveVO> reserveList = roomReserveService.selectReserveList(userId);
-			
-			System.out.println("예약내역 리스트 : " + reserveList);		
+							
+			//날짜를 비교하여 이용전/이용중/이용완료 상태값 저장
+			for(libraryReserveVO vo : reserveList) {
+				
+				//날짜 비교를 위해 날짜와 시간 합침
+				LocalDate reserveDate  = vo.getReserveDate().toLocalDate();
+				int reserveStart = vo.getReserveStart();
+				int reserveEnd = vo.getReserveEnd();
+				
+				LocalDateTime startDateTime = reserveDate.atTime(reserveStart, 0);
+				LocalDateTime endDateTime = reserveDate.atTime(reserveEnd, 0);
+				LocalDateTime now = LocalDateTime.now();
+				
+				//상태값 계산
+				String status = "";
+				
+				if(now.isBefore(startDateTime)) {
+					status = "이용전";
+				}else if(!now.isAfter(endDateTime)) {
+					status = "이용중";
+				}else {
+					status = "이용완료";
+				}			
+				//vo에 저장
+				vo.setStatus(status);
+			}
 			
 			//List를 request에 바인딩
 			request.setAttribute("reserveList", reserveList);

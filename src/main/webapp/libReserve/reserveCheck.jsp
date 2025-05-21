@@ -59,8 +59,38 @@
 			        </tr>
 			    </c:when>
 		    <c:otherwise>  
-	            <c:forEach var="vo" items="${reserveList}" begin="0" end="9" step="1">
-	            	<c:if test="${!vo.isFuture}">
+	            <c:forEach var="vo" items="${reserveList}">   	
+	            	<c:if test="${vo.status == '이용전' || vo.status == '이용중'}">
+		                <tr align="center">
+					        <td>${vo.reserveDate}</td>
+		                    <td class="roomType">${vo.roomName}<c:if test="${vo.reserveSeat != 0}"> - ${vo.reserveSeat}번 좌석</c:if></td>
+		                    <td>${vo.reserveStart}:00 ~ ${vo.reserveEnd}:00</td>    
+		                    <c:choose>
+		                    	<c:when test="${vo.status == '이용전'}">
+			                    	<td>
+				                    	<a href="#" style="text-decoration: none; color: blue;" class="updateBtn" 
+				                    	data-reserve-num="${vo.reserveNum}" data-reserve-roomname="${vo.roomName}"
+				                    	data-reserve-date="${vo.reserveDate}" data-reserve-start="${vo.reserveStart}"
+				                    	data-reserve-end="${vo.reserveEnd}" data-reserve-seat="${vo.reserveSeat}">수정</a> &nbsp;
+				                    	
+				                    	<a href="#" style="text-decoration: none; color: red;" class="deleteBtn" 
+				                    	data-reserve-id="${vo.reserveId}" data-reserve-num="${vo.reserveNum}"
+				                    	data-reserve-date="${vo.reserveDate}" data-reserve-start="${vo.reserveStart}"
+				                    	data-reserve-end="${vo.reserveEnd}" data-reserve-roomname="${vo.roomName}"
+				                    	data-reserve-seat="${vo.reserveSeat}">삭제</a>
+			                    	</td>		                    	
+		                    	</c:when>
+		                    	<c:otherwise>
+		                    		<td style="color: #28a745;">이용중</td>
+		                    	</c:otherwise>
+		                    </c:choose>
+		                	<td>
+		                		<fmt:formatDate value="${vo.reserveTime}" pattern="yyyy-MM-dd"/><br>
+		                		<fmt:formatDate value="${vo.reserveTime}" pattern="HH:mm:ss"/>	
+		                	</td> 
+		                </tr>
+	                </c:if>
+	                <c:if test="${vo.status == '이용완료'}">
 	            		<tr align="center" id="pastReserve">   
 	            		    <td id="reserveDate">${vo.reserveDate}</td>       	   
 		                    <td id="roomName">${vo.roomName}<c:if test="${vo.reserveSeat != 0}"> - ${vo.reserveSeat}번 좌석</c:if></td>
@@ -70,33 +100,8 @@
 		                		<fmt:formatDate value="${vo.reserveTime}" pattern="yyyy-MM-dd"/><br>
 		                		<fmt:formatDate value="${vo.reserveTime}" pattern="HH:mm:ss"/>	
 		                	</td>             	
-	            		</tr>
+	            		</tr>	            		
 	            	</c:if>
-	            	<c:if test="${vo.isFuture}">
-		                <tr align="center">
-					        <td>${vo.reserveDate}</td>
-		                    <td class="roomType">${vo.roomName}<c:if test="${vo.reserveSeat != 0}"> - ${vo.reserveSeat}번 좌석</c:if></td>
-		                    <td>${vo.reserveStart}:00 ~ ${vo.reserveEnd}:00</td>    
-			                <c:if test="${vo.isFuture}">
-		                    	<td>
-			                    	<a href="#" style="text-decoration: none; color: blue;" class="updateBtn" 
-			                    	data-reserve-num="${vo.reserveNum}" data-reserve-roomname="${vo.roomName}"
-			                    	data-reserve-date="${vo.reserveDate}" data-reserve-start="${vo.reserveStart}"
-			                    	data-reserve-end="${vo.reserveEnd}" data-reserve-seat="${vo.reserveSeat}">수정</a> &nbsp;
-			                    	
-			                    	<a href="#" style="text-decoration: none; color: red;" class="deleteBtn" 
-			                    	data-reserve-id="${vo.reserveId}" data-reserve-num="${vo.reserveNum}"
-			                    	data-reserve-date="${vo.reserveDate}" data-reserve-start="${vo.reserveStart}"
-			                    	data-reserve-end="${vo.reserveEnd}" data-reserve-roomname="${vo.roomName}"
-			                    	data-reserve-seat="${vo.reserveSeat}">삭제</a>
-		                    	</td>
-		                	</c:if>
-		                	<td>
-		                		<fmt:formatDate value="${vo.reserveTime}" pattern="yyyy-MM-dd"/><br>
-		                		<fmt:formatDate value="${vo.reserveTime}" pattern="HH:mm:ss"/>	
-		                	</td> 
-		                </tr>
-	                </c:if>
 	             </c:forEach>
 				</c:otherwise>
 			</c:choose>
