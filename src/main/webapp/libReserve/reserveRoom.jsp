@@ -3,197 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/libReserve.css">
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<style type="text/css">
-
-
-	h2{		
-		font-size: 25px;
-		font-weight: bold;
-		margin: 50px;
-		border-bottom: 1px solid #7c7c7c;
-		width: 50%;
-		margin: 50px auto;
-		padding-bottom: 10px;		
-		color: #002c66;
-		text-align: left;
-	}
-	
-	#roomInpo {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;
-	}
-	
-	.tit {
-		font-size: 22px;
-		text-align: left;
-		font-weight: bold;
-		margin: 0 0 10px 0;
-	}
-	
-	.con{
-		text-align: left;
-	}
-	
-	.con span {
-		color: #007bff;	
-	}
-	
-	#notice {
-		border: 1px solid #ddd;
-		padding: 35px 40px;
-		border-top: 1px solid #222;
-	}
-	
-	#notice ul{	
-		display: inline-block;
-		width: 100%;
-		margin-block-start: 1em;
-	    margin-block-end: 1em;
-	    padding-inline-start: 40px;
-	    unicode-bidi: isolate;
-	    list-style-type: disc;
-	}
-	
-	
-	#notice li{
-		display: list-item;
-	    text-align: -webkit-match-parent;
-	    unicode-bidi: isolate;
-	}
-	
-	#notice ul li{
-		width: 50%;
-		min-height: 100px;
-		float: left;
-		display: table;
-		background-repeat: no-repeat;
-		background-position: 0 50%;	
-	}
-	
-	#notice ul li p{
-		text-align: left;
-		display: table-cell;
-	    vertical-align: middle;
-	    padding: 0 20px 0 90px;
-	    letter-spacing: -0.06em;
-	    font-family: 'NotoKrR';
-	    word-break: keep-all;
-	}
-	
-	div{
-		display: block;
-	    unicode-bidi: isolate
-	}
-	
-	#notice ul li.icon1{background-image: url("../information/img/ico_room1.png");}
-	#notice ul li.icon2{background-image: url("../information/img/ico_room2.png");}
-	#notice ul li.icon3{background-image: url("../information/img/ico_room3.png");}
-	#notice ul li.icon4{background-image: url("../information/img/ico_room4.png");}
-	#notice ul li.icon5{background-image: url("../information/img/ico_room5.png");}
-	#notice ul li.icon6{background-image: url("../information/img/ico_room6.png");}
-	
-	.step-list {
-		display: inline-block;
-		width: 100%;
-		overflow: hidden;
-	}
-	
-	.step-list li{
-		width: 50%;
-		float: left;
-		padding: 2% 5% 2% 0%;
-	}
-	.step-list li dl dt {
-		padding: 10px 20px;
-	    border: 1px solid #222;
-	    font-family: 'Roboto', sans-serif;
-	    font-weight: 600;
-	    color: #222;
-	    letter-spacing: 0.01em;
-	    text-align: center;
-	}
-	
-	.step-list li dl dd{
-		display: table;
-	    width: 100%;
-	    min-height: 100px;
-	    background: #f5f5f5;
-	    font-family: 'NotoKrM';
-	    font-size: 15px;
-	    color: #222;
-	    word-break: keep-all;
-	    text-align: center;
-	}
-	
-	.step-list li dl dd p{
-		display: table-cell;
-	    vertical-align: middle;
-	    padding: 0 15px;
-	    line-height: 1.5;
-	}
-	
-	dt {
-	    display: block;
-    	unicode-bidi: isolate;
-	}
-	
-	ol{
-	    margin-block-start: 1em;
-	    margin-block-end: 1em;
-	    padding-inline-start: 40px;
-	    unicode-bidi: isolate;
-	}
-	
-	#roomUse {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;	
-	}
-	
-	#roomUse table{
-		width: 100%;
-		border-collapse: collapse;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-	}
-	
-	#roomUse th, td {
-		border: 1px solid #ccc;
-		padding: 0.8rem;
-		text-align: center;
-		vertical-align: middle;
-	}
-	
-	#roomUse thead th{
-		background-color: #f3f6f9;
-		font-weight: 600;
-		color: #2a2a2a;	
-	}
-	
-	#roomUse td{
-		font-size: 0.95rem;	
-	}
-
-	.reserve-btn {
-		color: white;
-		background-color: #003c83;
-		padding: 10px 20px 10px 20px;
-		border-radius: 10px;
-	}
-	
-	.reserve-btn:hover {
-		background-color: #002c66;
-	}
-	
-</style>
+<title>시설 예약 안내</title>
 </head>
 <body>
     <div align="center" id="content">
-	    <h2>시설 예약 안내</h2>
+	    <p class="title">시설 예약 안내</p>
 		<div id="roomInpo">
 			<p class="tit">이용시간</p>
 			<div id="time" style="margin-bottom: 50px;">				
@@ -218,13 +34,13 @@
 				<ol class="step-list">
 					<li>
 						<dl>
-							<dt>STEP 1</dt>
+							<dt class="step-dt">STEP 1</dt>
 							<dd><p>회원가입 후 홈페이지에서 시설이용 신청</p></dd>
 						</dl>
 					</li>
 					<li>
 						<dl>
-							<dt>STEP 2</dt>
+							<dt class="step-dt">STEP 2</dt>
 							<dd><p>도서관 회원증을 태깅하여 예약시간 내 출입가능</p></dd>
 						</dl>
 					</li>					

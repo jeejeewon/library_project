@@ -5,154 +5,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/reserveCheck.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <title>관리자 시설 예약 관리</title>
-	<style>
-		#reserveTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: center;
-            width: 1300px;
-            font-size: 15px;
-        }
-        
-        #reserveTable th, #reserveTable td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        #reserveTable th {
-            background-color: #f2f2f2;
-        }
-        
-        #reserveTable td{
-        	padding: 8px;
-            vertical-align: middle; 
-        }
-        
-        #pastReserve{
-        	background-color: #f2f2f2;
-        }
-        
-        #selectWrap{
-			width: 1300px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin: 20px 0 20px 0;
-        
-        }
-        
-        #selectDiv{
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			margin-left: auto; 
-        }
-        
-        #selectCheck{
-			display: flex;
-			gap: 10px;
-			white-space: nowrap;		 
-        }
-        
-        .mod-link {
-			text-decoration: none;
-			cursor: pointer;
-			color: blue;
-        }
-        .cancel-link{
-        	text-decoration: none;
-			cursor: pointer;
-			color: red;
-        }
-        
-        .upcoming{      	
-        	color: #28a745;
-        }
-        
-        .in-use{
-        	color: #F29661;
-        }
-        
-        .completed-bg {
-		    background-color: #f2f2f2;
-		}
-		
-		#pagination{
-			display: flex;
-			margin: 5px 0 10px 0;
-			justify-content: center;
-			align-items: center;
-			width: 1300px;
-		}
-		#pagination a {
-			margin: 0 5px;
-			text-decoration: none;
-			color: #333;
-		}
-
-		#pagination a.active-page {
-			font-weight: bold;
-			color: #003c83; /* 강조 색 */
-		}
-		
-		#noticeModal {
-			position: fixed; 
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%); 
-			z-index: 999;
-			background: white;
-			border: 1px solid #ccc;
-			padding: 20px 20px 20px 20px;
-			display: none;
-			width: 300px;
-			box-sizing: border-box;
-			border-radius: 8px;
-			text-align: center;
-		}
-		
-		#noticeModal button{
-			color: white;
-			background-color: #003c83;
-			padding: 10px 20px 10px 20px;
-			border-radius: 10px;
-			box-shadow: none;
-			border: none;
-			box-shadow: none;
-			cursor: pointer;	
-		}
-		
-		#noticeModal button:hover {
-			background-color: #002c66;
-		}
-		
-		#keyword {
-			height: 34px;
-			border-color: #dedede;	
-		}
-		
-		#searchBtn{
-			height: 34px;
-			width: 60px;
-			color: white;
-			background-color: #003c83;
-			border-radius: 10px;
-			box-shadow: none;
-			border: none;
-			box-shadow: none;
-			cursor: pointer;
-		}
-		
-		#searchBtn:hover {
-			background-color: #002c66;
-		}
-		
-		
-	</style>
+<title>관리자 시설 예약 관리</title>
 </head>
 <body>
 	<div id="wrap" align="center">
@@ -175,7 +30,7 @@
 				<button type="submit" id="searchBtn">검색</button>
 			</div>
 		</div>
-		<table id="reserveTable">
+		<table id="reserveTable" style="text-align: center; width: 1300px;">
 		    <thead>
 		        <tr align="center" style="font-weight: bold;">
 		            <th>예약번호</th>
@@ -284,7 +139,6 @@
 			var date = dateTime[0];
 			var time = dateTime[1];
 			var seat = vo.reserveSeat != 0 ? "-" + vo.reserveSeat + "번" : "";
-
 			
 			//이용현황에 따른 수정 가능 여부 판단
 			let actionTd = "";
@@ -402,7 +256,7 @@
 		}		
 		return baseData;	
 	} //filterData() 끝 
-	
+		
 	
 	//'검색'버튼 click 이벤트
 	$("#searchBtn").on("click", function () {
@@ -440,17 +294,15 @@
 			    renderPagination();
 			  });
 			$("#pagination").append(prev);
-		}
-		
-		//숫자 버튼
+		}	
+		//페이지 숫자 버튼
 		for(let i = startPage; i <= endPage; i++){
 			let page = $("<a href='#'>").text(i).on("click", function(e){
 				e.preventDefault();
 				currentPage = i;
 				renderTable();
 				renderPagination();		
-			});
-			
+			});			
 			if(i === currentPage){
 				page.addClass("active-page");
 			}			
@@ -493,8 +345,7 @@
 			$("input[type='checkbox']").not(this).prop("checked", false);
 		} else {
 			$("input[value='all']").prop("checked", false).prop("indeterminate", false);
-		}
-	
+		}	
 		currentPage = 1;
 		filteredData = filterData();
 		renderTable();
@@ -537,15 +388,12 @@
 			nextPage = "<%=request.getContextPath()%>/reserve/reserveStudy";
 		}else if(roomName.includes("meeting")){
 			nextPage = "<%=request.getContextPath()%>/reserve/reserveMeeting";
-		}
-		
+		}		
 		//페이지 이동
 		window.location.href = nextPage + "?" + params.toString();
-
 	});
 	
-	
-	
+		
 	//삭제버튼 누를 경우
 	$("#reserveList").on("click", ".cancel-link", function(e){
 		e.preventDefault(); //기본동작방지
@@ -626,7 +474,5 @@
 	    $("#memoModal, #modalOverlay").hide();
 	});
 	
-	
-
 </script>
 </html>

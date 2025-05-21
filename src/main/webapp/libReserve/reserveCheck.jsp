@@ -2,48 +2,18 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/reserveCheck.css">
 <meta charset="UTF-8">
-<title>Insert title here</title>
-	<style>
-		#reserveTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: left;
-            width: 1000px;
-            font-size: 15px;
-        }
-        
-        #reserveTable th, #reserveTable td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        #reserveTable th {
-            background-color: #f2f2f2;
-        }
-        
-        #reserveTable td{
-        	padding: 8px;
-            vertical-align: middle; 
-        }
-        
-        #pastReserve{
-        	background-color: #f2f2f2;
-        }
-        
-	</style>
+<title>나의 시설 예약 내역</title>
 </head>
 <body>
 	<div align="center">
 		<table id="reserveTable">
 		    <tr>
-		    	<td colspan="5" align="right">* 예약내역은 최근 10건까지만 보여집니다.</td>
+		    	<td id="text-r"colspan="5" align="right">* 예약내역은 최근 10건까지만 보여집니다.</td>
 		    <tr>
             <tr align="center" style="font-weight: bold;">
                 <th>예약날짜</th>
@@ -124,10 +94,9 @@
 	    	const roomName = this.getAttribute("data-reserve-roomname");
 	    	const roomSeat = this.getAttribute("data-reserve-seat");
 	
-	        console.log('reserve_id:', reserveId);
-	        console.log('reserve_num:', reserveNum);
-	        console.log('reserve-roomname:', roomName);
-	        
+	        //console.log('reserve_id:', reserveId);
+	        //console.log('reserve_num:', reserveNum);
+	        //console.log('reserve-roomname:', roomName);	        
 
 	        //사용자가 삭제 버튼을 클릭했을 경우
 	        //확인용 컨펌창 띄우기
@@ -159,7 +128,6 @@
 	    });
 	});
 	
-
 	
 	//예약 수정 버튼을 눌렀을 경우 실행되는 함수
 	document.querySelectorAll(".updateBtn").forEach(button => {
@@ -174,10 +142,10 @@
 	    	const endTime = this.getAttribute("data-reserve-end");
 	    	const roomSeat = this.getAttribute("data-reserve-seat");
 
-	        console.log('reserveNum:', reserveNum);
-	        console.log('room:', roomName + " - " + roomSeat);
-	        console.log('reserveDate:', reserveDate);
-	        console.log('time:', startTime + ":00 ~ " + endTime + ":00");
+	        //console.log('reserveNum:', reserveNum);
+	        //console.log('room:', roomName + " - " + roomSeat);
+	        //console.log('reserveDate:', reserveDate);
+	        //console.log('time:', startTime + ":00 ~ " + endTime + ":00");
 	        
 	        //시설명에 따라 보여줄 뷰 화면 설정 (studyRoom/meetingRoom)
 	        let url = "";
@@ -194,16 +162,11 @@
 	        url += "&endTime=" + endTime;
 	        url += "&roomSeat=" + roomSeat;
 	        
-	        console.log('url: ', url);
+	        //console.log('url: ', url);
 	        
-	        window.location.href = url;
-	           	       
+	        window.location.href = url;           	       
 	    });
 	});
-	
-	
-	
-	
 	
 </script>
 </html>

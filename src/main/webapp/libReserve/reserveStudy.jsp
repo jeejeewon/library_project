@@ -4,118 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/reserveStudy.css">
 <meta charset="UTF-8">
-<title>스터디룸 예약하기</title>
-	<style>	
-		h2{		
-			font-size: 25px;
-			font-weight: bold;
-			margin: 50px;
-			border-bottom: 1px solid #dedede;
-			width: 50%;
-			margin: 50px auto;
-			padding-bottom: 10px;		
-			color: #2d3081;
-			text-align: left;
-		}
-	    table {
-	      border-collapse: collapse;
-	      width: 500px;
-	      height: 200px;
-	      align-items: center;
-	      margin-top: 20px;
-	      margin-left: 10px;
-	      border: 1px solid #333;
-		  color: #5D5D5D;	      
-	    }
-	    td {
-	      width: 50px;
-	      height: 40px;
-	      text-align: center;
-	      vertical-align: middle;
-	      font-weight: bold;
-	    }
-	    .seat {
-	      width: 40px;   
-	      border: 1px solid #333;
-	    }
-	    .seat-btn {
-	      display: block;
-	      width: 100%;
-	      height: 100%;
-	      font-weight: bold;
-          background-color: #FAED7D;
-	      border: none;
-	      font-size: 18px;
-	      cursor: pointer;     
-		  color: #5D5D5D;
-	    }	
-	    /* 좌석 선택시 선택효과*/		
-		.selected-seat-btn {
-            background-color: #F2CB61;      
-        }	
-	    .empty {
-	    	width: 20px;	    	
-	    }
-	    .study-room-btn {
-	    	border: 0;
-			padding: 15px 25px;
-			display: inline-block;
-			text-align: center;
-			color: white;
-            border-radius: 10px;       
-            background-color: #64b1cc;
-            margin: 5px;
-            cursor: pointer; 
-	    }
-	    /* 스터디룸 선택시 선택효과*/		
-		.selected-btn {
-            background-color: #156c8a;      
-        }
-        /* 예약된 좌석 효과*/
-        .seat-btn.reserved {
-			background-color: #8C8C8C;
-			color: white;
-			cursor: not-allowed;
-		}		    
-		
-		#reserveBtn, #updateBtn {
-			margin-top: 20px;
-			margin-bottom: 50px;
-			margin-left: 15%;
-		}
-		
-		#reservedList {
-	        width: 500px;	
-	        margin-top: 3px;
-	        margin-bottom: 30px;
-		}
-		
-		#reservedList p{		
-			margin-left: 30px;
-		}
-		.dott{
-			color: #007bff;
-		}
-		
-		.reserve-btn {
-			color: white;
-			background-color: #003c83;
-			padding: 10px 20px 10px 20px;
-			border-radius: 10px;
-			box-shadow: none;
-			border: none;
-			box-shadow: none;
-			cursor: pointer;
-		}
-		
-		.reserve-btn:hover {
-			background-color: #002c66;
-		}
-		
-	</style>
-	
-
+<title>스터디룸 예약</title>
 </head>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -123,19 +14,17 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <!-- jQuery UI CSS -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
-
 <body>
 	<div align="center" style="margin-top: 50px;">
 		<c:choose>
 			<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
-				<h2>스터디룸 예약 수정</h2>
+				<p class="title">스터디룸 예약 수정</p>
 			</c:when>
 			<c:when test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
-				<h2>스터디룸 예약 수정 - 관리자용</h2>
+				<p class="title">스터디룸 예약 수정 - 관리자용</p>
 			</c:when>
 			<c:otherwise>
-				<h2>스터디룸 예약</h2>
+				<p class="title">스터디룸 예약</p>
 			</c:otherwise>
 		</c:choose>		
 		<form method="post" align="left" style="margin-left: 30%;">			
@@ -672,9 +561,9 @@
 	window.addEventListener('DOMContentLoaded', () => {
 		const memo = sessionStorage.getItem("reserveNotice");
 		const adminId = "${sessionScope.id}";
-		console.log(memo);
+		//console.log(memo);
 		if(adminId === "admin"){
-			console.log(memo);
+			//console.log(memo);
 			if (memo != "null") {
 				document.getElementById("adminMemo").value = memo;
 			}else{

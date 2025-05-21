@@ -4,74 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/libReserve.css">
 <meta charset="UTF-8">
-<title>미팅룸 예약하기</title>
-	<style>
-	
-		h2{		
-			font-size: 25px;
-			font-weight: bold;
-			margin: 50px;
-			border-bottom: 1px solid #7c7c7c;
-			width: 50%;
-			margin: 50px auto;
-			padding-bottom: 10px;		
-			color: #002c66;
-			text-align: left;
-		}		
-        .roombtn {
-			border: 0;
-			padding: 15px 25px;
-			display: inline-block;
-			text-align: center;
-			color: white;
-            border-radius: 10px;       
-            background-color: #64b1cc;
-            margin: 5px;
-            cursor: pointer; 
-        }
-        
-        /* 미팅룸 선택시 선택효과*/		
-		.selected-btn {
-            background-color: #156c8a;      
-        }	
-        
-        #reserveBtn, #updateBtn {
-			margin-top: 20px;
-			margin-bottom: 50px;
-			margin-left: 15%;
-		}
-		
-		#reservedList {
-	        width: 500px;	
-	        margin-top: 3px;
-	        margin-bottom: 30px;
-		}
-		
-		#reservedList p{		
-			margin-left: 30px;
-		}
-		
-		.dott{
-			color: #007bff;
-		}
-		
-		.reserve-btn {
-			color: white;
-			background-color: #003c83;
-			padding: 10px 20px 10px 20px;
-			border-radius: 10px;
-			box-shadow: none;
-			border: none;
-			box-shadow: none;
-			cursor: pointer;
-		}
-		
-		.reserve-btn:hover {
-			background-color: #002c66;
-		}
-	</style>
-
+<title>미팅룸 예약</title>
 </head>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -79,19 +14,17 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <!-- jQuery UI CSS -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
-
 <body>
 	<div align="center" style="margin-top: 50px;">
 		<c:choose>
 			<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
-				<h2>미팅룸 예약 수정</h2>
+				<p class="title">미팅룸 예약 수정</p>
 			</c:when>
 			<c:when test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
-				<h2>미팅룸 예약 수정 - 관리자용</h2>
+				<p class="title">미팅룸 예약 수정 - 관리자용</p>
 			</c:when>
 			<c:otherwise>
-				<h2>미팅룸 예약</h2>
+				<p class="title">미팅룸 예약</p>
 			</c:otherwise>
 		</c:choose>	
 		<form method="post" align="left" style="margin-left: 30%;">
@@ -173,12 +106,10 @@
 	    </form>
 	</div>	
 </body>
-
-
 <script>
 
 	//날짜선택 위젯 초기화
-	$(function() {
+	$(function() {	
 		
 		//법정공휴일이면 선택 불가능하게 설정 (추가로 휴관할 경우 여기에 날짜 추가하면 됨!)
 		const holidays = [
@@ -190,8 +121,7 @@
 			  "2025/10/03", // 개천절
 			  "2025/10/09", // 한글날
 			  "2025/12/25"  // 성탄절
-		];
-		
+		];		
 	  	$( "#reserveDate" ).datepicker({	  		
 		  	minDate: +3, // 현재 날짜 +3일
 		  	maxDate: "+1M", // 최대 1개월
@@ -208,7 +138,6 @@
 			}
 	  	}); 
 	} );
-	
 	
 	
 	//시작시간 선택 시 종료시간을 동적으로 변경하여 <option>태그에 보여주는 함수
@@ -238,8 +167,7 @@
 	      endTimeSelect.val(endTimeSelect.find('option:first').val());	           
 	    });	    
 	 });
-	
-	
+		
 	
 	//사용자가 선택한 날짜와 시간에 따라 예약 가능한 미팅룸을 동적으로 추가하는 함수
 	$('#reserveDate, #reserveTime').on('change', function() {
@@ -280,10 +208,8 @@
                     		
                     		document.getElementById("roomList").appendChild(roombtn);	
                     	   		
-                	}); 
-            	
-            	}//else
-            		
+                	});            	
+            	}//else           		
             }, //success
             error: function(xhr, status, error) {
             	alert('서버 오류: ' + error);
@@ -291,10 +217,8 @@
         });
     }); //예약날짜와 시간 선택 시 예약 가능한 미팅룸을 동적으로 보여주는 함수
 
-</script>
-
-<script>
-
+    
+  
 	//사용자가 미팅룸을 클릭하였을때 선택되었다는 효과를 주는 함수
 	document.getElementById("roomList").addEventListener("click", event	=> {
 		if (event.target && event.target.classList.contains("roombtn")) {
@@ -396,8 +320,7 @@
 	        		return;
 	        	}
 	        }
-	        
-	        
+	                
 	        let confirmResult = "";
 	        
 	        //관리자가 예약 내역을 수정할 경우
@@ -462,8 +385,6 @@
 			}	
 		}
 	});
-		
-    
+		 
 </script>
-
 </html>
