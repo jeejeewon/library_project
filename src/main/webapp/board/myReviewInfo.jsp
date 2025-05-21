@@ -15,13 +15,6 @@ request.setCharacterEncoding("UTF-8");
 <head>
 	<title>내 서평 상세페이지 - myReviewInfo.jsp</title>
 	<style>
-		/* 기본 리셋 */
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
 		body {
 			font-family: 'Arial', sans-serif;
 			background-color: #f4f7fc;
@@ -190,17 +183,24 @@ request.setCharacterEncoding("UTF-8");
 
 		<div class="title-area">
 			<div class="left">
-				<p>게시글 제목: ${board.title}</p>
-				<p>작성자: ${board.userId}</p>
+				<p>${board.title}</p>
+				<p>${board.userId}</p>
 			</div>
 			<div class="right">
                 <!-- 작성일 출력 시 포맷팅 처리 -->
-                <p>작성일: <fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
-                <p>조회수: ${board.views}</p>
+                <p><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
+                <p>${board.views}</p>
 			</div>
 		</div>
 
 		<div class="content-area">
+			<!-- 책 이미지 영역 -->
+			<div class="book-image-container">
+				<%-- 책 이미지 가져오기 --%>
+					<c:if test="${not empty requestScope.board.thumbnail}">
+						<img class="thumb" src="${contextPath}/${requestScope.board.thumbnail}" alt="${requestScope.board.title} 도서 이미지">
+					</c:if>
+				</div>
 			<p>게시글 ${board.content}</p>
 		</div>
 

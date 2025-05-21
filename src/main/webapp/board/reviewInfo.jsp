@@ -15,15 +15,21 @@ request.setCharacterEncoding("UTF-8");
 <head>
 	<title>내 서평 상세페이지 - myReviewInfo.jsp</title>
 	<style>
+		/*화면 백그라운드색상*/
 		body {
 				background-color: #fafafa;
 			}
-			
+		
 		.content-box {
+			display: flex;
+		    flex-direction: column;
+		    align-items: flex-start;
+    
 		    max-width: 1000px;
 		    margin: 0 auto;
 		    padding: 40px 20px;
 		}
+		
 		
 		.thumb {
             width: 100%;
@@ -34,16 +40,10 @@ request.setCharacterEncoding("UTF-8");
             border: 1px solid #ccc;
             border-radius: 6px;
         }
-
-		/* 중앙 정렬을 위한 스타일 */
-		.center-wrapper {
-			background-color: #fff;
-			border-radius: 10px;
-            padding: 32px;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-		}
-		
-		.back-btn, .top-btn{
+        
+        /*이전, top 버튼*/
+        .back-btn, .top-btn{
+			margin: 20px 0;
 			padding: 6px 14px;
             font-size: 14px;
             border-radius: 4px;
@@ -59,66 +59,69 @@ request.setCharacterEncoding("UTF-8");
         .back-btn:hover, .top-btn:hover {
             background-color: #002c66;
         }
+        
+        .top-btn{
+        	align-self: flex-end;
+        }
+        
+        
+        /*카드영역*/
+		.card {
+			align-self: center; 
+			width:100%;
+		 	margin: 0 auto;
+			background-color: #fff;
+			border-radius: 10px;
+            padding: 32px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+		}
 		
-		/* 제목 영역 스타일 */
-		.title-area {
-			display: flex;
-			justify-content: space-between;
-			border-bottom: 2px solid #eee;
-			padding-bottom: 20px;
-			margin-bottom: 20px;
+		/* 타이틀 영역 */
+		.title-area{
+			display: grid;
+			/* 2개의 행 (top, bottom), 2개의 열 (left, right) */
+		    grid-template-rows: auto 1fr; /* 첫째 행 auto, 둘째 행 남은 공간 */
+		    grid-template-columns: 1fr auto; /* 첫째 열 남은 공간, 둘째 열 auto */
+		    gap: 10px;
 		}
-
-		.title-area .left, .title-area .right {
-			width: 48%;
+		
+		.title-area .title{
+			grid-column: 1 / 3;
+    		grid-row: 1 / 2;
+    		background-color:pink;
+    		
+    		font-weight: bold;
+    		font-size: 24px;
 		}
-
-		.title-area .left p, .title-area .right p {
-			font-size: 18px;
+		.title-area .board-info{
+			grid-column: 1 / 2;
+		    grid-row: 2 / 3;
+		    justify-self: start;
+		}
+		.title-area .board-info p{
+			font-size: 13px;
+			line-height: 15px;
 			font-weight: bold;
 		}
-
-		/* 게시글 내용 영역 스타일 */
-		.content-area {
-			margin-bottom: 30px;
+		.title-area .board-info span{
+			font-size: 12px;
+			line-height:14px;
+			color: #999;
 		}
-
-		.content-area p {
-			font-size: 16px;
-			line-height: 1.8;
-			color: #555;
+		.title-area .delet-modify{
+			grid-column: 2 / 3;
+		    grid-row: 2 / 3;
+		    justify-self: end;
 		}
 
 
 		/* 반응형 디자인 */
 		@media screen and (max-width: 768px) {
-			.title-area {
-				flex-direction: column;
-				align-items: center;
-			}
+			
 
-			.title-area .left,
-			.title-area .right {
-				width: 100%;
-				text-align: center;
-				margin-bottom: 10px;
-			}
-
-			.board-info-bottom {
-				flex-direction: column;
-				align-items: center;
-			}
-
-			.board-info-bottom-left,
-			.board-info-bottom-right {
-				justify-content: center;
-			}
-
-			.paging {
-				flex-direction: column;
-				align-items: center;
-				gap: 10px;
-			}
+			
+			
+		
 		}
 	</style>
 </head>
@@ -126,16 +129,19 @@ request.setCharacterEncoding("UTF-8");
 <body>
 	<section class="content-box">
 		<a href="javascript:history.back()" class="back-btn">이전으로</a>
-		<div class="center-wrapper">
+		<div class="card">
 			<div class="title-area">
-				<div class="left">
-					<p>${board.title}</p>
+				<p class="title">${board.title}</p>
+				<div class="board-info">
 					<p>${board.userId}</p>
+					<span><fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:mm" /></span>
+			        <span>조회 ${board.views}</span>
 				</div>
-				<div class="right">
-	                <!-- 작성일 출력 시 포맷팅 처리 -->
-	                <p>작성일: <fmt:formatDate value="${board.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
-	                <p>조회수: ${board.views}</p>
+		        <div class="delet-modify">
+					<c:if test="${sessionScope.id == 'admin' or board.userId == sessionScope.id}">
+						<a href="${contextPath}/bbs/myReviewModifyForm.do?boardId=${board.boardId}">수정</a>
+						<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeReviewList.do', ${board.boardId})">삭제</a>
+					</c:if>
 				</div>
 			</div>
 	
@@ -152,12 +158,8 @@ request.setCharacterEncoding("UTF-8");
 			</div>
 	
 			<div class="board-info-bottom">
-				<div class="board-info-bottom-left">
-					<c:if test="${sessionScope.id == 'admin' or board.userId == sessionScope.id}">
-						<a href="${contextPath}/bbs/myReviewModifyForm.do?boardId=${board.boardId}">수정</a>
-						<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeReviewList.do', ${board.boardId})">삭제</a>
-					</c:if>
-				</div>
+
+
 			</div>
 		</div>
 		<button onclick="scrollToTop()" class="top-btn">TOP</button>
