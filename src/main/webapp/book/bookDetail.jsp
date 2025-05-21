@@ -160,7 +160,8 @@
     <div class="back-btn">
         <a href="javascript:history.back();">이전으로</a>
     </div>
-
+	<br>
+	
     <div class="detail-card">
         <img class="thumb" src="<%= contextPath %>/<%= book.getThumbnail() %>"
              onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="표지 이미지" />
@@ -182,8 +183,9 @@
                 } %>
             </div>
 
-            <div class="book-info"><%= book.getBookInfo() %></div>
-
+			<!-- 책소개 -->
+			<div class="book-info"><%= book.getBookInfo().replaceAll("\n", "<br>") %></div>
+				
             <div class="btn-group">
                 <% if (userId != null) { %>
                     <% if (book.getRentalState() == 0) { %>
@@ -206,6 +208,16 @@
             </div>
         </div>
     </div>
+
+	<!-- 한줄서평 -->
+	<div class="detail-card">	    
+	   	<% if (book != null) { %>
+	   		<%-- 서평 작성 폼 --%>
+		    <jsp:include page="/board/myReviewWrite.jsp" flush="true"/>
+		    <%-- 서평 리스트 출력 --%>
+		    <jsp:include page="/board/bookReviewList.jsp" flush="true"/>
+		<% } %>
+	</div>
 </div>
 </body>
 </html>

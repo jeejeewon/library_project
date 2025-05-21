@@ -33,7 +33,7 @@
         }
         
         .toolbar a {
-            padding: 6px 14px;
+            padding: 6px 16px;
             font-size: 14px;
             border-radius: 4px;
             background-color: #003c83;
@@ -138,7 +138,8 @@
     
     <div class="toolbar">
         <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a>
-    </div> 
+    </div>
+    <br> 
 
     <% if (message != null) { %>
         <div class="message"><%= message %></div>

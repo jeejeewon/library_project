@@ -140,7 +140,7 @@
     <div class="title">나의 대여 목록</div>
 
     <div class="toolbar">
-        <a href="<%= contextPath %>/books/bookList.do">전체 도서 목록으로</a>
+        <a href="<%= contextPath %>/member/mypage">마이페이지</a>
     </div>
 
     <% if (rentalList != null && !rentalList.isEmpty()) { %>

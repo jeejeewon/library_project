@@ -301,7 +301,30 @@ public class BookDAO{
         return result;
     }
     
-    // 유저아이디별 도서 대여 수량
+    // 대여 중인 도서 개수 조회 (반납 안 된 상태만)
+    public int countCurrentRentals(String userId) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM rental_book WHERE user_id = ? AND return_state = 0";
+
+        try {
+            con = DbcpBean.getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(con, pstmt, rs);
+        }
+
+        return count;
+    }
+        
+    // 대여 중인 도서 개수 조회
     public int countRentalsByUser(String userId) {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM rental_book WHERE user_id = ?";

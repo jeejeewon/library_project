@@ -143,7 +143,7 @@
         </div>
 
         <div class="card">
-            <h3>📙 반납 처리</h3>
+            <h3>📙 반납 하기</h3>
             <p>대여 중인 도서의 반납 관리</p>
             <a href="<%= contextPath %>/books/returnBook.do" class="btn">반납 관리</a>
         </div>

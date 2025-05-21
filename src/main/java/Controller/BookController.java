@@ -15,8 +15,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import Service.BookService;
+import Service.boardService;
 import Vo.BookVo;
 import Vo.RentalVo;
+import Vo.boardVO;
 
 @WebServlet("/books/*")
 public class BookController extends HttpServlet {
@@ -66,8 +68,14 @@ public class BookController extends HttpServlet {
         // 도서 상세 정보    
         } else if (action.equals("/bookDetail.do")) {
             int bookNo = Integer.parseInt(request.getParameter("bookNo"));
-            BookVo book = bookService.bookDetail(bookNo);
+            BookVo book = bookService.bookDetail(bookNo);                        
             request.setAttribute("book", book);
+            
+            // 한줄 서평 가져오기
+            boardService reviewService = new boardService();
+            List<boardVO> reviewList = reviewService.getReviewsByBookNo(bookNo);
+            request.setAttribute("reviewList", reviewList);
+            
             request.setAttribute("center", "/book/bookDetail.jsp");
             nextPage = "/main.jsp";
         
@@ -78,7 +86,7 @@ public class BookController extends HttpServlet {
 
         // 도서 검색 완료 화면(페이징 처리)     
         } else if (action.equals("/bookSearch.do")) {
-            String keyword = request.getParameter("keyword");
+            String keyword = request.getParameter("keyword");           
             paginateAndSetList(request, "search", keyword);
             request.setAttribute("keyword", keyword);
             request.setAttribute("center", "/book/bookSearch.jsp");
@@ -100,7 +108,7 @@ public class BookController extends HttpServlet {
         } else if (action.equals("/confirmRental.do")) {
             int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
             BookVo book = bookService.bookDetail(bookNo);
-
+          
             if (book == null) {
                 response.sendRedirect(request.getContextPath() + "/books/bookList.do");
                 return;
@@ -111,16 +119,16 @@ public class BookController extends HttpServlet {
             nextPage = "/main.jsp";
 
         // 도서 대여 처리
-        } else if (action.equals("/rentalBook.do")) {
-            // GET 방식 접근 방지
+        } else if (action.equals("/rentalBook.do")) {  
+
             if (!request.getMethod().equalsIgnoreCase("POST")) {
                 response.sendRedirect(request.getContextPath() + "/books/bookList.do");
                 return;
             }
-
+        	
             HttpSession session = request.getSession();
             String userId = (String) session.getAttribute("id");
-
+            
             // 로그인 안된 경우 로그인 페이지로
             if (userId == null) {
                 response.sendRedirect(request.getContextPath() + "/members/login.jsp");
@@ -129,12 +137,12 @@ public class BookController extends HttpServlet {
 
             // 도서 번호 파라미터 확인
             int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
-            boolean isRented = bookService.rentBook(userId, bookNo); // 트랜잭션 처리
+            boolean isRented = bookService.rentBook(userId, bookNo); // 5권 제한 처리
 
-            // 메시지 설정 및 결과 페이지 이동
-            request.setAttribute("message", isRented ? "대여가 완료되었습니다." : "대여 처리에 실패했습니다.");
+            // 결과 메시지 및 결과 페이지 지정
+            request.setAttribute("message", isRented ? "대여가 완료되었습니다." : "현재 대여는 5권까지 가능합니다.");
             request.setAttribute("center", "/book/rentalResult.jsp");
-            nextPage = "/main.jsp";  
+            nextPage = "/main.jsp";
             
         // 내 대여 목록 화면(페이징 처리)    
         } else if (action.equals("/myRentalList.do")) {
@@ -163,19 +171,19 @@ public class BookController extends HttpServlet {
      
         // 관리자 화면(admin only)    
         } else if (action.equals("/adminBook.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
             request.setAttribute("center", "/book/adminBook.jsp");
             nextPage = "/main.jsp";
 
         // 신규 도서 등록 폼 화면(admin only)   
         } else if (action.equals("/addBookForm.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
             request.setAttribute("center", "/book/addBook.jsp");
             nextPage = "/main.jsp";
 
         // 신규 도서 등록 완료(admin only)
         } else if (action.equals("/addBook.do")) {
-            if (!isAdmin(request)) return;
+            if (!isAdmin(request, response)) return;
 
             try {
                 BookVo book = bookFromMultipart(request);
@@ -203,7 +211,7 @@ public class BookController extends HttpServlet {
             
         // 기존 도서 수정/삭제 리스트 화면(admin only, 페이징 처리)   
         } else if (action.equals("/updateBook.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
             boolean isUpdated = multipartBookUpload(request, false);
             int page = parseIntOrDefault(request.getParameter("page"), 1);
             request.setAttribute("fromUpdate", isUpdated); 
@@ -214,7 +222,7 @@ public class BookController extends HttpServlet {
              
         // 도서 수정(admin only)
         } else if (action.equals("/editBook.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
             int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
             int currentPage = parseIntOrDefault(request.getParameter("page"), 1);
             BookVo book = bookService.bookDetail(bookNo);
@@ -225,7 +233,7 @@ public class BookController extends HttpServlet {
 
         // 도서 삭제(admin only)    
         } else if (action.equals("/deleteBook.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
             int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
             int page = parseIntOrDefault(request.getParameter("page"), 1);
             boolean result = bookNo > 0 && bookService.deleteBook(bookNo);
@@ -236,7 +244,7 @@ public class BookController extends HttpServlet {
 
         // 도서 반납 화면(페이징 처리)    
         } else if (action.equals("/returnBook.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
 
             int rentNo = parseIntOrDefault(request.getParameter("rentNo"), 0);
             int page = parseIntOrDefault(request.getParameter("page"), 1);
@@ -261,10 +269,10 @@ public class BookController extends HttpServlet {
 
         // 전체 대여 도서 화면(페이징 처리)    
         } else if (action.equals("/allRental.do")) {
-            if (!isAdmin(request)) return;
+        	if (!isAdmin(request, response)) return;
 
             int page = parseIntOrDefault(request.getParameter("page"), 1);
-            int pageSize = 5;
+            int pageSize = 4;
             int totalCount = bookService.allRentalCount();
             int totalPage = (int) Math.ceil((double) totalCount / pageSize);
             
@@ -293,16 +301,23 @@ public class BookController extends HttpServlet {
     }
 
     // admin 로그인 확인
-    private boolean isAdmin(HttpServletRequest request) throws IOException {
+    private boolean isAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("id");
-        
+
         if (userId == null || !"admin".equals(userId)) {
-            ((HttpServletResponse) request.getAttribute("response")).sendRedirect(request.getContextPath() + "/members/login.jsp");
+            // 현재 요청 URL 저장
+            String uri = request.getRequestURI();
+            String query = request.getQueryString();
+            String redirectUrl = uri + (query != null ? "?" + query : "");
+
+            session.setAttribute("redirectAfterLogin", redirectUrl);
+
+            response.sendRedirect(request.getContextPath() + "/member/login");
             return false;
         }
         return true;
-    }
+    } 
 
     // 기본 페이징 처리 메서드 (검색 키워드 없음, page 파라미터에서 추출)
     private void paginateAndSetList(HttpServletRequest request, String type) {
@@ -388,8 +403,8 @@ public class BookController extends HttpServlet {
                             book.setThumbnail(value);  // 업로드된 파일 없을 때 기존 썸네일 유지
                         }break;                        
                 }
-             // 썸네일 업로드 처리
                 
+             // 썸네일 업로드 처리                
             } else {
                 String fileName = new File(item.getName()).getName();
                 if (!fileName.isEmpty()) {
@@ -399,10 +414,8 @@ public class BookController extends HttpServlet {
                     book.setThumbnail("book/img/" + fileName);  // 새 파일 설정
                 }
                 // 파일을 업로드하지 않은 경우에는 기존 썸네일 유지
-                // => 위에서 hidden 필드로 처리함
             }
         }
-
         return book;
     }
 

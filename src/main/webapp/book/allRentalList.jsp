@@ -193,11 +193,7 @@
 			                 onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
 			        </td>
 			        <td><%= book.getTitle() %></td>
-			        <td>
-			            <a href="<%= contextPath %>/members/userDetail.jsp?userId=<%= rental.getUserId() %>" class="user-link">
-			                <%= rental.getUserId() %>
-			            </a>
-			        </td>
+			        <td><%= rental.getUserId() %></td>
 			        <td><%= sdf.format(rental.getStartDate()) %></td>
 			        <td><%= sdf.format(rental.getReturnDue()) %></td>
 			        <td><%= rental.getReturnDate() != null ? sdf.format(rental.getReturnDate()) : "-" %></td>
