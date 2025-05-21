@@ -302,11 +302,33 @@
 	$(function() {
 		const today = $.datepicker.formatDate('yy/mm/dd', new Date());
 	
+		//법정공휴일이면 선택 불가능하게 설정 (추가로 휴관할 경우 여기에 날짜 추가하면 됨!)
+		const holidays = [
+			  "2025/01/01", // 신정
+			  "2025/03/01", // 삼일절
+			  "2025/05/05", // 어린이날
+			  "2025/06/06", // 현충일
+			  "2025/08/15", // 광복절
+			  "2025/10/03", // 개천절
+			  "2025/10/09", // 한글날
+			  "2025/12/25"  // 성탄절
+		];
+		
 		$( "#reserveDate" ).datepicker({  
 			minDate: 0, // 현재 날짜
 			maxDate: "+1M", // 최대 1개월
 			dateFormat: "yy/mm/dd",
-			defaultDate: today
+			defaultDate: today,
+			beforeShowDay: function(date){
+				const day = date.getDay();
+				const formatted = $.datepicker.formatDate('yy/mm/dd', date);
+				
+				//월요일(정기휴관일) + 법정공휴일은 선택 못하도록 막음
+				if(day === 1 || holidays.includes(formatted)){
+					return [false, "", "선택불가"];
+				}
+				return [true, ""];			
+			}
 		}).val(today);
 		
 		resetSelect();
