@@ -295,14 +295,10 @@ request.setCharacterEncoding("UTF-8");
 
 		<div class="board-info-bottom">
 			<div class="board-info-bottom-left">
-				<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
-				<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeNotice.do', ${board.boardId})">삭제</a>
-				<!--  아래는 운영자에게만 글쓰기 버튼이 보이게하는 코드.. 추후 이걸로 사용할 예정
 				<c:if test="${sessionScope.userId == 'admin'}">
 		    		<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
 					<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeNotice.do', ${board.boardId})">삭제</a>
 				</c:if>
-				-->
 			</div>
 			<div class="board-info-bottom-right">
 				<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">

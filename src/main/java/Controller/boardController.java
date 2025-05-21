@@ -1137,8 +1137,58 @@ public class boardController extends HttpServlet {
 		//일반 서평 상세페이지 
 		//bookDetail화면에서 서평[더보기]를 눌렀을 경우
 		if(action.equals("/reviewDetail.do")) {
-			
-			
+
+			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
+
+			// 조회할 글번호 파라미터 수신
+			// URL 쿼리 파라미터(?boardId=...)로 전달된 조회할 글의 번호를 읽어옵니다.
+			String boardIdParam = request.getParameter("boardId");
+			System.out.println("요청된 글 번호 파라미터 : " + boardIdParam);
+
+			// 파라미터 유효성 검사 : null이거나 빈 문자열인 경우 오류 처리
+			if (boardIdParam == null || boardIdParam.isEmpty()) {
+				System.out.println("오류 : 글 상세보기 요청에 글번호 파라미터 누락.");
+				throw new ServletException("글 상세보기 요청 시 글번호(boardId) 파라미터가 필요합니다.");
+			}
+
+			// 문자열로 된 글 번호를 int형으로 변환
+			int boardId = Integer.parseInt(boardIdParam);
+
+			// 글번호에 해당하는 게시글을 DB에서 조회
+			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
+			boardVO viewedBoard = boardService.viewBoard(boardId);
+
+			System.out.println(
+					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));// 조회
+																														// 결과
+																														// 로그
+
+			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
+			if (viewedBoard == null) {
+				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
+				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
+			}
+
+			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
+
+			// 이전 글 번호 조회
+			int getPreBoardId = boardService.getPreBoardId(boardId, category);
+			request.setAttribute("getPreBoardId", getPreBoardId);
+
+			// 다음 글 번호 조회
+			int getNextBoardId = boardService.getNextBoardId(boardId, category);
+			request.setAttribute("getNextBoardId", getNextBoardId);
+
+			// 조회된 게시글 정보를 request 객체에 속성으로 저장
+			// JSP페이지에서 ${board.title}과 같이 사용하기 위해, 조회된 BoardVO객체를 "board"라는 이름으로 request에
+			// 저장
+			request.setAttribute("board", viewedBoard);
+
+			// 이동할 JSP페이지 경로 설정하기
+			// 메인화면 중앙에 보여줄 myReviewInfo.jsp를 request에 "center"라는 이름으로 저장하기
+			request.setAttribute("center", "board/reviewInfo.jsp");
+			// 최종적으로 보여줄 메인페이지 경로를 nextPage에 저장하기
+			nextPage = "/main.jsp";
 			
 		}
 		

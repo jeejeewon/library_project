@@ -245,7 +245,9 @@ public class boardDAO {
 
         try {
             con = DbcpBean.getConnection();
-            String sql = "SELECT * FROM board WHERE board_id = ?";
+            String sql = "SELECT b.*, bo.thumbnail " + // board의 모든 컬럼 (b.*) 와 book의 thumbnail (bo.thumbnail)
+                    "FROM board b LEFT JOIN book bo ON b.book_no = bo.book_no " + // book_no로 두 테이블 연결
+                    "WHERE b.board_id = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, boardId);
             rs = pstmt.executeQuery();
@@ -259,11 +261,14 @@ public class boardDAO {
                     rs.getInt("book_no"),
                     rs.getString("file"),
                     rs.getString("banner_img"),
-                    rs.getTimestamp("created_at"), // 수정된 부분
+                    rs.getTimestamp("created_at"),
                     rs.getInt("views"),
                     rs.getBoolean("secret"),
                     rs.getString("reply")
                 );
+                
+                String thumbnailValueFromDB = rs.getString("thumbnail"); // DB에서 thumbnail 값을 읽어옴
+                boardVO.setThumbnail(thumbnailValueFromDB);
             }
         } catch (SQLException e) {
             e.printStackTrace();
