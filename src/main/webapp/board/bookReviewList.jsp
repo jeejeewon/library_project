@@ -11,93 +11,119 @@
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 
     <style>
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: #ffffff;
-            table-layout: fixed;
+    	.review-form{
+		    background-color: white;
+		    border-radius: 10px;
+		    padding: 32px;
+		    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    	}
+        .review-item {
+        	text-align: justify;
+            padding: 10px 0;
+            border-bottom: 0.5px solid #eee; 
         }
-        table th, table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            word-wrap: break-word;
+        .review-item:last-child {
+            border-bottom: none;
         }
-        table th { background-color: #f2f2f2; }
-
-        /* 각 셀 너비 */
-        table th:nth-child(1), table td:nth-child(1) { width: 10%; } /* 작성자 */
-        table th:nth-child(2), table td:nth-child(2) { width: 30%; } /* 제목 */
-        table th:nth-child(3), table td:nth-child(3) { width: 50%; } /* 내용 */
-        table th:nth-child(4), table td:nth-child(4) { width: 10%; } /* 작성일 */
-
-
-        .clickable-row {
-            cursor: pointer;
-        }
-        .clickable-row:hover {
-            background-color: #f9f9f9;
-        }
-
         /* 제목 한 줄, 내용 두 줄 제한 */
         .title-cell {
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        	font-size: 15px;
+        	font-weight: bold;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
         }
         .content-clamp {
-             overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+       		 font-size: 15px;
+             overflow: hidden; 
+             display: -webkit-box; 
+             -webkit-line-clamp: 2; 
+             -webkit-box-orient: vertical;
+             margin: 10px 0;
         }
+        .other-area{
+        	font-size: 12px;
+        	color: #888;
+        	display: flex;
+        	justify-content: space-between;
+        	align-items: center;
+        }
+        .other-area > div span{
+        	margin-right: 10px;	
+        }
+        .more-link {
+            margin-left: 10px;
+        	height: 24px;
+		    line-height: 24px;
+		    text-decoration: none;
+		    color: #666;
+		    font-size: 12px;
+		    padding: 0 10px;
+		    background: #fcfcfc;
+		    border: 1px solid #e5e5e5;
+		    border-radius: 4px;
+		    box-sizing: border-box;
+            display: none;
+        }
+        
+        
     </style>
 </head>
 <body>
     <center>
-		<table>
-		    <thead>
-			    <tr height="20" align="center" bgcolor="lightgray">
-			        <td style="width: 10%;">작성자</td>
-			        <td style="width: 30%;">제목</td>
-			        <td style="width: 50%;">내용</td>
-			        <td style="width: 10%;">작성일</td>
-			    </tr>
-			</thead>
-            <tbody>
-    		
-    		    <!-- 등록된 서평이 없을 때 -->
-    		    <c:if test="${empty requestScope.reviewList}">
-    		        <tr>
-    		            <td colspan="4" align="center">📭 등록된 서평이 없습니다.</td>
-    		        </tr>
-    		    </c:if>
-    		    
-    		    <!-- 서평 리스트 출력 -->
-    		    <c:forEach var="review" items="${requestScope.reviewList}">
-    		        <tr class="clickable-row" data-board-id="${review.boardId}">
-                        <td>${review.userId}</td>
-                        <td class="title-cell">${review.title}</td>
-                        <td>
-                           <div class="content-clamp">${review.content}</div>
-                        </td>
-    		            <td><fmt:formatDate value="${review.createdAt}" pattern="yyyy-MM-dd" /></td>
-    		        </tr>
-    		    </c:forEach>
-            </tbody>
-		</table>
+    	<section class="review-form">
+    		<!-- 등록된 서평이 없을 때 -->
+			<c:if test="${empty requestScope.reviewList}">
+				<p>📭 등록된 서평이 없습니다.</p>
+			</c:if>
+			<!-- 등록된 서평이 있을 때 -->
+	    	<c:forEach var="review" items="${requestScope.reviewList}">
+	    		<div class="review-item" data-board-id="${review.boardId}">
+	    			<div class="title-area">
+	    				<p class="title-cell">${review.title}</p>
+	                    <p class="content-clamp">${review.content}</p>
+	    			</div>
+	    			<div class="other-area">
+	    				<div>
+	    					<span>${review.userId}</span>
+	    		    		<span><fmt:formatDate value="${review.createdAt}" pattern="yyyy-MM-dd" /></span>
+	    				</div>
+		                <a href="${contextPath}/bbs/reviewDetail.do?boardId=${review.boardId}" class="more-link hidden">더보기</a>
+	    			</div>
+	    		</div>
+	    	</c:forEach>
+    	</section>
     </center>
 
     <script>
-        $(document).ready(function() {
-            // .clickable-row 클래스를 가진 모든 tr 요소에 클릭 이벤트를 걸어줘!
-            $(".clickable-row").click(function() {
-                // 클릭된 tr 요소에서 data-board-id 속성 값을 가져와!
-                var boardId = $(this).data("board-id"); // data() 메소드가 data- 접두사 빼고 가져옴!
+    $(document).ready(function() {
 
-                // 서평 상세 페이지 URL을 만들어! (컨트롤러 경로에 맞게 수정!)
-                var detailUrl = "${contextPath}/board/reviewDetail.do?boardId=" + boardId;
+        function checkTruncationAndShowMore() {
+        	
+            $(".review-item").each(function() {
+                const $reviewItem = $(this);
+                
+                const $contentP = $reviewItem.find('.content-clamp');
+                const $moreLink = $reviewItem.find('.more-link');
 
-                // 해당 URL로 페이지 이동!
-                window.location.href = detailUrl;
+                // 내용 요소가 있는지, 그리고 내용이 잘렸는지 확인
+                if ($contentP.length > 0 && $contentP[0].scrollHeight > $contentP[0].clientHeight) {
+                    // 내용이 잘렸다면 '더보기' 링크를 보이게 함
+                    $moreLink.css('display', 'inline-block');
+                } else {
+                    // 내용이 잘리지 않았다면 '더보기' 링크를 숨김
+                     $moreLink.css('display', 'none');
+                }
             });
+        }
+        // 1. 페이지 로드 완료 후 바로 실행해서 초기 상태 설정;
+        checkTruncationAndShowMore();
+
+        // 2. 창 크기가 변경될 때마다 다시 실행해서 반응형 처리
+        $(window).resize(function() {
+            checkTruncationAndShowMore();
         });
+    });
     </script>
 
 </body>

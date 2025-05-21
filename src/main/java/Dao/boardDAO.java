@@ -619,7 +619,7 @@ public class boardDAO {
 	            pstmt = con.prepareStatement(sql);
 	            pstmt.setInt(1, bookNo);
 	            rs = pstmt.executeQuery();
-	            if (rs.next()) {
+	            while (rs.next()) {
 	                boardVO vo = new boardVO(
 	                    rs.getInt("board_id"),
 	                    rs.getInt("category"),
@@ -635,7 +635,7 @@ public class boardDAO {
 	                    rs.getString("reply")
 	                );
 	                reviewList.add(vo);
-	            }
+	            }// end while
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        } finally {

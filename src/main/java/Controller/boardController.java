@@ -1015,7 +1015,7 @@ public class boardController extends HttpServlet {
 		
 		
 		/*-------------------------------------내서평게시판---------------------------------------*/
-		// 내서평 게시판 조회하기
+		// 내서평 게시판 조회하기 (마이메뉴에서 내서평을 눌렀을경우)
 		// 요청주소 "/bbs/myReviewList.do"
 		if (action.equals("/myReviewList.do")) {
 			
@@ -1074,7 +1074,7 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		// 내서평 상세페이지
+		// 내서평 상세페이지 (마이메뉴에서 내서평 -> 게시글을 클릭했을 경우)
 		// 요청주소 "/bbs/myReviewInfo.do"
 		if (action.equals("/myReviewInfo.do")) {
 
@@ -1131,7 +1131,18 @@ public class boardController extends HttpServlet {
 			nextPage = "/main.jsp";
 
 		} // end of myReviewInfoInfo.do
-
+		
+		
+		
+		//일반 서평 상세페이지 
+		//bookDetail화면에서 서평[더보기]를 눌렀을 경우
+		if(action.equals("/reviewDetail.do")) {
+			
+			
+			
+		}
+		
+		
 		
 		
 		// 서평 등록하기
@@ -1200,9 +1211,6 @@ public class boardController extends HttpServlet {
 		    return; 
 		}
 
-		
-		
-		
 		
 		
 		// 내서평 글 수정하기
