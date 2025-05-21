@@ -96,7 +96,7 @@
 
 		#pagination a.active-page {
 			font-weight: bold;
-			color: #F29661; /* 강조 색 */
+			color: #003c83; /* 강조 색 */
 		}
 		
 		#noticeModal {
@@ -118,7 +118,29 @@
 		#noticeModal button{
 			bottom: 10px;   	
 		}
-    
+		
+		#keyword {
+			height: 34px;
+			border-color: #dedede;	
+		}
+		
+		#searchBtn{
+			height: 34px;
+			width: 60px;
+			color: white;
+			background-color: #003c83;
+			border-radius: 10px;
+			box-shadow: none;
+			border: none;
+			box-shadow: none;
+			cursor: pointer;
+		}
+		
+		#searchBtn:hover {
+			background-color: #002c66;
+		}
+		
+		
 	</style>
 </head>
 <body>
@@ -206,7 +228,7 @@
 		
 		if (filteredData.length === 0) {
 			$("#reserveList").append(
-				"<tr id='noResultMsg'><td colspan='9' style='text-align:center;'>검색된 결과가 없습니다.</td></tr>"
+				"<tr id='noResultMsg'><td colspan='10' style='text-align:center;'>검색된 결과가 없습니다.</td></tr>"
 			);
 		    return;
 		} else {
@@ -391,25 +413,54 @@
 	//페이징 출력 함수
 	function renderPagination() {
 		$("#pagination").empty();
-		let totalPages = Math.ceil(filteredData.length / pageSize);
-
-		for(let i = 1; i <= totalPages; i++) {
-		  let page = $("<a href='#'>").text(i).on("click", function(e) {
-			e.preventDefault(); // a 태그 기본 동작 방지
-		    currentPage = i;
-		    renderTable();
-		    renderPagination();
-		  });
+		let totalPages = Math.ceil(filteredData.length / pageSize); //전체 페이지 수
+		let maxVisiblePages = 10; //최대 페이징 넘버
 		
+		let startPage = Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + 1;
+		let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+		
+		//이전 버튼
+		if(startPage > 1){
+			let prev = $("<a href='#'>").text("« 이전").on("click", function(e){
+				e.preventDefault();
+			    currentPage = startPage - maxVisiblePages;
+			    if (currentPage < 1) currentPage = 1;
+			    renderTable();
+			    renderPagination();
+			  });
+			$("#pagination").append(prev);
+		}
+		
+		//숫자 버튼
+		for(let i = startPage; i <= endPage; i++){
+			let page = $("<a href='#'>").text(i).on("click", function(e){
+				e.preventDefault();
+				currentPage = i;
+				renderTable();
+				renderPagination();		
+			});
+			
 			if(i === currentPage){
 				page.addClass("active-page");
-			}
-			
+			}			
 			$("#pagination").append(page);
 		}
+		
+		//다음 버튼
+		if(endPage < totalPages){
+			let next = $("<a href='#'>").text("다음 »").on("click", function (e) {
+				e.preventDefault();
+			    // 다음 블럭의 첫 번째 페이지로 이동
+			    currentPage = startPage + maxVisiblePages;
+			    if (currentPage > totalPages) currentPage = totalPages;
+			    renderTable();
+			    renderPagination();
+			});		
+			$("#pagination").append(next);
+		}		
 	}
-  
-  
+	
+
 	//체크박스 중 '전체' 누르면 나머지 체크 해제
 	$("input[value='all']").on("change", function() {
 		if (this.checked) {
@@ -527,9 +578,7 @@
                 alert("예약 삭제에 실패하였습니다.");
             }
         });
-		
-		
-		
+
 	});
 	
 	

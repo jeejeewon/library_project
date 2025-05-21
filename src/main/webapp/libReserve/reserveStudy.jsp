@@ -94,6 +94,24 @@
 		#reservedList p{		
 			margin-left: 30px;
 		}
+		.dott{
+			color: #007bff;
+		}
+		
+		.reserve-btn {
+			color: white;
+			background-color: #003c83;
+			padding: 10px 20px 10px 20px;
+			border-radius: 10px;
+			box-shadow: none;
+			border: none;
+			box-shadow: none;
+			cursor: pointer;
+		}
+		
+		.reserve-btn:hover {
+			background-color: #002c66;
+		}
 		
 	</style>
 	
@@ -122,14 +140,14 @@
 		</c:choose>		
 		<form method="post" align="left" style="margin-left: 30%;">			
 			<c:if test="${not empty param.reserveNum}">				
-				<p>▪ 예약내역</p>
+				<p><span class="dott">▪</span> 예약내역</p>
 				<div id="reservedList">
 					<p>- 예약날짜 : ${param.reserveDate}</p>
 					<p>- 예약시간 : ${param.startTime}:00 ~ ${param.endTime}:00</p>
 					<p>- 예약시설 : ${param.roomName} - ${param.roomSeat}번 좌석</p>
 				</div>
 			</c:if>
-			<p>▪ 이용자정보</p>
+			<p><span class="dott">▪</span> 이용자정보</p>
 			<c:choose>
 				<c:when test="${sessionScope.id == 'admin' && empty param.reserveNum}"> <!-- 관리자 아이디로 스터디룸 예약 -->
 					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
@@ -144,10 +162,10 @@
 					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
 				</c:when>			
 			</c:choose>
-			<p><br>▪ 이용날짜</p>
+			<p><br><span class="dott">▪</span> 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
 			<p>예약은 현재 날짜로부터 1개월까지만 가능합니다.</p><br>					
-				<p>▪ 이용시간</p> 
+				<p><span class="dott">▪</span> 이용시간</p> 
 				<p id="noReservationMsg" style="display: none; color: red;">
 				  예약 가능한 시간이 없습니다. 다른 날짜에 이용해주세요.
 				</p>
@@ -181,7 +199,7 @@
 					</select>
 				</p>
 			</div><br>
-			<p>▪ 스터디룸 선택</p>
+			<p><span class="dott">▪</span> 스터디룸 선택</p>
 			<div id="roomList" style="margin-top:10px;">
 				<button type="button" class="study-room-btn" value="studyA">스터디룸A</button>
 				<button type="button" class="study-room-btn" value="studyB">스터디룸B</button>
@@ -264,15 +282,15 @@
              </div>   		
             <br>
             <c:if test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
-            	<p>▪ 관리자 메모</p>
+            	<p><span class="dott">▪</span> 관리자 메모</p>
 				<textarea id="adminMemo" rows="6" cols="70" placeholder="관리자 메모 작성란"></textarea><br>
 			</c:if>	
             <c:choose>		
             <c:when test="${not empty param.reserveNum}">
-				<button type="button" id="updateBtn">예약 수정하기</button>	
+				<button type="button" id="updateBtn" class="reserve-btn">예약 수정하기</button>	
 			</c:when>
 			<c:otherwise>
-				<button type="button" id="reserveBtn">스터디룸 예약하기</button>	
+				<button type="button" id="reserveBtn" class="reserve-btn">스터디룸 예약하기</button>	
 			</c:otherwise>
 			</c:choose>
 	    </form>

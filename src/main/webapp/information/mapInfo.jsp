@@ -358,7 +358,14 @@
 	
 	//층버튼을 누르지 않아도 기본적으로 1F 시설 배치도 보여주는 함수
 	function showDefaultMap() {
-		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";
+		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";	
+	
+	    // 1F 버튼에 active 클래스 추가
+	    const firstFloorBtn = document.querySelector('.floor-btn[value="1F"]');
+	    if (firstFloorBtn) {
+	        firstFloorBtn.classList.add('active');
+	    }
+	
 	}
 	
 	//층버튼 클릭시 버튼 효과
