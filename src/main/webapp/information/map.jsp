@@ -1,98 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>   
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-
-	#mapStyle{
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100%;
-	}
-	
-	h2{		
-		font-size: 25px;
-		font-weight: bold;
-		margin: 50px;
-		border-bottom: 1px solid #7c7c7c;
-		width: 50%;
-		margin: 50px auto;
-		padding-bottom: 10px;		
-		color: #002c66;
-	}
-	
-	#mapContent{
-		margin: 50px auto;
-		width: 50%;
-
-	}
-	.tit {
-		font-size: 22px;
-		text-align: left;
-		font-weight: bold;
-		margin: 0 0 10px 0;
-	}
-	
-	#mapContent li{
-		margin-bottom: 5px;
-	}
-	
-	#mapContent h4{
-		font-size: 18px;
-		margin-bottom: 10px;
-		font-weight: bold;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem; /* 이미지와 텍스트 간격 */
-		font-size: 1.2rem; /* 필요시 조정 */
-	}
-	
-	#mapContent ul{
-		margin-bottom: 10px;
-	}
-	#mapInpo {
-		margin-left: 20px;
-		margin-bottom: 50px;
-	}
-	
-	#mapInpo ul{
-		margin-left: 90px;
-	}	
-	
-	.map-inpo-li{
-		margin-left: 20px;
-	}
-		
-	.map-title {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-weight: bold;
-
-	}
-	
-	.map-title span{
-		background-color: #002c66;
-		width: 4.5rem;
-        height: 4.5rem;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center; 
-		align-items: center;    
-	}
-	
-	.map-title img {
-		object-fit: contain;		
-	}
-	
-	.dott{
-		color: #007bff;
-	}
-	
-
-</style>
+<link rel="stylesheet" href="../css/information.css">
 <meta charset="UTF-8">
 <title>오시는 길</title>
 <script>
@@ -101,8 +12,7 @@
 	document.head.appendChild(script);
 
 	script.onload = () => {
-		kakao.maps.load(() => {
-			
+		kakao.maps.load(() => {			
 			const node = document.getElementById('map'); //지도를 표시할 <div>
 			const center = new kakao.maps.LatLng(35.1828835404, 129.0503001507); //도서관 좌표값
 			
@@ -120,20 +30,19 @@
 		});
 	};
 </script>
-
 </head>
 <body>
-	<h2>찾아오시는 길</h2>
+	<p class="title">찾아오시는 길</>
 	<div id="mapStyle">
 		<div id="map" style="width: 50%; height: 500px; background-color: gray"><!-- 카카오맵이 들어올 div --></div>
 	</div>
 	<div id="mapContent">
 		<p class="tit">대중교통 이용안내</p>
 		<div id="mapInpo">
-			<h4 class="map-title">
+			<p class="map-title">
 				<span><img src="../information/img/ico_subway.png" alt="지하철아이콘"></span>
 				지하철 이용시
-			</h4>
+			</p>
 				<ul>
 					<li><span class="dott">•</span> 1호선 동래역 하차후, 버스이용(마을버스 17번)</li>
 					<li class="map-inpo-li">- 2번출구앞 좌측편 동래지하철역 버스정류장에서 마을버스 17번 이용</li>
@@ -164,6 +73,4 @@
 		</div>
 	</div>
 </body>
-
-
 </html>

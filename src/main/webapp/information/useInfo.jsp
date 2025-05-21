@@ -3,102 +3,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/information.css">
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<style type="text/css">
-	h2{		
-		font-size: 25px;
-		font-weight: bold;
-		border-bottom: 1px solid #7c7c7c;
-		width: 50%;
-		margin: 50px auto;
-		padding-bottom: 10px;		
-		color: #002c66;
-		text-align: left;
-	}	
-	
-	#useInfo{
-		margin-bottom: 50px;
-	}
-	
-	#libTime {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;
-	}
-	
-	table {
-		width: 100%;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-		border-collapse: collapse;
-		margin-bottom: 40px;
-	}
-	
-	table th, td{
-		border: 1px solid #ccc;
-		padding: 0.8rem;
-		text-align: center;
-		vertical-align: middle;
-	}
-	
-	table thead th {
-		background-color: #f3f6f9;
-		font-weight: 600;
-		color: #2a2a2a;
-	}
-	
-	.tit {
-		font-size: 22px;
-		text-align: left;
-		font-weight: bold;
-		margin: 0 0 10px 0;
-	}
-	
-	.holiday {
-		text-align: left;
-		margin-left: 10px;
-	}
-	
-	.holiday span{
-		color: #007bff;
-	}
-	
-	#bookLoan {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;
-	}
-	
-	.con{
-		text-align: left;
-	}
-	
-	.con2{
-		text-align: left;
-		margin-left: 10px;
-	}
-	
-	.con2 span {
-		color: #007bff;	
-	}
-	
-	#conInpo {
-		margin-bottom: 20px;
-	}
-	
-	
-	
-	
-</style>
+<title>이용안내</title>
 </head>
 <body>
 	<div align="center" id="useInfo">
-		<h2>도서관 이용안내</h2>
+		<p class="title">도서관 이용안내</p>
 		<div id="libTime">
 			<p class="tit">이용시간</p>
-			<table id="libTimeTable">
+			<table class="use-info-table">
 				<thead>
 					<tr>
 						<th rowspan="2">구분</th>
@@ -141,10 +55,10 @@
 			<span>•</span> 임시휴관일(도서관장이 필요하다고 인정하는 날)
 			</p>
 		</div>
-		<h2>도서 대출 안내</h2>
+		<p class="title">도서 대출 안내</p>
 		<div id="bookLoan">	
 			<p class="tit">대출안내</p>
-			<table>
+			<table class="use-info-table">
 				<thead>
 					<tr>
 						<th>구분</th>

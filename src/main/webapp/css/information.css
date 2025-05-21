@@ -1,0 +1,278 @@
+
+#mapStyle{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+	
+.title{		
+	font-size: 25px;
+	font-weight: bold;
+	border-bottom: 1px solid #7c7c7c;
+	width: 50%;
+	margin: 50px auto;
+	padding-bottom: 10px;		
+	color: #002c66;
+	text-align: left;
+}
+
+#mapContent{
+	margin: 50px auto;
+	width: 50%;
+}
+
+
+
+#mapContent li{
+	margin-bottom: 5px;
+}
+
+#mapContent h4{
+	font-size: 18px;
+	margin-bottom: 10px;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem; /* 이미지와 텍스트 간격 */
+	font-size: 1.2rem; /* 필요시 조정 */
+}
+
+#mapContent ul{
+	margin-bottom: 10px;
+}
+
+#mapInpo {
+	margin-left: 20px;
+	margin-bottom: 50px;
+}
+	
+#mapInpo ul{
+	margin-left: 90px;
+}	
+
+.map-inpo-li{
+	margin-left: 20px;
+}
+	
+.map-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: bold;
+}
+
+.map-title span{
+	background-color: #002c66;
+	width: 4.5rem;
+       height: 4.5rem;
+       border-radius: 50%;
+       display: flex;
+       justify-content: center; 
+	align-items: center;    
+}
+	
+.map-title img {
+	object-fit: contain;		
+}
+
+.dott{
+	color: #007bff;
+}
+
+	#infoBtn{
+	text-align: left;
+	width: 50%;
+}
+
+.floor-btn {
+	background-color: #7c7c7c;
+	border: none;
+	color: white;
+	padding: 10px 15px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	margin: 2px 0;
+	cursor: pointer;
+	border-radius: 12px;
+	width: 70px;
+
+}
+		
+.floor-btn:hover {
+     background-color: #002c66;    
+   }
+   
+.floor-btn.active{
+	background-color: #002c66; 
+}
+
+#infoContainer {
+	min-height: 500px;
+}
+
+#inpotitle {
+	margin-bottom: 30px;
+}
+
+#libraryInpo{
+	margin-bottom: 100px;
+}
+
+#libraryInpo h3 {
+	text-align: left;
+	font-size: 24px;
+	font-weight: bold;
+	width: 50%;		
+}
+
+#inpoContext p{
+	font-size: 17px;
+	line-height: 26px;
+	text-align: left;
+	width: 50%;	
+
+}
+	
+#roomInpo {
+	margin: 2rem auto;
+	max-width: 900px;
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #333;
+}
+
+#roomInpo table {
+	width: 100%;
+	border-collapse: collapse;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+#roomInpo th,
+#roomInpo td {
+	border: 1px solid #ccc;
+	padding: 0.8rem;
+	text-align: center;
+	vertical-align: middle;
+}
+	
+#roomInpo thead th {
+	background-color: #f3f6f9;
+	font-weight: 600;
+	color: #2a2a2a;
+}
+
+#roomInpo td {
+	font-size: 0.95rem;
+}
+
+#roomInpo2 {
+	margin: 2rem auto;
+	max-width: 900px;
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #333;
+}
+	
+#roomInpo2 table {
+	width: 100%;
+	border-collapse: collapse;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+#roomInpo2 th,
+#roomInpo2 td {
+	border: 1px solid #ccc;
+	padding: 0.8rem;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#roomInpo2 thead th {
+	background-color: #f3f6f9;
+	font-weight: 600;
+	color: #2a2a2a;
+}
+	
+#roomInpo2 td {
+	font-size: 0.95rem;
+}
+
+#mapImg{
+	margin-bottom: 50px;
+}
+
+#useInfo{
+	margin-bottom: 50px;
+}
+
+#libTime {
+	margin: 2rem auto;
+	max-width: 900px;
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #333;
+}	
+
+.use-info-table {
+	width: 100%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+	border-collapse: collapse;
+	margin-bottom: 40px;
+}
+
+.use-info-table th, td{
+	border: 1px solid #ccc;
+	padding: 0.8rem;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.use-info-table thead th {
+	background-color: #f3f6f9;
+	font-weight: 600;
+	color: #2a2a2a;
+}
+
+.tit {
+	font-size: 22px;
+	text-align: left;
+	font-weight: bold;
+	margin: 0 0 10px 0;
+}
+
+.holiday {
+	text-align: left;
+	margin-left: 10px;
+}
+
+.holiday span{
+	color: #007bff;
+}
+
+#bookLoan {
+	margin: 2rem auto;
+	max-width: 900px;
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #333;
+}
+
+.con{
+	text-align: left;
+}
+
+.con2{
+	text-align: left;
+	margin-left: 10px;
+}
+	
+.con2 span {
+	color: #007bff;	
+}
+
+#conInpo {
+	margin-bottom: 20px;
+}
+
+
+
+
