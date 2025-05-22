@@ -322,10 +322,12 @@ request.setCharacterEncoding("UTF-8");
 			<!-- 여기에 답변 폼이 동적으로 삽입됨 (Ajax) -->
 			<div id="replyFormArea"></div>
 			<%-- 답변이 있을 때만 보이게 할 수정/삭제 버튼 영역 --%>
-			<div id="replyButtons" style="display: none;"> <%-- 기본은 숨겨놓기 --%>
-				<button id="editReplyBtn" type="button">답변수정</button> <%-- 수정 버튼 추가! --%>
-				<button id="deleteReplyBtn" type="button">답변삭제</button>
-			</div>
+			<c:if test="${sessionScope.id == 'admin'}">
+				<div id="replyButtons" style="display: none;">
+					<button id="editReplyBtn" type="button">답변수정</button>
+					<button id="deleteReplyBtn" type="button">답변삭제</button>
+				</div>
+			</c:if>
 		</div>
 	</section>
 

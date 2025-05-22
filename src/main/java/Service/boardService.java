@@ -194,6 +194,17 @@ public class boardService {
 		
 		return boardDao.getReviewsByBookNo(bookNo);
 	}
+	
+	
+	//메인화면에 뿌릴 데이터들 
+	public List<boardVO> getLatestEventBanners(int i) {
+		
+		return boardDao.getLatestEventBanners(i);
+	}
+
+	public List<boardVO> getLatestNotices(int i) {
+		return boardDao.getLatestNotices(i);
+	}
 
 
 

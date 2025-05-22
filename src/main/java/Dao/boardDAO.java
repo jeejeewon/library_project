@@ -650,6 +650,103 @@ public class boardDAO {
 	        return reviewList;
 	}
 
+	//메인화면에 배너에 데이터 정보 전달 (매개변수는 배너갯수)
+	public List<boardVO> getLatestEventBanners(int limit) {
+		 List<boardVO> eventBannerList = new ArrayList<>(); 
+
+		    try {
+		        con = DbcpBean.getConnection(); 
+		        String query = "SELECT board_id, category, title, content, user_id, book_no, file, banner_img, created_at, views, secret, reply " +
+		                       "FROM board " +
+		                       "WHERE category = 0 AND banner_img IS NOT NULL " +
+		                       "ORDER BY created_at DESC " + 
+		                       "LIMIT ?;"; 
+
+
+		        pstmt = con.prepareStatement(query);
+
+		        pstmt.setInt(1, limit);
+
+
+		        rs = pstmt.executeQuery();
+
+
+		        while (rs.next()) {
+		            boardVO board = new boardVO(
+		                rs.getInt("board_id"),
+		                rs.getInt("category"),
+		                rs.getString("title"),
+		                rs.getString("content"),
+		                rs.getString("user_id"),
+		                rs.getInt("book_no"),
+		                rs.getString("file"),
+		                rs.getString("banner_img"),
+		                rs.getTimestamp("created_at"),
+		                rs.getInt("views"),
+		                rs.getBoolean("secret"),
+		                rs.getString("reply")
+		            );
+		            eventBannerList.add(board);
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        System.err.println("BoardDAO getLatestEventBanners 오류: " + e.getMessage());
+		    } finally {
+		        DbcpBean.close(con, pstmt, rs); 
+		    }
+
+		    return eventBannerList;
+	}
+
+	// ✨✨ 공지사항 목록 i 개를 최신 순서대로 가져오는 메소드 (DAO)! ✨✨
+	// BoardService 에서 int i 값을 받아서 최신 공지사항 i 개를 가져온다!
+	public List<boardVO> getLatestNotices(int i) {
+		
+        List<boardVO> noticeList = new ArrayList<boardVO>(); // 공지사항 게시글을 저장할 List 객체
+        // 네 기존 getBoardList 메소드처럼 Connection, PreparedStatement, ResultSet 선언이 필요할 거야!
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DbcpBean.getConnection();
+            String sql = "SELECT * FROM board WHERE category = 0 ORDER BY created_at DESC LIMIT ?"; 
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, i); 
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                boardVO vo = new boardVO(
+                    rs.getInt("board_id"),
+                    rs.getInt("category"),
+                    rs.getString("title"),
+                    rs.getString("content"),
+                    rs.getString("user_id"),
+                    rs.getInt("book_no"),
+                    rs.getString("file"),
+                    rs.getString("banner_img"),
+                    rs.getTimestamp("created_at"),
+                    rs.getInt("views"),
+                    rs.getBoolean("secret"), 
+                    rs.getString("reply")
+                );
+                noticeList.add(vo);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+             System.err.println("BoardDAO - getLatestNotices DB 오류 발생: " + e.getMessage());
+        } finally {
+            DbcpBean.close(con, pstmt, rs); 
+        }
+
+        return noticeList;
+	}
+
+
+
+
 
 
 }
