@@ -29,10 +29,14 @@ request.setCharacterEncoding("UTF-8");
 		    margin: 0 auto;
 		    padding: 40px 20px;
 		}
+		
+		/*컨텐츠-탑 영역*/
+        .content-box-top{
+        	margin: 20px 0;
+        }
         
-        /*이전, top 버튼*/
+        /*이전, top 버튼 디자인*/
         .back-btn, .top-btn{
-			margin: 20px 0;
             font-size: 14px;
             border-radius: 4px;
             background-color: #003c83;
@@ -43,20 +47,17 @@ request.setCharacterEncoding("UTF-8");
             border: none;
   			outline: none;
 		}
+		/*버튼 사이즈는 약간 다름*/
 		.back-btn{padding: 6px 14px;}
 		.top-btn{padding: 8px 16px;}
-
+		
         .back-btn:hover, .top-btn:hover {
             background-color: #002c66;
         }
         
-        .top-btn{
-        	align-self: flex-end;
-        }
         
-        
-        /*카드영역*/
-		.card {
+        /*컨텐츠-미들 영역*/
+		.content-box-middle {
 			align-self: center; 
 			width:100%;
 		 	margin: 0 auto;
@@ -147,6 +148,14 @@ request.setCharacterEncoding("UTF-8");
 			color: #555;
 			word-break: break-word;
 		}
+		
+		
+		/*컨텐츠-바텀 영역*/
+        .content-box-bottom{
+        	margin: 20px 0;
+        	align-self: flex-end;
+        }
+        
 		/* 반응형 디자인 */
 		@media screen and (max-width: 768px) {
 			
@@ -160,8 +169,10 @@ request.setCharacterEncoding("UTF-8");
 
 <body>
 	<section class="content-box">
-		<a href="javascript:history.back()" class="back-btn">이전으로</a>
-		<div class="card">
+		<div class="content-box-top">
+			<a href="javascript:history.back()" class="back-btn">이전으로</a>
+		</div>
+		<div class="content-box-middle">
 			<div class="title-area">
 				<div class="title-area-left">
 					<p class="title">${board.title}</p>
@@ -189,13 +200,10 @@ request.setCharacterEncoding("UTF-8");
 				</div>
 				<p>게시글 ${board.content}</p>
 			</div>
-	
-			<div class="board-info-bottom">
-
-
-			</div>
 		</div>
-		<button onclick="scrollToTop()" class="top-btn">TOP</button>
+		<div class="content-box-bottom">
+			<button onclick="scrollToTop()" class="top-btn">TOP</button>
+		</div>
 	</section>
 	
 	

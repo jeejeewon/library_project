@@ -1018,6 +1018,13 @@ public class boardController extends HttpServlet {
 		// 내서평 게시판 조회하기 (마이메뉴에서 내서평을 눌렀을경우)
 		// 요청주소 "/bbs/myReviewList.do"
 		if (action.equals("/myReviewList.do")) {
+			// 1. 로그인 상태 확인 (세션에 'id'가 없으면 로그인 페이지로 리다이렉트)
+			String currentUserId = (String) request.getSession().getAttribute("id");
+				if (currentUserId == null || currentUserId.isEmpty()) {
+					response.sendRedirect(request.getContextPath() + "/member/login");
+					return; // 중요! 리다이렉트 했으니 더 이상 코드 실행하지 않도록 막아줘야 함
+					}
+
 			
 			
 			// 검색어와 검색타입 받기
@@ -1041,8 +1048,7 @@ public class boardController extends HttpServlet {
 			// 카테고리 설정 (현재 서평이므로 2번으로 설정함)
 			int category = 2; // 카테고리 2번 (내서평)
 			
-			// '내 서평' 페이지 컨트롤러
-			String currentUserId = (String) request.getSession().getAttribute("id");
+
 			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
 			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, currentUserId);
 			
@@ -1077,7 +1083,15 @@ public class boardController extends HttpServlet {
 		// 내서평 상세페이지 (마이메뉴에서 내서평 -> 게시글을 클릭했을 경우)
 		// 요청주소 "/bbs/myReviewInfo.do"
 		if (action.equals("/myReviewInfo.do")) {
-
+			
+			// 로그인 상태 확인
+				String currentUserId = (String) request.getSession().getAttribute("id");
+					if (currentUserId == null || currentUserId.isEmpty()) {
+					System.out.println("비회원 접근 시도 -> 로그인 페이지로 리다이렉트");
+					response.sendRedirect(request.getContextPath() + "/member/login");
+					return;
+					}
+						
 			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
 
 			// 조회할 글번호 파라미터 수신

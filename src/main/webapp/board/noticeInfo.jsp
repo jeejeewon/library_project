@@ -76,57 +76,57 @@ request.setCharacterEncoding("UTF-8");
 		
 		
 
-	    /* 첨부파일 영역 스타일 */
-	    .banner-img{
-			text-align:center;
-			width: 100%;
-		}
-	    .banner-img img{
-			width: 100%;
-			max-width: 250px
-		}
-	    
-		.file {
-		    margin-top: 20px;
-		    padding: 15px;
-		    background-color: #f9f9f9;
-		    border-radius: 8px;
-		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		    display: flex;
-		    align-items: center;
-		    gap: 15px;
-		}
-		
-		.file img {
-		    max-width: 150px;
-		    border-radius: 8px;
-		    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}
-		
-		.file a.download-link {
-		    font-size: 14px;
-		    color: white;
-		    background-color: #007bff;
-		    text-decoration: none;
-		    font-weight: bold;
-		    padding: 8px 16px;
-		    border-radius: 4px;
-		    display: inline-block;
-		    margin-left: 10px;
-		    transition: background-color 0.3s ease, color 0.3s ease;
-		    text-align: center;
-		}
-		
-		.file a.download-link:hover {
-		    background-color: #0056b3;
-		    color: #fff;
-		}
-		
-		.file span {
-		    font-size: 14px;
-		    color: #555;
-		    margin-left: 10px;
-		}
+					    /* 첨부파일 영역 스타일 */
+					    .banner-img{
+							text-align:center;
+							width: 100%;
+						}
+					    .banner-img img{
+							width: 100%;
+							max-width: 250px
+						}
+					    
+						.file {
+						    margin-top: 20px;
+						    padding: 15px;
+						    background-color: #f9f9f9;
+						    border-radius: 8px;
+						    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+						    display: flex;
+						    align-items: center;
+						    gap: 15px;
+						}
+						
+						.file img {
+						    max-width: 150px;
+						    border-radius: 8px;
+						    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+						}
+						
+						.file a.download-link {
+						    font-size: 14px;
+						    color: white;
+						    background-color: #007bff;
+						    text-decoration: none;
+						    font-weight: bold;
+						    padding: 8px 16px;
+						    border-radius: 4px;
+						    display: inline-block;
+						    margin-left: 10px;
+						    transition: background-color 0.3s ease, color 0.3s ease;
+						    text-align: center;
+						}
+						
+						.file a.download-link:hover {
+						    background-color: #0056b3;
+						    color: #fff;
+						}
+						
+						.file span {
+						    font-size: 14px;
+						    color: #555;
+						    margin-left: 10px;
+						}
 
 
 		/* 페이징 버튼 */
@@ -223,9 +223,10 @@ request.setCharacterEncoding("UTF-8");
 
 <body>
 
-	<div class="center-wrapper">
+	<section class="center-wrapper">
 	
-		<div class="paging">
+		<div class="content-box-top">
+			<div class="paging">
 		    <!-- 이전글 버튼 (이전글이 있을 경우만 표시) -->
 		    <c:if test="${getPreBoardId > 0}">
 		        <form action="${preBoardUrl}" method="get">
@@ -243,25 +244,14 @@ request.setCharacterEncoding("UTF-8");
 		            <button type="submit">다음글</button>
 		        </form>
 		    </c:if>
+		  </div>
+		</div>
+		
+		<div class="content-box-middle">
 			
-			<!-- 목록 버튼 -->
-		    <c:choose>
-		        <c:when test="${fromPage == 'noticeList'}">
-		            <form action="${contextPath}/bbs/noticeList.do" method="get">
-		                <button type="submit">목록</button>
-		            </form>
-		        </c:when>
-		        <c:when test="${fromPage == 'eventList'}">
-		            <form action="${contextPath}/bbs/eventList.do" method="get">
-		                <button type="submit">목록</button>
-		            </form>
-		        </c:when>
-		        <c:otherwise>
-		            <form action="${contextPath}/bbs/noticeList.do" method="get">
-		                <button type="submit">목록</button>
-		            </form>
-		        </c:otherwise>
-		    </c:choose>
+		</div>
+			
+
 
 		</div>
 
@@ -295,19 +285,45 @@ request.setCharacterEncoding("UTF-8");
 
 		<div class="board-info-bottom">
 			<div class="board-info-bottom-left">
-				<c:if test="${sessionScope.userId == 'admin'}">
+				<c:if test="${sessionScope.id == 'admin'}">
 		    		<a href="${contextPath}/bbs/noticeModifyForm.do?boardId=${board.boardId}">수정</a>
 					<a href="#" onclick="fn_remove_board('${contextPath}/bbs/removeNotice.do', ${board.boardId})">삭제</a>
 				</c:if>
 			</div>
-			<div class="board-info-bottom-right">
-				<form action="${pageContext.request.contextPath}/bbs/noticeList.do" method="get">
-					<button type="submit">목록</button>
-				</form>
+			
+			
+			
+			
+			
+			
+			
+			<div class="content-box-bottom">
+			<!-- 목록 버튼 -->
+		    <c:choose>
+		        <c:when test="${fromPage == 'noticeList'}">
+		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:when>
+		        <c:when test="${fromPage == 'eventList'}">
+		            <form action="${contextPath}/bbs/eventList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:when>
+		        <c:otherwise>
+		            <form action="${contextPath}/bbs/noticeList.do" method="get">
+		                <button type="submit">목록</button>
+		            </form>
+		        </c:otherwise>
+		    </c:choose>
 				<button onclick="scrollToTop()">TOP</button>
 			</div>
 		</div>
-	</div>
+		
+		
+		
+		
+	</section>
 	
 	<script type="text/javascript">
 	    // fn_remove_board 함수 정의
