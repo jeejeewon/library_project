@@ -37,24 +37,24 @@
 		<div id="map" style="width: 50%; height: 500px; background-color: gray"><!-- 카카오맵이 들어올 div --></div>
 	</div>
 	<div id="mapContent">
-		<p class="tit">대중교통 이용안내</p>
+		<p class="tit" style="margin-bottom: 25px;">대중교통 이용안내</p>
 		<div id="mapInpo">
-			<p class="map-title">
+			<p class="map-title" style="font-size: 22px; color: #002c66;">
 				<span><img src="../information/img/ico_subway.png" alt="지하철아이콘"></span>
 				지하철 이용시
 			</p>
-				<ul>
-					<li><span class="dott">•</span> 1호선 동래역 하차후, 버스이용(마을버스 17번)</li>
-					<li class="map-inpo-li">- 2번출구앞 좌측편 동래지하철역 버스정류장에서 마을버스 17번 이용</li>
-					<li><span class="dott">•</span> 3호선 종합운동장역 하차후, 버스이용(54번, 83-1번, 마을버스 17번)</li>	
-					<li class="map-inpo-li">- 9번출구앞에서 약50m직진 후, 삼정그린아파트 정류장에서 54번, 83-1번, 마을버스 17번 이용</li>	
-					<li><span class="dott">•</span> 1,2호선 서면역 하차후, 버스이용(133번, 54번, 81번, 83-1번, 103번)</li>	
-					<li class="map-inpo-li">- 13번출구로 나와서 부전시장입구 정류장에서 133번, 54번, 81번, 83-1번, 103번 이용</li>			
-				</ul>
-			<h4 class="map-title">
+					<ul>
+						<li><span class="dott">•</span> 1호선 동래역 하차후, 버스이용(마을버스 17번)</li>
+						<li class="map-inpo-li">- 2번출구앞 좌측편 동래지하철역 버스정류장에서 마을버스 17번 이용</li>
+						<li><span class="dott">•</span> 3호선 종합운동장역 하차후, 버스이용(54번, 83-1번, 마을버스 17번)</li>	
+						<li class="map-inpo-li">- 9번출구앞에서 약50m직진 후, 삼정그린아파트 정류장에서 54번, 83-1번, 마을버스 17번 이용</li>	
+						<li><span class="dott">•</span> 1,2호선 서면역 하차후, 버스이용(133번, 54번, 81번, 83-1번, 103번)</li>	
+						<li class="map-inpo-li">- 13번출구로 나와서 부전시장입구 정류장에서 133번, 54번, 81번, 83-1번, 103번 이용</li>			
+					</ul>
+			<p class="map-title" style="font-size: 22px; color: #002c66;">
 				<span><img src="../information/img/ico_bus.png" alt="버스 아이콘"></span>
 				버스 이용시
-			</h4>
+			</p>
 				<ul>
 					<li><span class="dott">•</span> 동래방면 : 44번, 마을버스 17번</li>			
 					<li><span class="dott">•</span> 구포,가야방면 : 33번</li>			
@@ -63,7 +63,7 @@
 					<li><span class="dott">•</span> 서면방면 : 54번, 81번, 103번</li>			
 				</ul>
 		</div>
-		<p class="tit">도로교통 이용안내</p>
+		<p class="tit" style="margin-bottom: 10px;">도로교통 이용안내</p>
 		<div id="mapInpoCar">
 			<ul>
 				<li><span class="dott">•</span> 미남, 동래, 연산교차로 -> 거성사거리에서 초읍방향으로 900m 직진</li>

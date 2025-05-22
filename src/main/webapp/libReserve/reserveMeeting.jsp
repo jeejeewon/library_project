@@ -170,8 +170,7 @@
 		
 	
 	//사용자가 선택한 날짜와 시간에 따라 예약 가능한 미팅룸을 동적으로 추가하는 함수
-	$('#reserveDate, #reserveTime').on('change', function() {
-        
+	$('#reserveDate, #reserveTime').on('change', function() {     
         $.ajax({
             url: "<%=request.getContextPath()%>/reserve/meetingRoomList",
             type: 'POST',
@@ -180,34 +179,27 @@
             	StartTime: $("#StartTime option:selected").val(),
             	EndTime: $("#EndTime option:selected").val()  
             },
-            success: function(data) {
-            	
+            success: function(data) {           	
             	//예약날짜를 선택하지 않았을 경우 알림 문구 보여주기
                 if (data.error) {                
                 	document.getElementById("roomList").innerHTML = "<p style='color: red;'>" + data.error + "</p>"; 
                     return;
                 }else { //예약날짜를 선택했을 경우 알림 문구 제거
                 	document.getElementById("roomList").innerHTML = ""; 
-                }
-            	
+                }           	
                 //예약 가능한 미팅룸이 없을 경우 알림 문구 보여주기
             	if(data.length == 0){
-        			document.getElementById("roomList").innerHTML = "<p style='color: red;'>예약 가능한 미팅룸이 없습니다.</p>";	
-        		
+        			document.getElementById("roomList").innerHTML = "<p style='color: red;'>예약 가능한 미팅룸이 없습니다.</p>";	        		
         		//예약가능한 미팅룸이 있을 경우 버튼 생성
-            	}else{
-            		
-                    data.forEach(room => {
-                       		
+            	}else{           		
+                    data.forEach(room => {                      		
                     		var roombtn = document.createElement("button");
                     		roombtn.innerHTML = room.roomName;                   
                     		roombtn.setAttribute("class", "roombtn"); //클릭했을 경우 효과를 주기 위해 id 설정           		
                     		roombtn.setAttribute("roomCode", room.reserveRoom);
                     		roombtn.setAttribute("roomName", room.roomName);         
-                    		roombtn.setAttribute("type", "button");
-                    		
-                    		document.getElementById("roomList").appendChild(roombtn);	
-                    	   		
+                    		roombtn.setAttribute("type", "button");                   		
+                    		document.getElementById("roomList").appendChild(roombtn);	                   	   		
                 	});            	
             	}//else           		
             }, //success

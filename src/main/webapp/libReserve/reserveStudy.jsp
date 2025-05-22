@@ -355,17 +355,14 @@
 	//사용자가 선택한 날짜, 시간, 스터디룸에 따라 좌석 현황을 동적으로 보여주는 함수
 	$('#reserveDate, #reserveTime').on('change', function() {       
 		updateSeatStatus();
-    }); 
-	
+    }); 	
 	function updateSeatStatus(){		
 		const selectedRoom = $('.study-room-btn.selected-btn').val();
-		const date = $("#reserveDate").val();
-		
+		const date = $("#reserveDate").val();		
 		//디폴트 날짜값이 컨트롤러로 안 넘어가는 경우 사용될 조건문
 		if(!date){
 			return;
-		}
-		
+		}	
         $.ajax({
             url: "<%=request.getContextPath()%>/reserve/studyRoomList",
             type: 'POST',
@@ -375,20 +372,16 @@
             	EndTime: $("#EndTime option:selected").val(),
             	studyRoom: selectedRoom
             },
-            success: function(data) {   
-            	
+            success: function(data) {              	
             	//예약 가능한 시간이 없을 경우 (당일 19시 이후 예약일 경우)
             	if(data === "NO_AVAILABLE_TIME"){
             		return;
-            	}
-            	
-                $('.seat-btn').removeClass('reserved').prop('disabled', false);
-                
+            	}          	
+                $('.seat-btn').removeClass('reserved').prop('disabled', false);              
             	data.forEach(seat => {
             		//예약된 좌석이 있을 경우 해당 좌석 class 추가하는 함수 호출
             		reservedSeat(seat.reserveSeat)     		
-            	});
-            	
+            	});            	
             }, //success
             error: function(xhr, status, error) {
             	alert('서버 오류' + error);

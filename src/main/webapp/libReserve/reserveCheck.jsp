@@ -7,10 +7,21 @@
 <head>
 <link rel="stylesheet" href="../css/reserveCheck.css">
 <meta charset="UTF-8">
-<title>나의 시설 예약 내역</title>
+<title>시설 예약 내역</title>
+<style type="text/css">
+	.title{		
+		font-size: 25px;
+		font-weight: bold;
+		margin-top: 50px;
+		width: 50%;
+		color: #2d3081;
+		text-align: left;
+	}
+</style>
 </head>
 <body>
 	<div align="center">
+		<p class="title">시설 예약 내역</p>
 		<table id="reserveTable">
 		    <tr>
 		    	<td id="text-r"colspan="5" align="right">* 예약내역은 최근 10건까지만 보여집니다.</td>
