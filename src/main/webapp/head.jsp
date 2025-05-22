@@ -22,7 +22,7 @@
 							<a href="${contextPath}/member/mypage" class="item">마이페이지</a>
 							<c:choose>
 								<c:when test="${sessionScope.id == 'admin'}">
-									<a href="${contextPath}/adm/home.jsp" class="item">관리자</a>
+									<a href="${contextPath}/admin/main" class="item">관리자</a>
 								</c:when>
 							</c:choose>
 							<a href="${contextPath}/member/logout.me" class="item">로그아웃</a>
@@ -79,28 +79,49 @@
 </div>
 
 <script>
-	$(".menu>li").each(function() {
+	$(".menu>li").each(function(index) {
 		$(this).click(function() {
-			const idx = $(this).index();
-			$('.menu>li').removeClass('on');
-			$('.menu>li').eq(idx).addClass('on');
-			$('.sub-menu').removeClass('on');
-			$('.sub-menu').eq(idx).addClass('on');
-			$('.sub-menu').hide();
-			$('.sub-menu').eq(idx).slideDown();
+			const $clickedLi = $(this); 
+			const $clickedSubMenu = $clickedLi.find('.sub-menu'); 
+			
+			if ($clickedLi.hasClass('on')) {
+				$clickedSubMenu.slideUp(200, function() {
+                    $clickedLi.removeClass('on');
+                    $clickedSubMenu.removeClass('on');
+                });
+			} else {
+				$('.sub-menu').slideUp(200, function() { 
+                     $('.menu>li').removeClass('on');
+                     $('.sub-menu').removeClass('on');
+                });
+
+				$clickedLi.addClass('on');
+				$clickedSubMenu.addClass('on');
+				$clickedSubMenu.slideDown(200);
+			}
 		});
 	});
 
 	$(document).on(
 			'click',
 			function(event) {
-				var $targetArea = $('.sub-menu.on');
-				var $header = $('#header');
-				if (!$targetArea.is(event.target)
-						&& $targetArea.has(event.target).length === 0
-						&& !$header.is(event.target)
-						&& $header.has(event.target).length === 0) {
-					$targetArea.hide();
+				var $target = $(event.target);
+				var $headerWrap = $('.header_wrap');
+				var $menuWrap = $('.menu-wrap');
+				var $subMenuOn = $('.sub-menu.on');
+
+				if ($target.closest($headerWrap).length && !$target.closest($menuWrap).length && !$target.closest($subMenuOn).length) {
+					$subMenuOn.slideUp(200, function() { 
+                         $('.menu>li').removeClass('on');
+                         $('.sub-menu').removeClass('on');
+                    });
 				}
+				
+                else if (!$target.closest($headerWrap).length) {
+                    $subMenuOn.slideUp(200, function() {
+                         $('.menu>li').removeClass('on');
+                         $('.sub-menu').removeClass('on');
+                    });
+                }
 			});
 </script>

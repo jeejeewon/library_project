@@ -1,11 +1,12 @@
 #header {
 	z-index: 99;
-	position: relative;
+	position: fixed;
+	background-color: white;
+	width: 100%;
 }
 
 #header .top {
 	width: 100%;
-	border-bottom: 1px solid #dedede;
 }
 
 #header .top .container {
@@ -43,6 +44,7 @@
 }
 
 #header .header_wrap {
+	background-color:white;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -94,7 +96,7 @@
 	z-index: 1;
 	display: none;
 	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
-	background-color: #f3f3f3;
+	background-color: white;
 }
 
 #header .sub-menu .inner {
@@ -139,7 +141,38 @@
 	width: 25%;
 	display: flex;
 	flex-direction: column;
-	gap: .5rem;
+	gap: 1rem;
+}
+
+#header .nav-wrap ul li a {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s ease;
+    padding-bottom: 5px;
+}
+
+
+#header .nav-wrap ul li a:hover {
+    color: #003c83;
+    font-weight: bold;
+}
+
+#header .nav-wrap ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    display: block;
+    width: 0; 
+    height: 2px;
+    background-color: #003c83; 
+    transition: width 0.3s ease; 
+}
+
+#header .nav-wrap ul li a:hover::after {
+    width: 100%; 
 }
 
 #footer {
@@ -230,4 +263,3 @@
 #footer .adress {
 	font-size: 12px;
 }
-

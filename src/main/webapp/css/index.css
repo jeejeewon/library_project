@@ -1,5 +1,6 @@
 #wrapper {
 	min-height: 500px;
+	padding-top: 130px;
 }
 
 .container {
@@ -714,6 +715,251 @@
 	font-size: 14px;
 	color: #7c7c7c;
 	line-height: 1.7;
+}
+
+/* 관리자 페이지 */
+html.adm-page, .adm-page body {
+	height: 100%;
+	min-width: 750px;
+}
+
+.adm-page #header {
+	z-index: 99;
+	position: fixed;
+	width: 100%;
+	background: #fff;
+	height: 70px;
+	padding: 0 2rem;
+	display: flex;
+	align-items: center;
+	background: #003c83;
+	color: #fff;
+	font-weight: 600;
+}
+
+.adm-page #header .inner {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.adm-page #header .inner .btn-wrap {
+	display: flex;
+	gap: .5rem;
+}
+
+.adm-page #header h3 {
+	font-size: 1.75rem;
+}
+
+.adm-page #wrapper {
+	padding-top: 70px;
+	display: flex;
+	height: 100%;
+	width: 100%;
+}
+
+.adm-page .adm-side-menu {
+	width: 200px;
+	border-right: 1px solid #dedede;
+	display: flex;
+	justify-content: center;
+	padding: 2rem;
+	position: fixed;
+	height: 100%;
+}
+
+.adm-page .adm-side-menu ul {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	font-size: 1rem;
+	font-weight: 600;
+	gap: .5rem;
+}
+
+.adm-page #wrapper .content {
+	width: calc(100% - 200px);
+	padding: 2rem;
+	left: 200px;
+	position: relative;
+	min-width: 750px;
+}
+
+.adm-page #wrapper .system-page {
+	padding-bottom: 2rem;
+}
+
+.adm-page #wrapper .system-page ul {
+	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
+	gap: .5rem;
+}
+
+.adm-page #wrapper .system-page ul li {
+	display: flex;
+	width: calc(50% - .25rem);
+}
+
+.adm-page #wrapper .system-page ul li p {
+	padding-right: 1rem;
+}
+
+.adm-page #wrapper table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.adm-page #wrapper  th, .adm-page #wrapper td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+.adm-page #wrapper  th {
+	background-color: #f2f2f2;
+}
+
+.adm-page #wrapper  .error-message {
+	color: red;
+	margin-bottom: 10px;
+}
+
+.adm-page .system-page h3, .adm-page .recent-member h3, .adm-page .member-search-wrap h3
+	{
+	font-size: 1.250rem;
+	font-weight: 600;
+	padding-bottom: 1rem;
+}
+.adm-page .member-search-wrap h3:nth-child(3) {padding-top: 2rem;}
+
+.adm-page .member-search-wrap input[type="submit"], .adm-page .member-search-wrap button[type="submit"]
+	{
+	background: #003c83;
+	border: 1px solid #003c83;
+	padding: 8px 18px;
+	color: #fff;
+	cursor: pointer;
+	font-weight: 600;
+	border-radius: 3px;
+	vertical-align: middle;
+}
+
+.adm-page .member-search-wrap input[type="text"] {
+	height: 37px;
+}
+
+.adm-page .member-search-wrap .member-list-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 15px;
+	border: 1px solid #dedede;
+}
+
+.adm-page .member-search-wrap .member-list-table thead tr {
+	background-color: #f3f3f3;
+}
+
+.adm-page .member-search-wrap .member-list-table th, .adm-page .member-search-wrap .member-list-table td
+	{
+	padding: 10px;
+	border: 1px solid #dedede;
+	text-align: left;
+}
+
+.adm-page .member-search-wrap .member-list-table th {
+	font-weight: 600;
+	color: #40474d;
+}
+
+.adm-page .member-search-wrap .member-list-table td a {
+	color: #003c83;
+	text-decoration: underline;
+}
+
+.adm-page .member-search-wrap .search-form {
+	margin-bottom: 20px;
+	padding: 15px;
+	background-color: #f3f3f3;
+	border: 1px solid #dedede;
+	border-radius: 5px;
+}
+
+.adm-page .member-search-wrap .search-form label {
+	margin-right: 5px;
+	font-weight: 600;
+}
+
+.adm-page .member-search-wrap .search-form input[type="text"] {
+	margin-right: 10px;
+}
+
+.adm-page .member-update {
+	max-width: 600px;
+	margin: auto;
+	padding: 1rem 0 3rem;
+}
+
+.adm-page .member-update h3 {
+	text-align: center;
+	color: #424242;
+	margin-bottom: 25px;
+	font-size: 1.8rem;
+	font-weight: 600;
+}
+
+.adm-page .member-update .form-group {
+	margin-bottom: 15px;
+}
+
+.adm-page .member-update label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+	color: #40474d;
+}
+
+.adm-page .member-update span.readonly-value {
+	display: inline-block;
+	padding: 8px;
+	border: 1px solid #dedede;
+	background-color: #f3f3f3;
+	border-radius: 3px;
+	color: #7c7c7c;
+	min-width: 200px;
+	vertical-align: middle;
+}
+
+.adm-page .member-update input[type="text"], .adm-page .member-update input[type="password"],
+	.adm-page .member-update input[type="email"], .adm-page .member-update input[type="tel"]
+	{
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.adm-page .member-update>div:last-child {
+	margin-top: 30px;
+	text-align: center;
+}
+
+.adm-page .member-update button[type="button"], .adm-page .member-update button[type="submit"]
+	{
+	background: #003c83;
+	border: 1px solid #003c83;
+	padding: 8px 18px;
+	color: #fff;
+	cursor: pointer;
+	font-weight: 600;
+	border-radius: 3px;
+	vertical-align: middle;
+}
+
+.adm-page .member-update button[type="button"] {
+	color: #808991;
+	background: white;
+	border: 1px solid #D1D5D9;
 }
 
 /* 반응형 */

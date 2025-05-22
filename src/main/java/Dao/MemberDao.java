@@ -235,13 +235,18 @@ public class MemberDao {
 			int val = pstmt.executeUpdate();
 
 			if (val == 1) {
-				result = "탈퇴성공";
+				if (id != null && id.equals("admin")) {
+					result = "관리자 계정 삭제 성공";
+				} else {
+					result = "회원 탈퇴 성공";
+				}
 			} else {
 				result = "탈퇴실패";
 			}
 
 		} catch (Exception e) {
 			System.out.println("MemberDao.memDelete() 메소드 오류 : " + e);
+			 result = "회원 삭제 처리 중 시스템 오류 발생";
 			e.printStackTrace();
 		} finally {
 			ResourceClose();
@@ -472,7 +477,7 @@ public class MemberDao {
 		try {
 			con = this.getConnection(); // DB 연결
 
-			String sql = "SELECT id, pass, name, gender, address, email, tel, joindate, kakao_id FROM member WHERE id = ?"; 
+			String sql = "SELECT id, pass, name, gender, address, email, tel, joindate, kakao_id FROM member WHERE id = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId); // 아이디 조건 설정
 
@@ -516,43 +521,85 @@ public class MemberDao {
 
 		return memberVo; // 찾은 회원 정보 객체 또는 null 반환
 	}
-	
-	 // 회원 정보 수정 메소드
-    public int updateMember(MemberVo member) {
-        int updateCount = 0; // 업데이트된 행의 개수 (성공하면 1)
-        Connection con = null;
-        PreparedStatement pstmt = null;
 
-        try {
-            con = this.getConnection(); // DB 연결
+	// 회원 정보 수정 메소드
+	public int updateMember(MemberVo member) {
+		int updateCount = 0; // 업데이트된 행의 개수 (성공하면 1)
+		Connection con = null;
+		PreparedStatement pstmt = null;
 
-            // UPDATE SQL 쿼리 (id는 조건으로 사용하고, 다른 필드 업데이트)
-            // 비밀번호도 수정 가능하게 하려면 pass=? 추가
-            String sql = "UPDATE member SET pass=?, name=?, gender=?, address=?, email=?, tel=? WHERE id=?";
-            pstmt = con.prepareStatement(sql);
+		try {
+			con = this.getConnection(); // DB 연결
 
-            // PreparedStatement에 수정할 값들 설정
-            pstmt.setString(1, member.getPass()); // 비밀번호 업데이트 예시
-            pstmt.setString(2, member.getName());
-            pstmt.setString(3, member.getGender());
-            pstmt.setString(4, member.getAddress());
-            pstmt.setString(5, member.getEmail());
-            pstmt.setString(6, member.getTel());
-            pstmt.setString(7, member.getId()); // WHERE 조건에 사용될 아이디
+			// UPDATE SQL 쿼리 (id는 조건으로 사용하고, 다른 필드 업데이트)
+			// 비밀번호도 수정 가능하게 하려면 pass=? 추가
+			String sql = "UPDATE member SET pass=?, name=?, gender=?, address=?, email=?, tel=? WHERE id=?";
+			pstmt = con.prepareStatement(sql);
 
-            updateCount = pstmt.executeUpdate(); // 쿼리 실행 및 결과 (수정된 행 수) 가져오기
+			// PreparedStatement에 수정할 값들 설정
+			pstmt.setString(1, member.getPass()); // 비밀번호 업데이트 예시
+			pstmt.setString(2, member.getName());
+			pstmt.setString(3, member.getGender());
+			pstmt.setString(4, member.getAddress());
+			pstmt.setString(5, member.getEmail());
+			pstmt.setString(6, member.getTel());
+			pstmt.setString(7, member.getId()); // WHERE 조건에 사용될 아이디
 
-        } catch (Exception e) {
-            System.out.println("MemberDao / updateMember 메소드 오류: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-             // ResourceClose();
-             try { if(pstmt != null) pstmt.close(); } catch(SQLException e) {}
-             try { if(con != null) con.close(); } catch(SQLException e) {}
-        }
+			updateCount = pstmt.executeUpdate(); // 쿼리 실행 및 결과 (수정된 행 수) 가져오기
 
-        return updateCount; // 업데이트 성공/실패 결과 반환 (1이면 성공, 0이면 실패)
-    }
+		} catch (Exception e) {
+			System.out.println("MemberDao / updateMember 메소드 오류: " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			// ResourceClose();
+			try {
+				if (pstmt != null)
+					pstmt.close();
+			} catch (SQLException e) {
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		return updateCount; // 업데이트 성공/실패 결과 반환 (1이면 성공, 0이면 실패)
+	}
+
+	// 최근 7일 이내 가입한 회원 정보 조회 (관리자용)
+	public List<MemberVo> selectRecentMembers() {
+
+		List<MemberVo> recentMemberList = new ArrayList<>();
+		String sql = "SELECT * FROM member WHERE joinDate >= CURRENT_DATE - INTERVAL '7' DAY ORDER BY joinDate DESC";
+		try {
+			con = this.getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery(); // 쿼리 결과 얻기
+
+			while (rs.next()) {
+				MemberVo memberVo = new MemberVo();
+				memberVo.setId(rs.getString("id"));
+				memberVo.setPass("********");
+				memberVo.setName(rs.getString("name"));
+				memberVo.setGender(rs.getString("gender"));
+				memberVo.setAddress(rs.getString("address"));
+				memberVo.setEmail(rs.getString("email"));
+				memberVo.setTel(rs.getString("tel"));
+				memberVo.setJoinDate(rs.getDate("joinDate"));
+				memberVo.setKakaoId(rs.getString("kakao_id"));
+				recentMemberList.add(memberVo);
+			}
+
+		} catch (Exception e) {
+			System.out.println("selectRecentMembers 메소드 내부에서 오류!");
+			e.printStackTrace();
+		} finally {
+			ResourceClose();
+		}
+		System.out.println(">>> [DAO] selectRecentMembers 메소드 종료. 반환 리스트 크기: " + recentMemberList.size());
+		return recentMemberList;
+	}
 
 	// 자원 해제
 	public void ResourceClose() {
