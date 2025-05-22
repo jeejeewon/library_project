@@ -210,13 +210,11 @@
     </div>
 
 	<!-- 한줄서평 -->
-	<div class="detail-card">	    
-	   	<% if (book != null) { %>
-	   		<%-- 서평 작성 폼 --%>
-		    <jsp:include page="../board/myReviewWrite.jsp" flush="true"/>
-		    <%-- 서평 리스트 출력 --%>
-		    <jsp:include page="../board/bookReviewList.jsp" flush="true"/>
-		<% } %>
+	<div>	    
+		<%-- 서평 작성 폼 --%>
+		<jsp:include page="../board/myReviewWrite.jsp" flush="true"/>
+		<%-- 서평 리스트 출력 --%>
+		<jsp:include page="../board/bookReviewList.jsp" flush="true"/>
 	</div>
 </div>
 </body>
