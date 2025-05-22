@@ -198,7 +198,7 @@ request.setCharacterEncoding("UTF-8");
 						<img class="thumb" src="${contextPath}/${requestScope.board.thumbnail}" alt="${requestScope.board.title} 도서 이미지">
 					</c:if>
 				</div>
-				<p>게시글 ${board.content}</p>
+				<p>${board.content}</p>
 			</div>
 		</div>
 		<div class="content-box-bottom">

@@ -144,7 +144,6 @@ request.setCharacterEncoding("UTF-8");
     <center>
     	<div class="board-head">
     		<h2>문의게시판</h2>
-    		<p>도서관소식 > 문의게시판</p>
     	</div>
 		<form action="${contextPath}/bbs/questionList.do" method="get" class="search-form">
 		    <select name="searchType" class="search-select">

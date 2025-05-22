@@ -144,7 +144,6 @@ request.setCharacterEncoding("UTF-8");
     <center>
     	<div class="board-head">
     		<h2>내 서평</h2>
-    		<p>내 서재 > 내 서평</p>
     	</div>
 		<form action="${contextPath}/bbs/myReviewList.do" method="get" class="search-form">
 		    <select name="searchType" class="search-select">

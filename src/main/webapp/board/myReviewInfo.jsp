@@ -111,8 +111,6 @@ request.setCharacterEncoding("UTF-8");
 		}
 		
 		/*타이틀인포(유저이름,날짜,조회수)*/
-		.title-area-left .board-info{
-		}
 		.title-area-left .board-info .user-id{
 			font-size: 13px;
 			line-height: 15px;
@@ -241,7 +239,7 @@ request.setCharacterEncoding("UTF-8");
 						<img class="thumb" src="${contextPath}/${requestScope.board.thumbnail}" alt="${requestScope.board.title} 도서 이미지">
 					</c:if>
 				</div>
-				<p>게시글 ${board.content}</p>
+				<p>${board.content}</p>
 			</div>
 		</div>
 		<div class="content-box-bottom">

@@ -676,6 +676,10 @@ public class boardController extends HttpServlet {
 		// 문의사항 상세페이지
 		// 요청주소 "/bbs/questionInfo.do"
 		if (action.equals("/questionInfo.do")) {
+			// 현재 접속 유저 확인 (로그인 상태 및 유저 ID 가져오기)
+			String currentUserId = (String) request.getSession().getAttribute("id");
+			// 현재 접속 유저의 관리자 여부 체크
+            boolean isAdmin = "admin".equals(currentUserId);
 
 			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
 
@@ -697,15 +701,32 @@ public class boardController extends HttpServlet {
 			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
 			boardVO viewedBoard = boardService.viewBoard(boardId);
 
-			System.out.println(
-					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
+			System.out.println("Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
 
 			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
 			if (viewedBoard == null) {
 				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
 				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
 			}
-
+			
+			// 비밀글 여부 확인
+			String authorId = viewedBoard.getUserId(); // 조회된 글의 작성자 id 가져옴
+			boolean isSecret = viewedBoard.getSecret(); // 비밀글 체크 여부 가져오기
+			
+			// 관리자도 아니고 작성자 본인도 아닌데 비밀글을 보려 한다면 권한 없음
+			if (isSecret && (!isAdmin && (currentUserId == null || !currentUserId.equals(authorId)))) {
+				System.out.println("비밀글 접근 권한 없음: 유저 " + currentUserId + "는 이 비밀글(" + boardId + ")의 작성자(" + authorId + ")도 아니고 관리자도 아닙니다.");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('해당 게시글을 볼 권한이 없습니다!');"); // 경고 메시지
+				// 리다이렉트할 문의 리스트 페이지 경로로 수정해야 함!
+				out.println("location.href='" + request.getContextPath() + "/bbs/questionList.do';");
+				out.println("</script>");
+				out.flush();
+				return; 
+					}
+			
 			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
 
 			// 이전 글 번호 조회
