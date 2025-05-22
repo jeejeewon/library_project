@@ -18,11 +18,7 @@ request.setCharacterEncoding("UTF-8");
     <title>공지사항 리스트 - noticeList.jsp</title>
     <!-- 스타일 추가 -->
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
- 
+
         
 	    .board-head{
 	    font-size: 28px;

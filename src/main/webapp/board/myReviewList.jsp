@@ -13,12 +13,6 @@ request.setCharacterEncoding("UTF-8");
 <head>
     <title>내 서평 리스트 - myReviewList.jsp</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-        }
-
 	    .board-head{
         	width:80%;
         	display: flex;

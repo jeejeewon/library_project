@@ -16,14 +16,7 @@ request.setCharacterEncoding("UTF-8");
     <title>행사안내 리스트 - eventList.jsp</title>
     <!-- 스타일 추가 -->
 <style>
-    /* 기본 body 스타일 */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        padding: 20px;
-        margin: 0;
-    }
-	
+
 	
 	.board-topbar{
 			display: flex;
