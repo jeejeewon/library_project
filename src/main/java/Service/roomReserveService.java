@@ -1,6 +1,8 @@
 package Service;
 
 import java.util.List;
+import java.util.Map;
+
 import Dao.libraryReserveDAO;
 import Vo.libraryReserveVO;
 
@@ -78,6 +80,12 @@ public class roomReserveService {
 	//전체 시설 예약 내역을 조회하는 메소드
 	public List allReservedList() {
 		return libraryReserveDAO.allReservedList();
+	}
+
+	
+	//중복 예약 방지를 위해 사용자가 선택한 날짜와 시간대에 예약 건이 있는지 확인하는 메소드
+	public boolean checkReserve(Map<String, Object> reserveMap) {
+		return libraryReserveDAO.checkReserve(reserveMap);
 	}
 
 

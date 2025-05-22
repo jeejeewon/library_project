@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -528,6 +529,48 @@ public class roomReserveController extends HttpServlet{
 			
 			   return;
 						
+		}else if(action.equals("/checkReserve")) {
+			
+			System.out.println("checkReserve호출됨===============");
+			
+			Map<String, Object> reserveMap = new HashMap();
+			
+			//값 얻기
+			String userID = request.getParameter("userID");
+				
+			//예약번호가 있을 경우 map에 저장
+			String reserveNumParam = request.getParameter("reserveNum");
+			if(reserveNumParam != null && !reserveNumParam.trim().isEmpty()) {
+			    reserveMap.put("reserveNum", reserveNumParam);
+			}
+			
+			String reserveDateStr = request.getParameter("reserveDate");					
+		    Date reserveDate = null;		    
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date parsedDate = sdf.parse(reserveDateStr);
+				reserveDate = new Date(parsedDate.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}		
+			
+			int StartTime = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); 
+			int EndTime = Integer.parseInt(request.getParameter("EndTime").split(":")[0]);
+						
+			reserveMap.put("userID", userID);
+			reserveMap.put("reserveDate", reserveDate);
+			reserveMap.put("StartTime", StartTime);
+			reserveMap.put("EndTime", EndTime);			
+			
+			//동일 날짜와 시간대에 예약 건이 있는지 체크
+			boolean result = roomReserveService.checkReserve(reserveMap);
+			
+			System.out.println("result :" + result);
+			
+			response.setContentType("application/json;charset=utf-8");
+			out.print("{\"isReserved\": " + result + "}");
+			out.flush();
+			out.close();  		
 		}
 		
 	

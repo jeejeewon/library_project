@@ -1,12 +1,14 @@
 package Dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -481,6 +483,70 @@ public class libraryReserveDAO {
 		
 		return reservedList;
 	}//allReservedList
+
+
+	//사용자가 선택한 날짜와 시간대에 예약 건이 있는지 DB에 조회 (예약중복방지)
+	public boolean checkReserve(Map<String, Object> reserveMap) {
+		
+		System.out.println("checkReserve DAO 호출됨===================");
+		
+		String reserveNum = (String) reserveMap.get("reserveNum");
+		boolean isUpdate = reserveNum != null && !reserveNum.trim().equals("");
+		
+		boolean result = false;
+		
+		String sql = "";		
+		
+		System.out.println("isUpdate : " + isUpdate);
+		System.out.println("endTime : " + (int) reserveMap.get("EndTime"));
+		System.out.println("startTime : " + (int) reserveMap.get("StartTime"));
+		System.out.println("userID : " + (String) reserveMap.get("userID"));
+		System.out.println("reserveDate : " + (Date) reserveMap.get("reserveDate"));
+		
+		if(isUpdate) { //예약 수정일 경우?
+			System.out.println("첫번째 sql 실행");
+			sql = "select * from room_reserve "
+				+ "where reserve_id = ? "
+				+ "and reserve_date = ? "
+				+ "and (reserve_start < ? and reserve_end > ?) "
+				+ "and reserve_num != ?";
+			
+		}else { //신규 예약일 경우?
+			System.out.println("두번째 sql 실행");
+			sql = "select * from room_reserve "
+			    + "where reserve_id = ? "
+			    + "and reserve_date = ? "
+			    + "and (reserve_start < ?"
+			    + " and reserve_end > ?)";				
+		}
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, (String) reserveMap.get("userID"));
+			pstmt.setDate(2, (Date) reserveMap.get("reserveDate"));
+			pstmt.setInt(3, (int) reserveMap.get("EndTime"));
+			pstmt.setInt(4, (int) reserveMap.get("StartTime"));
+			
+			if(isUpdate) {
+				pstmt.setString(5, (String) reserveMap.get("reserveNum"));
+			}
+					
+			rs = pstmt.executeQuery();
+			result = rs.next();
+						 
+			return 	result;		
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return result;
+		
+	} //checkReserve
 
 	
 
