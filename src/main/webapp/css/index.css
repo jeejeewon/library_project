@@ -1,1 +1,550 @@
-#wrapper {min-height: 500px;}
+#wrapper {
+	min-height: 500px;
+}
+
+.container {
+	width: 100%;
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.page-tit {
+	font-weight: 600;
+	font-size: 20px;
+}
+
+/* 주의 문구 */
+.check-description {
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.5em;
+	padding: 28px 0 14px 0;
+}
+
+.caution-description {
+	color: #A37A3D;
+	border-radius: 3px;
+	font-size: 13px;
+	line-height: 1.5em;
+	padding: 5px 0;
+}
+
+/* 버튼 디자인 */
+.box-btn-box {
+	padding-top: 10px;
+}
+
+#wrapper {
+	position: relative;
+}
+
+.ui-btn {
+	color: #808991;
+	background: white;
+	border: 1px solid #D1D5D9;
+	padding: 8px 18px;
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 13px;
+	line-height: 1.2em;
+	border-radius: 3px;
+}
+
+/* 비밀번호 확인 페이지 */
+#passForm form {
+	display: flex;
+	gap: 5px;
+}
+
+/* 메인 */
+.main-search-wrap {
+	height: 600px;
+	position: relative;
+}
+
+.main-search-form {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.main-search-form .inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.main-search-form form {
+	display: flex;
+	align-items: center;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
+}
+
+.main-search-form input {
+	width: 900px;
+	height: 60px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	/* 	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px; */
+	padding: 0 2rem;
+	font-size: 1.250rem;
+	border: 0;
+}
+
+.main-search-form button {
+	border: 0;
+	height: 60px;
+	border-top-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #003c83;
+	width: 100px;
+	padding: 0 5px 0 0;
+	cursor: pointer;
+}
+
+.main-swiper-wrap {
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+	height: 100%;
+	top: 0;
+	width: 100%;
+	pointer-events: none;
+}
+
+.main-swiper {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	text-align: center;
+	font-size: 18px;
+	background: #fff;
+	/* Center slide text vertically */
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+}
+
+/* 로그인 */
+.login-form-wrap {
+	display: flex;
+	justify-content: center;
+	padding: 3rem 0;
+}
+
+.login-form-wrap .inner {
+	min-width: 400px
+}
+
+.login-form-wrap .input-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	padding-bottom: 15px;
+	align-items: flex-end;
+}
+
+.login-form-wrap .input-wrap input {
+	width: 100%;
+	padding: 10px 18px;
+}
+
+.login-form-wrap .kakao-btn {
+	width: 100%;
+	background: #fee500;
+	border-radius: 3px;
+	height: 38px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	line-height: 1;
+	padding-bottom: 1rem;
+}
+
+.login-top h3 {
+	font-size: 1.875rem;
+	font-weight: 600;
+}
+
+.login-top p {
+	font-size: 13px;
+}
+
+.login-btn-wrap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .5rem;
+}
+
+.login-btn-wrap a {
+	font-size: 14px;
+	font-weight: 600;
+	color: #7c7c7c;
+}
+
+.login-btn-wrap .fig {
+	width: 1px;
+	height: 12px;
+	border-left: 1px solid #CCCCCC;
+}
+
+/* 아이디, 비번 찾기 */
+.form-wrap.find-idpw {
+	display: flex;
+	justify-content: center;
+	padding: 3rem 0;
+}
+
+.form-wrap.find-idpw h3 {
+	font-size: 1.625rem;
+	font-weight: 600;
+	padding-bottom: 1rem;
+}
+
+.form-wrap.find-idpw .inner {
+	min-width: 380px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	display: flex;
+}
+
+.form-wrap.find-idpw .inner form {
+	width: 100%;
+}
+
+.form-wrap.find-idpw .input-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	padding-bottom: 15px;
+	align-items: flex-end;
+}
+
+.form-wrap.find-idpw .input-wrap input {
+	width: 100%;
+	padding: 10px 18px;
+}
+
+.form-wrap.find-idpw .input-wrap button {
+	width: 100%;
+	padding: 10px 18px;
+	background: #003c83;
+	border: 1px solid #003c83;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2em;
+	border-radius: 3px;
+	cursor: pointer;
+	line-height: 1.2em;
+}
+
+.form-wrap.find-idpw .find-id {
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.2em;
+	padding-bottom: 1rem;
+}
+
+/* 회원가입*/
+#joinForm {
+	max-width: 480px;
+	margin: 0 auto;
+	padding: 3rem 0;
+}
+
+#joinForm>h3 {
+	font-size: 1.875rem;
+	font-weight: 600;
+}
+
+#joinForm .inner {
+	padding-top: 30px;
+}
+
+#joinForm label {
+	display: block;
+	font-weight: bold;
+	color: #555;
+}
+
+#joinForm input[type="text"], #joinForm input[type="password"],
+	#joinForm input[type="email"], #joinForm input[type="tel"], #joinForm input[type="text"][placeholder="주소를 입력해주세요"]
+	{
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 1rem;
+}
+
+#joinForm div label {
+	display: inline-block;
+	margin-right: 15px;
+	width: auto;
+	font-weight: 600;
+	padding-bottom: 5px;
+}
+
+#joinForm div:nth-child(5) {
+	min-height: 45px;
+}
+
+#joinForm input[type="radio"] {
+	margin: 0 5px;
+	vertical-align: middle;
+}
+
+#joinForm div>input[type="radio"]+label {
+	font-weight: normal;
+	color: #333;
+	margin-right: 15px;
+}
+
+#joinForm p[id$="Input"] {
+	color: #d9534f;
+	font-size: 0.9rem;
+	margin-top: 5px;
+	min-height: 1em;
+	padding-bottom: 10px;
+}
+
+#joinForm #agree {
+	margin-top: 30px;
+	padding: 20px;
+	border: 1px solid #eee;
+	border-radius: 4px;
+	background-color: #f9f9f9;
+}
+
+#joinForm #agree .policy .inner {
+	padding: 0;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+#joinForm #agree h3 {
+	margin-top: 0;
+	margin-bottom: 15px;
+	font-size: 1.2rem;
+	color: #333;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 10px;
+}
+
+#joinForm #agree .content {
+	border: 1px solid #ccc;
+	padding: 15px;
+	margin-bottom: 15px;
+	max-height: 100px;
+	overflow-y: auto;
+	background-color: #fff;
+	font-size: 0.9rem;
+	color: #666;
+}
+
+#joinForm #agree .content p {
+	margin: 0 0 5px 0;
+	line-height: 1.4;
+}
+
+#joinForm #agree .agree-checkbox {
+	margin-right: 5px;
+}
+
+#joinForm #agree #checkAll {
+	margin-top: 10px;
+	margin-right: 5px;
+}
+
+#joinForm #agree label[for="checkAll"] {
+	font-weight: bold;
+	color: #333;
+}
+
+#joinForm .btn_wrap {
+	margin-top: 30px;
+	text-align: center;
+}
+
+#joinForm .btn_wrap a {
+	display: inline-block;
+	padding: 12px 25px;
+	background-color: #003c83;
+	color: #fff;
+	border-radius: 5px;
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+
+/* 회원 수정 */
+#modifyForm .modify-form-wrap {
+	width: 100%;
+}
+
+#modifyForm .modify-form-wrap>.leave-btn {
+	text-align: right;
+	margin-bottom: 15px;
+}
+
+#modifyForm .modify-form-wrap>.leave-btn a {
+	color: #dc3545;
+	text-decoration: none;
+	font-size: 0.9rem;
+}
+
+#modifyForm .modify-form-wrap>div:first-child a:hover {
+	text-decoration: underline;
+}
+
+#modifyForm .inner form>div {
+	margin-bottom: 20px;
+}
+
+#modifyForm .inner input[type="text"], #modifyForm .inner input[type="password"],
+	#modifyForm .inner input[type="email"], #modifyForm .inner input[type="tel"]
+	{
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 1rem;
+}
+
+#modifyForm .inner input[readonly] {
+	background-color: #e9ecef;
+	color: #666;
+	cursor: default;
+	border-color: #ccc;
+}
+
+#modifyForm .inner input[readonly]:focus {
+	outline: none;
+	border-color: #ccc;
+	box-shadow: none;
+}
+
+#modifyForm .inner div label {
+	display: inline-block;
+	margin-right: 15px;
+	width: auto;;
+	margin-bottom: 8px;
+	font-weight: bold;
+	color: #555;
+}
+
+#modifyForm .inner input[type="radio"] {
+	margin: 0 5px;
+	vertical-align: middle;
+}
+
+#modifyForm .inner div>input[type="radio"]+label {
+	font-weight: normal;
+	color: #333;
+	margin-right: 15px;
+}
+
+#modifyForm .inner p[id$="Input"] {
+	color: #d9534f;
+	font-size: 0.9rem;
+	margin-top: 5px;
+	min-height: 1em;
+}
+
+#modifyForm .inner .btn_wrap {
+	margin-top: 30px;
+	text-align: center;
+}
+
+#modifyForm .inner .btn_wrap a {
+	display: inline-block;
+	padding: 12px 25px;
+	background-color: #003c83;
+	color: #fff;
+	border-radius: 5px;
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+
+#modifyForm h3 {
+	padding-bottom: 30px;
+	color: #333;
+	font-size: 1.875rem;
+	font-weight: 600;
+	padding-bottom: 5px;
+}
+
+/* 마이페이지 */
+.mypage {
+	display: flex;
+	width: 100%;
+	padding: 2rem 0;
+}
+
+.mypage .left_menu {
+	width: 20%;
+	min-width: 235px;
+}
+
+.mypage .page {
+	width: 80%;
+}
+
+.mypage .menu-section {
+	color: #40474d;
+}
+
+.mypage .menu-section .menu-tit {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding-top: 1rem;
+}
+
+.mypage .menu-section {
+	border-bottom: 1px solid #dedede;
+	width: 60%;
+	padding-bottom: 10px;
+	font-weight: 600;
+}
+
+.mypage .menu-section:nth-child(1) .menu-tit {
+	padding: 0;
+}
+
+.mypage .menu-section:last-child {
+	border: 0;
+}
+
+.mypage .menu-section ul {
+	padding-left: calc(1rem + 8px);
+}
+
+.mypage .menu-section ul li {
+	padding-top: 10px;
+}

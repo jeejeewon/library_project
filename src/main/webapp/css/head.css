@@ -1,3 +1,8 @@
+#header {
+	z-index: 99;
+	position: relative;
+}
+
 #header .top {
 	width: 100%;
 	border-bottom: 1px solid #dedede;
@@ -14,8 +19,6 @@
 
 #header .top #logo {
 	width: auto;
-	font-weight: 600;
-	font-size: 1.875rem;
 }
 
 #header .top #logo a {
@@ -35,6 +38,8 @@
 
 #header .top #login .inner .item {
 	font-size: 14px;
+	font-weight: 600;
+	color: #7c7c7c;
 }
 
 #header .header_wrap {
@@ -63,11 +68,20 @@
 #header .menu>li {
 	width: calc(100%/ 4);
 	text-align: center;
-	cursor: pointer;
 	font-size: 18px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+#header .menu>li span {
+	font-weight: 700;
+	transition: .3s;
+	cursor: pointer;
+}
+
+#header .menu>li span:hover, #header .menu>li.on span {
+	color: #003c83;
 }
 
 #header .sub-menu {
@@ -77,14 +91,44 @@
 	height: 200px;
 	width: 100%;
 	background: #fff;
-	border-bottom: 1px solid #dedede;
-	padding: 1rem 0;
 	z-index: 1;
-    display:none;
+	display: none;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
+	background-color: #f3f3f3;
+}
+
+#header .sub-menu .inner {
+	display: flex;
+	height: 100%;
+}
+
+#header .sub-menu-tit {
+	text-align: left;
+	width: 20%;
+	width: calc(50vw - 700px + 280px + 50px);
+	padding: 1rem 2rem 1rem calc(50vw - 700px);
+	color: #fff;
+	background-color: #64B1CC;
+}
+
+#header .sub-menu-tit h3 {
+	font-size: 1.875rem;
+	padding-bottom: 10px;
+}
+
+#header .sub-menu-tit p,
+.sub-menu-wrap li {
+	font-size: 1rem;
+}
+
+#header .sub-menu-wrap {
+	width: calc(50vw - 700px + ( 100% - ( 850px)));
+	padding: 1rem calc(50vw - 700px) 1rem 2rem;
+	text-align: left;
 }
 
 #footer {
-	border-top: 1px solid #dcdcdc;
+	border-top: 1px solid #dedede;
 	background: #272727;
 	color: #dcdcdc;
 	min-height: 150px;

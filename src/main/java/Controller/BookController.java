@@ -121,26 +121,21 @@ public class BookController extends HttpServlet {
         // 도서 대여 처리
         } else if (action.equals("/rentalBook.do")) {  
 
-            if (!request.getMethod().equalsIgnoreCase("POST")) {
-                response.sendRedirect(request.getContextPath() + "/books/bookList.do");
-                return;
-            }
-        	
             HttpSession session = request.getSession();
             String userId = (String) session.getAttribute("id");
-            
-            // 로그인 안된 경우 로그인 페이지로
+
+            int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
+
+            // 로그인 되어있지 않으면 로그인 후 원래 페이지로 돌아감
             if (userId == null) {
+                String redirectUrl = request.getRequestURI() + "?bookNo=" + bookNo;
+                session.setAttribute("redirectAfterLogin", redirectUrl);
                 response.sendRedirect(request.getContextPath() + "/members/login.jsp");
                 return;
             }
 
-            // 도서 번호 파라미터 확인
-            int bookNo = parseIntOrDefault(request.getParameter("bookNo"), 0);
-            boolean isRented = bookService.rentBook(userId, bookNo); // 5권 제한 처리
-
-            // 결과 메시지 및 결과 페이지 지정
-            request.setAttribute("message", isRented ? "대여가 완료되었습니다." : "현재 대여는 5권까지 가능합니다.");
+            boolean isRented = bookService.rentBook(userId, bookNo);
+            request.setAttribute("message", isRented ? "대여가 완료되었습니다." : "대여는 5권까지 가능합니다.");
             request.setAttribute("center", "/book/rentalResult.jsp");
             nextPage = "/main.jsp";
             
