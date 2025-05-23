@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.BookVo, java.util.*" %>
-<% 
+<%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<BookVo> bookList = (Vector<BookVo>) request.getAttribute("v");
@@ -9,7 +9,7 @@
     int pageSize = (int) request.getAttribute("pageSize");
     int totalPage = (int) Math.ceil((double) totalCount / pageSize);
 %>
- 
+
 <!DOCTYPE html>
 <html>
 <head>

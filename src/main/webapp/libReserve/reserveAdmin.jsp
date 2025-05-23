@@ -5,101 +5,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/reserveCheck.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <title>관리자 시설 예약 관리</title>
-	<style>
-		#reserveTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: center;
-            width: 1300px;
-            font-size: 15px;
-        }
-        
-        #reserveTable th, #reserveTable td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        #reserveTable th {
-            background-color: #f2f2f2;
-        }
-        
-        #reserveTable td{
-        	padding: 8px;
-            vertical-align: middle; 
-        }
-        
-        #pastReserve{
-        	background-color: #f2f2f2;
-        }
-        
-        #selectWrap{
-			width: 1300px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin: 20px 0 20px 0;
-        
-        }
-        
-        #selectDiv{
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			margin-left: auto; 
-        }
-        
-        #selectCheck{
-			display: flex;
-			gap: 10px;
-			white-space: nowrap;		 
-        }
-        
-        .mod-link {
-			text-decoration: none;
-			cursor: pointer;
-			color: blue;
-        }
-        .cancel-link{
-        	text-decoration: none;
-			cursor: pointer;
-			color: red;
-        }
-        
-        .upcoming{      	
-        	color: #28a745;
-        }
-        
-        .in-use{
-        	color: #F29661;
-        }
-        
-        .completed-bg {
-		    background-color: #f2f2f2;
-		}
-		
-		#pagination{
-			display: flex;
-			margin: 5px 0 10px 0;
-			justify-content: center;
-			align-items: center;
-			width: 1300px;
-		}
-		#pagination a {
-			margin: 0 5px;
-			text-decoration: none;
-			color: #333;
-		}
-
-		#pagination a.active-page {
-			font-weight: bold;
-			color: #F29661; /* 강조 색 */
-		}
-    
-	</style>
+<title>관리자 시설 예약 관리</title>
 </head>
 <body>
 	<div id="wrap" align="center">
@@ -122,7 +30,7 @@
 				<button type="submit" id="searchBtn">검색</button>
 			</div>
 		</div>
-		<table id="reserveTable">
+		<table id="reserveTable" style="text-align: center; width: 1300px;">
 		    <thead>
 		        <tr align="center" style="font-weight: bold;">
 		            <th>예약번호</th>
@@ -134,6 +42,7 @@
 		            <th>예약일시</th>                               
 		            <th>이용현황</th>                               
 		            <th>예약관리</th>                               
+		            <th>메모</th>                               
 		        </tr>
 		    </thead>
 		    <tbody id="reserveList">
@@ -143,7 +52,15 @@
         <div id="pagination" style="margin-top: 20px;">
         	<!-- 페이징 처리 구역 -->
         </div>
-	</div>
+        <!-- 모달창 -->
+		<div id="noticeModal">
+		  <p id="modalContent"><!-- 관리자 메모 들어갈 자리 --></p><br>
+		  <button onclick="closeModal()">닫기</button>
+		</div>
+		<!-- 모달 뒷배경 -->
+		<div id="modalBackdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+		background:rgba(0,0,0,0.3); z-index:998;"></div>
+</div>
 </body>
 <script>
 	//페이징 처리에 필요한 변수 선언
@@ -177,7 +94,7 @@
 		
 		if (filteredData.length === 0) {
 			$("#reserveList").append(
-				"<tr id='noResultMsg'><td colspan='9' style='text-align:center;'>검색된 결과가 없습니다.</td></tr>"
+				"<tr id='noResultMsg'><td colspan='10' style='text-align:center;'>검색된 결과가 없습니다.</td></tr>"
 			);
 		    return;
 		} else {
@@ -222,20 +139,22 @@
 			var date = dateTime[0];
 			var time = dateTime[1];
 			var seat = vo.reserveSeat != 0 ? "-" + vo.reserveSeat + "번" : "";
-
 			
 			//이용현황에 따른 수정 가능 여부 판단
 			let actionTd = "";
 			if(status === "이용전"){
-				if(vo.reserveRoom.includes("study")){
-					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveStudy' class='mod-link'>수정</a>";
-				}else if(vo.reserveRoom.includes("meeting")){
-					actionTd = "<a href='<%=request.getContextPath()%>/reserve/reserveMeeting' class='mod-link'>수정</a>";
-				}
-				actionTd += "<br><a href='#' class='cancel-link'>삭제</a>";
+				actionTd = "<a href='#' class='mod-link'>수정</a><br><a href='#' class='cancel-link'>삭제</a>";
 			}else{
 				actionTd = "수정불가";
 			}
+			
+			let isNotice = vo.reserveNotice;
+			
+			if(isNotice && isNotice.trim() !== ""){
+				isNotice = "<a href='#' class='notice' style='text-decoration: none; color: black; '>보기</a>";
+			}else{
+				isNotice = "";
+			}		
 			
 			//동적으로 테이블 생성
 			$("#reserveList").append(
@@ -249,11 +168,14 @@
 				+ "<td>" + date + "<br>" + time + "</td>"
 				+ "<td><span class='" + spanClass + "'>" + status + "</span></td>"
 				+ "<td>" + actionTd + "</td>"
-				+ "</tr>"
-				+ "<input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
+				+ "<td>" + isNotice + "</td>"
+				+ "<td style='display: none;'><input type='hidden' class='start-time' value='" + vo.reserveStart + "'/>"
 				+ "<input type='hidden' class='end-time' value='" + vo.reserveEnd + "'/>"
 				+ "<input type='hidden' class='room' value='" + vo.reserveRoom + "'/>"
-				+ "<input type='hidden' class='seat' value='" + seat + "'/>"
+				+ "<input type='hidden' class='id' value='" + vo.reserveId + "'/>"
+				+ "<input type='hidden' class='admin-notice' value='" + vo.reserveNotice + "'/>"
+				+ "<input type='hidden' class='seat' value='" + seat + "'/></td>"
+				+ "</tr>"
 			);
 		});
 	}
@@ -334,7 +256,7 @@
 		}		
 		return baseData;	
 	} //filterData() 끝 
-	
+		
 	
 	//'검색'버튼 click 이벤트
 	$("#searchBtn").on("click", function () {
@@ -356,25 +278,52 @@
 	//페이징 출력 함수
 	function renderPagination() {
 		$("#pagination").empty();
-		let totalPages = Math.ceil(filteredData.length / pageSize);
-
-		for(let i = 1; i <= totalPages; i++) {
-		  let page = $("<a href='#'>").text(i).on("click", function(e) {
-			e.preventDefault(); // a 태그 기본 동작 방지
-		    currentPage = i;
-		    renderTable();
-		    renderPagination();
-		  });
+		let totalPages = Math.ceil(filteredData.length / pageSize); //전체 페이지 수
+		let maxVisiblePages = 10; //최대 페이징 넘버
 		
+		let startPage = Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + 1;
+		let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+		
+		//이전 버튼
+		if(startPage > 1){
+			let prev = $("<a href='#'>").text("« 이전").on("click", function(e){
+				e.preventDefault();
+			    currentPage = startPage - maxVisiblePages;
+			    if (currentPage < 1) currentPage = 1;
+			    renderTable();
+			    renderPagination();
+			  });
+			$("#pagination").append(prev);
+		}	
+		//페이지 숫자 버튼
+		for(let i = startPage; i <= endPage; i++){
+			let page = $("<a href='#'>").text(i).on("click", function(e){
+				e.preventDefault();
+				currentPage = i;
+				renderTable();
+				renderPagination();		
+			});			
 			if(i === currentPage){
 				page.addClass("active-page");
-			}
-			
+			}			
 			$("#pagination").append(page);
 		}
+		
+		//다음 버튼
+		if(endPage < totalPages){
+			let next = $("<a href='#'>").text("다음 »").on("click", function (e) {
+				e.preventDefault();
+			    // 다음 블럭의 첫 번째 페이지로 이동
+			    currentPage = startPage + maxVisiblePages;
+			    if (currentPage > totalPages) currentPage = totalPages;
+			    renderTable();
+			    renderPagination();
+			});		
+			$("#pagination").append(next);
+		}		
 	}
-  
-  
+	
+
 	//체크박스 중 '전체' 누르면 나머지 체크 해제
 	$("input[value='all']").on("change", function() {
 		if (this.checked) {
@@ -382,7 +331,7 @@
 			$("#reserveList tr").show();
 		}
 	});
-  
+	
 	
 	//나머지 체크박스 누르면 '전체' 체크 해제
 	$("input[type='checkbox']").not("[value='all']").on("change", function() {
@@ -396,8 +345,7 @@
 			$("input[type='checkbox']").not(this).prop("checked", false);
 		} else {
 			$("input[value='all']").prop("checked", false).prop("indeterminate", false);
-		}
-	
+		}	
 		currentPage = 1;
 		filteredData = filterData();
 		renderTable();
@@ -409,21 +357,122 @@
 	$("#reserveList").on("click", ".mod-link", function(e){
 		e.preventDefault(); //기본동작방지
 	  
-		//수정을 누른 행의 정보 바인딩
-		const reserveNum = $(this).closest("tr").find("td").eq(0).text(); 
-		const reserveDate = $(this).closest("tr").find("td").eq(1).text(); 
-//		const startTime = 
-//		const endTime = 
-//		const roomName = 
-//		const roomSeat =	
+		//수정 버튼 누른 행의 정보 저장
+		const row = $(this).closest("tr");			
+		const reserveNum = row.find("td").eq(0).text(); 
+		const reserveDate = row.find("td").eq(1).text(); 
+		const startTime = row.find(".start-time").val();
+		const endTime = row.find(".end-time").val();
+		const roomName = row.find(".room").val();
+		const roomSeat = row.find(".seat").val().replace("-", "").replace("번", "");
+		const reserveId = row.find(".id").val();
+		const reserveNotice = row.find(".admin-notice").val();
+		
+		sessionStorage.setItem("reserveNotice", reserveNotice);
 
-	  
-	  
-	  
-	
-	  // 여기에 수정 로직 추가하거나, 모달창 띄우기, 페이지 이동 등등
+		//파라미터 생성
+		const params = new URLSearchParams({
+			reserveNum: reserveNum,
+			reserveDate: reserveDate,
+			startTime: startTime,
+			endTime: endTime,
+			roomName: roomName,
+			roomSeat: roomSeat,
+			reserveId: reserveId
+		});
+		
+		let nextPage = "";
+		
+		//조건문에 따라 예약 수정페이지 다르게 설정
+		if(roomName.includes("study")){
+			nextPage = "<%=request.getContextPath()%>/reserve/reserveStudy";
+		}else if(roomName.includes("meeting")){
+			nextPage = "<%=request.getContextPath()%>/reserve/reserveMeeting";
+		}		
+		//페이지 이동
+		window.location.href = nextPage + "?" + params.toString();
 	});
 	
+		
+	//삭제버튼 누를 경우
+	$("#reserveList").on("click", ".cancel-link", function(e){
+		e.preventDefault(); //기본동작방지
+		
+		//삭제 버튼 누른 행의 정보 저장
+		const row = $(this).closest("tr");			
+		const reserveNum = row.find("td").eq(0).text(); 
+		const reserveDate = row.find("td").eq(1).text(); 
+		const startTime = row.find(".start-time").val();
+		const endTime = row.find(".end-time").val();
+		const roomName = row.find(".room").val();
+		const roomSeat = row.find(".seat").val().replace("-", "").replace("번", "");
+		const reserveId = row.find(".id").val();
+		const reserveNotice = row.find(".admin-notice").val();
+		
+        //확인용 컨펌창 띄우기
+        const confirmResult = confirm("아래 예약을 삭제하시겠습니까?\n\n" +       
+    	            "- 이용자ID : " + reserveId + "\n" +
+    	            "- 이용일자 : " + reserveDate + "\n" +
+    	            "- 이용시간 : " + startTime + ":00 ~ " + endTime + ":00 \n" +
+    	            "- 이용시설 : " + roomName + 
+    	            (roomSeat != 0 ? "-" + roomSeat + "번 좌석" : ""));      
+        
+        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+        if(!confirmResult){return;}
+			
+		//AJAX 요청
+        $.ajax({
+            url: "<%=request.getContextPath()%>/reserve/deleteReserve",   
+            type: "POST",
+            data: {
+                reserve_id: reserveId,
+                reserve_num: reserveNum
+            },
+            success: function(response) {
+                alert("예약이 삭제되었습니다.");
+                window.location.replace = "<%=request.getContextPath()%>/reserve/reserveAdmin";
+                window.location.reload();
+            },
+            error: function(error) {
+                alert("예약 삭제에 실패하였습니다.");
+            }
+        });
 
+	});
+	
+	
+	//모달창 열기
+	function openModal(content) {
+	  document.getElementById("modalContent").innerText = content;
+	  document.getElementById("noticeModal").style.display = "block";
+	  document.getElementById("modalBackdrop").style.display = "block";
+	}
+
+	//모달창 닫기
+	function closeModal() {
+	  document.getElementById("noticeModal").style.display = "none";
+	  document.getElementById("modalBackdrop").style.display = "none";
+	}
+	
+	
+	//메모열의 '보기' 눌렀을 경우
+	$("#reserveList").on("click", ".notice", function(e){
+	    e.preventDefault();
+	    
+	    const row = $(this).closest("tr");	    
+	    const noticeText = row.find(".admin-notice").val();
+	    
+	    $("#modalContent").text(noticeText);
+	     	
+	    //모달창 보여주기
+	    $("#noticeModal, #modalBackdrop").show();
+	    
+	});
+	
+	//모달창에서 '닫기'버튼 클릭했을 경우
+	$("#closeModal, #modalOverlay").on("click", function(){
+	    $("#memoModal, #modalOverlay").hide();
+	});
+	
 </script>
 </html>

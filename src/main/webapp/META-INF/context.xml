@@ -11,4 +11,16 @@
 	password="jsppass"	
 	/>
 
+
+<!-- 
+	<Resource
+    name="jdbc/jspbeginner"
+    auth="Container"
+    type="javax.sql.DataSource"
+    driverClassName="com.mysql.cj.jdbc.Driver"
+    url="jdbc:mysql://jiwonserver2.mysql.database.azure.com:3306/jspbeginner?serverTimezone=UTC&amp;useSSL=true"
+    username="yjw5619"
+    password="wl184545W"
+/>
+ -->
 </Context>

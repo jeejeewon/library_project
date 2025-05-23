@@ -1,12 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="Vo.BookVo" %>
-<% 
+<%
     String contextPath = request.getContextPath();
     BookVo book = (BookVo) request.getAttribute("book");
 %>
 <!DOCTYPE html>
 <html>
-<head> 
+<head>
     <meta charset="UTF-8">
     <title>대여 확인</title>
     <link rel="stylesheet" href="<%= contextPath %>/css/common.css">

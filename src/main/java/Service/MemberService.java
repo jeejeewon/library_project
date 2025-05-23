@@ -12,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,6 @@ public class MemberService {
 		return memberDao.memberInfo(id);
 	}
 
-
 	// 회원 정보 수정
 	public int serviceMemUpdate(HttpServletRequest request) {
 		MemberVo memberVo = new MemberVo();
@@ -161,6 +161,12 @@ public class MemberService {
 		if (session != null) {
 			session.invalidate(); // 세션 무효화
 		}
+
+		return memberDao.memDelete(id);
+	}
+	
+	public String serviceMemDeleteAdm(HttpServletRequest request) {
+		String id = request.getParameter("id");
 
 		return memberDao.memDelete(id);
 	}
@@ -493,7 +499,7 @@ public class MemberService {
 	// ------ 관리자용 ------
 	// 회원 비즈니스 로직 처리 객체 (Service)
 
-	// ✨ 회원 목록 검색 비즈니스 로직
+	// 회원 목록 검색 비즈니스 로직
 	// Controller에서 받은 request 객체에서 검색 조건을 추출하여 DAO에 넘기고 결과를 반환
 	public List<MemberVo> serviceMemberSearch(HttpServletRequest request) {
 
@@ -520,7 +526,7 @@ public class MemberService {
 		return memberList; // 검색 결과 리스트 반환
 	}
 
-	// ✨ 특정 회원 정보 가져오는 비즈니스 로직
+	// 특정 회원 정보 가져오는 비즈니스 로직
 	// Controller에서 받은 request에서 회원 아이디를 추출하여 DAO에 넘기고 결과를 반환
 	public MemberVo serviceGetMember(HttpServletRequest request) {
 		String memberId = request.getParameter("id"); // request 파라미터 이름 'id'와 맞춰야 함
@@ -536,7 +542,7 @@ public class MemberService {
 		return member; // 찾은 회원 정보 또는 null 반환
 	}
 
-	// ✨ 회원 정보 수정 비즈니스 로직
+	// 회원 정보 수정 비즈니스 로직
 	// Controller에서 받은 request에서 수정할 회원 정보를 추출하여 DAO에 넘기고 결과를 반환
 	public boolean serviceUpdateMember(HttpServletRequest request) {
 
@@ -572,6 +578,12 @@ public class MemberService {
 
 		// 업데이트된 행의 수가 1개 이상이면 성공으로 판단
 		return updateCount > 0;
+	}
+
+	public List<MemberVo> getRecentMembers() {
+
+		List<MemberVo> recentMemberList = this.memberDao.selectRecentMembers();
+		return recentMemberList;
 	}
 
 }

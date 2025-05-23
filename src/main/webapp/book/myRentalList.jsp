@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.RentalVo, Vo.BookVo, java.util.*, java.text.SimpleDateFormat" %>
-<%  
+<%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<RentalVo> rentalList = (Vector<RentalVo>) request.getAttribute("rentalList");
@@ -140,7 +140,7 @@
     <div class="title">나의 대여 목록</div>
 
     <div class="toolbar">
-        <a href="<%= contextPath %>/books/bookList.do">전체 도서 목록으로</a>
+        <a href="<%= contextPath %>/member/mypage">마이페이지</a>
     </div>
 
     <% if (rentalList != null && !rentalList.isEmpty()) { %>

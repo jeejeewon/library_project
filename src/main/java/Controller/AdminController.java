@@ -48,7 +48,7 @@ public class AdminController extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String action = request.getPathInfo();
 
-		System.out.println(action);
+		System.out.println(">>> 수신된 Action 값: " + action);
 
 		String nextPage = null;
 
@@ -58,24 +58,36 @@ public class AdminController extends HttpServlet {
 
 		try {
 			switch (action) {
+			case "/main":
+				List<MemberVo> recentMemberList = memberservice.getRecentMembers();
+				request.setAttribute("recentMemberList", recentMemberList);
+				request.setAttribute("center", "/adm/main.jsp");
+				nextPage = "/adm/home.jsp";
+				break;
+
+			case "/book":
+				request.setAttribute("center", "/adm/adminBook.jsp");
+				nextPage = "/adm/home.jsp";
+				break;
 
 			// 회원 목록 검색 페이지 보여주기 (초기 진입 또는 검색 후 결과 표시)
 			case "/memberSearch":
 				// 초기 진입 시에는 검색 조건이 없으므로 전체 회원 목록 또는 빈 목록을 가져와서 표시
-				List<MemberVo> memberList = memberservice.serviceMemberSearch(request); // Service에서 request 파싱해서 검색
-				request.setAttribute("memberList", memberList); // 검색 결과 리스트를 request에 담기
+				List<MemberVo> memberSearch = memberservice.serviceMemberSearch(request); 
+				request.setAttribute("memberList", memberSearch); 
 
-				// 검색 페이지 JSP로 이동 (여기에 검색 폼과 결과 목록이 함께 표시될 거에요)
-				nextPage = "/adm/memberSearch.jsp";
+				// 검색 페이지 JSP로 이동
+				request.setAttribute("center", "/adm/memberSearch.jsp");
+				nextPage = "/adm/home.jsp";
 				break;
 
 			// 회원 정보 수정 폼 보여주기
-			case "/memberUpdateForm":
-				// request에서 수정할 회원의 아이디를 가져와서
+			case "/memberUpdateForm":				
 				MemberVo memberToUpdate = memberservice.serviceGetMember(request);
 				if (memberToUpdate != null) {
 					request.setAttribute("member", memberToUpdate); // 회원 정보를 request에 담기
-					nextPage = "/adm/memberUpdate.jsp"; // 수정 폼 JSP로 이동
+					request.setAttribute("center", "/adm/memberUpdate.jsp");
+					nextPage = "/adm/home.jsp";
 				} else {
 					// 해당 아이디의 회원을 찾지 못했을 경우 처리 (예: 에러 메시지 표시 후 목록으로 돌아가기)
 					System.out.println("AdminMemberController: 수정할 회원을 찾을 수 없습니다.");
@@ -85,32 +97,37 @@ public class AdminController extends HttpServlet {
 				break;
 
 			// 회원 정보 수정 처리
-			case "/memberUpdatePro":
-				// request에서 수정된 정보를 받아서 Service에게 업데이트 요청
+			case "/memberUpdatePro":				
 				boolean updateSuccess = memberservice.serviceUpdateMember(request);
 
 				if (updateSuccess) {
 					// 업데이트 성공 시 목록 페이지로 리다이렉트 (POST-Redirect-GET 패턴)
 					System.out.println("AdminMemberController: 회원 정보 수정 성공!");
-					// 리다이렉트 시에는 requestScope 데이터가 사라지므로 파라미터로 메시지 전달 고려
-					// response.sendRedirect(request.getContextPath() +
-					// "/admin/memberSearch.admin?message=updateSuccess");
-					nextPage = request.getContextPath() + "/admin/memberSearch"; // 리다이렉트 경로
+					 response.sendRedirect(request.getContextPath() + "/admin/memberSearch");
+					 return;
 				} else {
-					// 업데이트 실패 시 에러 메시지 표시 후 수정 폼이나 목록 페이지로 이동
+
 					System.out.println("AdminMemberController: 회원 정보 수정 실패!");
 					request.setAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
-				
-					List<MemberVo> memberListAfterError = memberservice.serviceMemberSearch(request); 
-																									
+
+					List<MemberVo> memberListAfterError = memberservice.serviceMemberSearch(request);
+
 					request.setAttribute("memberList", memberListAfterError);
 					nextPage = "/adm/memberSearch.jsp";
 				}
-				break; // 리다이렉트 또는 포워드를 위한 break
+				break;		
+
+			case "/del":
+				result = memberservice.serviceMemDeleteAdm(request);
+				out.println("<script>");
+				out.println("alert('" + result + "');");
+				out.println("location.href='" + request.getContextPath() + "/admin/memberSearch'");
+				out.println("</script>");
+				return;
 
 			default:
 				System.out.println("알 수 없는 요청: " + action);
-				nextPage = "/main.jsp";
+				nextPage = "/adm/home.jsp";
 				break;
 			}
 

@@ -47,6 +47,7 @@ if (id == null) { // 로그인하지 않은 경우
 							<%
 							for (RentalVo rental : rentalList) {
 								BookVo book = rental.getBook();
+								boolean isReturned = rental.getReturnState() == 1;
 								if (book != null) {
 							%>
 							<a href="<%= contextPath %>/books/bookDetail.do?bookNo=<%=rental.getBookNo()%>" class="card">
@@ -54,6 +55,13 @@ if (id == null) { // 로그인하지 않은 경우
 									onerror="this.src='<%=contextPath%>/book/img/noimage.jpg';"
 									alt="썸네일" />
 								<div class="book-tit"><%=book.getTitle()%></div>
+								<%-- <div>
+								 <% if (isReturned) { %>
+					                <span class="returned">✔ 반납</span>
+					            <% } else { %>
+					                <span class="not-returned">❌ 미반납</span>
+					            <% } %>
+					            </div> --%>
 							</a>
 							<%}	}%>
 						</div>
@@ -68,7 +76,7 @@ if (id == null) { // 로그인하지 않은 경우
 					<div class="inner">
 						<div class="tit">
 							<h3>최근 내 서평</h3>
-							<a href="<%=contextPath%>/books/myRentalList.do">전체 보기</a>
+							<a href="<%=contextPath%>/bbs/myReviewList.do">전체 보기</a>
 						</div>
 						<div class="review-list">
 							<!-- 내서평게시판 리스트 테이블 -->

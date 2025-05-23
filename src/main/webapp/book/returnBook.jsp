@@ -1,8 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.RentalVo, Vo.BookVo, java.util.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
- 
-<% 
+
+<%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<RentalVo> rentalList = (Vector<RentalVo>) request.getAttribute("rentalList");
@@ -33,7 +33,7 @@
         }
         
         .toolbar a {
-            padding: 6px 14px;
+            padding: 6px 16px;
             font-size: 14px;
             border-radius: 4px;
             background-color: #003c83;
@@ -138,7 +138,8 @@
     
     <div class="toolbar">
         <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a>
-    </div> 
+    </div>
+    <br> 
 
     <% if (message != null) { %>
         <div class="message"><%= message %></div>
