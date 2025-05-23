@@ -676,6 +676,10 @@ public class boardController extends HttpServlet {
 		// 문의사항 상세페이지
 		// 요청주소 "/bbs/questionInfo.do"
 		if (action.equals("/questionInfo.do")) {
+			// 현재 접속 유저 확인 (로그인 상태 및 유저 ID 가져오기)
+			String currentUserId = (String) request.getSession().getAttribute("id");
+			// 현재 접속 유저의 관리자 여부 체크
+            boolean isAdmin = "admin".equals(currentUserId);
 
 			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
 
@@ -697,15 +701,32 @@ public class boardController extends HttpServlet {
 			// boardSevice에게 글번호(boardId)를 전달하여 해당 글을 모든 정보를 BoardVO객체에 담아 반환받도록 요청
 			boardVO viewedBoard = boardService.viewBoard(boardId);
 
-			System.out.println(
-					"Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
+			System.out.println("Service에서 조회된 글 정보 : " + (viewedBoard != null ? "BoardId=" + viewedBoard.getBoardId() : "null"));
 
 			// 조회된 글이 없는 경우(삭제되었거나 잘못된 번호 요청시) 예외처리
 			if (viewedBoard == null) {
 				System.out.println("오류 : 글 번호 " + boardId + "에 해당하는 글이 존재하지 않습니다.");
 				throw new ServletException("요청하신 글 번호 " + boardId + "에 해당하는 게시글이 존재하지 않습니다.");
 			}
-
+			
+			// 비밀글 여부 확인
+			String authorId = viewedBoard.getUserId(); // 조회된 글의 작성자 id 가져옴
+			boolean isSecret = viewedBoard.getSecret(); // 비밀글 체크 여부 가져오기
+			
+			// 관리자도 아니고 작성자 본인도 아닌데 비밀글을 보려 한다면 권한 없음
+			if (isSecret && (!isAdmin && (currentUserId == null || !currentUserId.equals(authorId)))) {
+				System.out.println("비밀글 접근 권한 없음: 유저 " + currentUserId + "는 이 비밀글(" + boardId + ")의 작성자(" + authorId + ")도 아니고 관리자도 아닙니다.");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('해당 게시글을 볼 권한이 없습니다!');"); // 경고 메시지
+				// 리다이렉트할 문의 리스트 페이지 경로로 수정해야 함!
+				out.println("location.href='" + request.getContextPath() + "/bbs/questionList.do';");
+				out.println("</script>");
+				out.flush();
+				return; 
+					}
+			
 			int category = viewedBoard.getCategory();  // 조회한 게시글의 카테고리 값을 사용
 
 			// 이전 글 번호 조회
@@ -1018,6 +1039,13 @@ public class boardController extends HttpServlet {
 		// 내서평 게시판 조회하기 (마이메뉴에서 내서평을 눌렀을경우)
 		// 요청주소 "/bbs/myReviewList.do"
 		if (action.equals("/myReviewList.do")) {
+			// 1. 로그인 상태 확인 (세션에 'id'가 없으면 로그인 페이지로 리다이렉트)
+			String currentUserId = (String) request.getSession().getAttribute("id");
+				if (currentUserId == null || currentUserId.isEmpty()) {
+					response.sendRedirect(request.getContextPath() + "/member/login");
+					return; // 중요! 리다이렉트 했으니 더 이상 코드 실행하지 않도록 막아줘야 함
+					}
+
 			
 			
 			// 검색어와 검색타입 받기
@@ -1041,8 +1069,7 @@ public class boardController extends HttpServlet {
 			// 카테고리 설정 (현재 서평이므로 2번으로 설정함)
 			int category = 2; // 카테고리 2번 (내서평)
 			
-			// '내 서평' 페이지 컨트롤러
-			String currentUserId = (String) request.getSession().getAttribute("id");
+
 			//서비스 호출하여 페이징된 게시글 목록과 검색된 게시글 목록 가져오기
 			Map<String, Object> resultMap = boardService.getBoardList(category, section, pageNum, searchKeyword, searchType, currentUserId);
 			
@@ -1077,7 +1104,15 @@ public class boardController extends HttpServlet {
 		// 내서평 상세페이지 (마이메뉴에서 내서평 -> 게시글을 클릭했을 경우)
 		// 요청주소 "/bbs/myReviewInfo.do"
 		if (action.equals("/myReviewInfo.do")) {
-
+			
+			// 로그인 상태 확인
+				String currentUserId = (String) request.getSession().getAttribute("id");
+					if (currentUserId == null || currentUserId.isEmpty()) {
+					System.out.println("비회원 접근 시도 -> 로그인 페이지로 리다이렉트");
+					response.sendRedirect(request.getContextPath() + "/member/login");
+					return;
+					}
+						
 			System.out.println("jsp에서 요청된 글 번호 : " + request.getParameter("boardId"));
 
 			// 조회할 글번호 파라미터 수신
@@ -1506,7 +1541,7 @@ public class boardController extends HttpServlet {
 		Map<String, String> redirectMap = new HashMap<>();
 		redirectMap.put("/removeQuestion.do", "/bbs/questionList.do");
 		redirectMap.put("/removeNotice.do", "/bbs/noticeList.do");
-		redirectMap.put("/removeReviewList.do", "/bbs/myReviewList.do");
+		redirectMap.put("/removeMyReviewList.do", "/bbs/myReviewList.do");
 //		redirectMap.put("/removeEvent.do", "/bbs/eventList.do");  추후 다른걸로 추가예정
 
 		// 해당 요청이 매핑에 있는지 확인
@@ -1569,7 +1604,7 @@ public class boardController extends HttpServlet {
 		    PrintWriter pw = response.getWriter();
 		    JSONObject jsonResponse = new JSONObject();
 		    jsonResponse.put("result", "success");
-		    jsonResponse.put("message", "글과 관련 답글이 모두 삭제되었습니다.");
+		    jsonResponse.put("message", "게시글이 삭제되었습니다.");
 		    jsonResponse.put("redirect", request.getContextPath() + redirectMap.get(action)); // 매핑된 경로 사용
 		    pw.print(jsonResponse.toString());
 		    pw.flush();
@@ -1582,8 +1617,92 @@ public class boardController extends HttpServlet {
 		
 		
 		
-		
-		
+		// 서평 단독 삭제로직 (bookDetail->서평 더보기->서평 상세페이지->삭제 루트일 경우임)
+		if ("/removeReviewList.do".equals(action)) {
+		    try {
+                String boardIdParam = request.getParameter("boardId");
+                String bookNoParam = request.getParameter("bookNo");
+
+                if (boardIdParam == null || boardIdParam.isEmpty()) {
+                    throw new IllegalArgumentException("글 삭제 요청시 글번호(BoardId)가 필요합니다.");
+                }
+                int boardID = Integer.parseInt(boardIdParam);
+
+                if (bookNoParam == null || bookNoParam.isEmpty()) {
+                     throw new IllegalArgumentException("서평 삭제 요청시 책 번호(bookNo)가 필요합니다.");
+                }
+                int bookNo = Integer.parseInt(bookNoParam);
+
+
+	            int deletedBoardId = boardService.removeBoard(boardID);
+
+
+                ServletContext servletContext = request.getServletContext();
+                String webappRootPath = servletContext.getRealPath("/");
+                String finalUploadBasePath = webappRootPath + "board" + File.separator + "board_file_repo";
+                File fileDir = new File(finalUploadBasePath + File.separator + deletedBoardId);
+
+                if (fileDir.exists()) {
+                    try {
+                        File[] files = fileDir.listFiles();
+                        if (files != null) {
+                            for (File file : files) {
+                                if (file.exists()) {
+                                    file.delete();
+                                }
+                            }
+                        }
+                        fileDir.delete();
+                    } catch (Exception fileDeleteException) {
+                         // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                         System.err.println("오류: 첨부파일 삭제 중 예외 발생 (" + fileDir.getPath() + "): " + fileDeleteException.getMessage());
+                         fileDeleteException.printStackTrace();
+                    }
+                }
+
+
+                response.setContentType("application/json; charset=UTF-8");
+                try (PrintWriter pw = response.getWriter()) {
+                    JSONObject jsonResponse = new JSONObject();
+                    jsonResponse.put("result", "success");
+                    jsonResponse.put("message", "게시글이 삭제되었습니다.");
+
+                    String redirectUrl = request.getContextPath() + "/books/bookDetail.do?bookNo=" + bookNo;
+                    jsonResponse.put("redirect", redirectUrl);
+
+                    pw.print(jsonResponse.toString());
+                    pw.flush();
+                } catch (IOException ioException) {
+                    // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                    System.err.println("오류: 성공 응답 전송 중 IOException 발생: " + ioException.getMessage());
+                    ioException.printStackTrace();
+                }
+
+                return;
+
+            } catch (Exception e) {
+                // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                System.err.println("오류: 서평 삭제 중 예외 발생: " + e.getMessage());
+                e.printStackTrace();
+
+                response.setContentType("application/json; charset=UTF-8");
+                try (PrintWriter pw = response.getWriter()) {
+                     JSONObject jsonResponse = new JSONObject();
+                     jsonResponse.put("result", "fail");
+                     jsonResponse.put("message", "게시글 삭제 중 오류가 발생했습니다.");
+
+                     pw.print(jsonResponse.toString());
+                     pw.flush();
+                } catch (IOException ioException) {
+                    // 에러 로그는 catch 블록에 남겨둬야 오류 발생 시 콘솔에서 확인 가능!
+                    System.err.println("오류: 실패 응답 전송 중 IOException 발생: " + ioException.getMessage());
+                    ioException.printStackTrace();
+                }
+
+                return;
+            }
+		}
+
 		
 		
 		

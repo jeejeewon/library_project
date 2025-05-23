@@ -649,8 +649,8 @@
 
 #myPageMain .my-book .empty-message {
 	text-align: center;
-    padding-top: 1.5rem;
-} 
+	padding-top: 1.5rem;
+}
 
 #myPageMain .my-book .tit h3 {
 	font-size: 1.250rem;
@@ -838,7 +838,10 @@ html.adm-page, .adm-page body {
 	font-weight: 600;
 	padding-bottom: 1rem;
 }
-.adm-page .member-search-wrap h3:nth-child(3) {padding-top: 2rem;}
+
+.adm-page .member-search-wrap h3:nth-child(3) {
+	padding-top: 2rem;
+}
 
 .adm-page .member-search-wrap input[type="submit"], .adm-page .member-search-wrap button[type="submit"]
 	{
@@ -992,7 +995,7 @@ html.adm-page, .adm-page body {
 }
 
 /* 메인 슬라이더-공지사항-유튜브영상 */
-	.main-notice-and-Video{
+.main-notice-and-Video {
 	margin: 0 auto;
 	width: 100%;
 	height: 350px;
@@ -1000,49 +1003,56 @@ html.adm-page, .adm-page body {
 	gap: 20px;
 	padding: 40px 20px;
 	max-width: 1440px;
-	}
-	.main-banner-slider{
-		width:100%;
-		border-radius: 10px;
-	}
-	.swiper-wrapper img {
-		width: 100%;
-	}
-	.swiper-pagination-bullet-active {
-    	background: #003c83;
-	}
-	
-	.main-notice{
-		width:100%;
-		
-	}
-	.main-notice ul{
-		background-color: white;
-		padding: 15px;
-		border-radius: 10px;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		border: 1px solid #999;
-	}
-	.main-notice ul li{
-		height:100%;
-		border-bottom: 1px solid #999;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.main-notice ul li:last-child{
-		border-bottom: 0;
-	}
-	.main-notice ul li span:last-child {
-	 margin-left:5px;
-     flex-shrink: 0; 
-     }
-     
-	.main-Video{
-		width: 100%;
-	}
-	iframe{
-		border-radius: 10px;
-	}
+}
+
+.main-banner-slider {
+	width: 100%;
+	border-radius: 10px;
+}
+
+.swiper-wrapper img {
+	width: 100%;
+}
+
+.swiper-pagination-bullet-active {
+	background: #003c83;
+}
+
+.main-notice {
+	width: 100%;
+}
+
+.main-notice ul {
+	background-color: white;
+	padding: 15px;
+	border-radius: 10px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #999;
+}
+
+.main-notice ul li {
+	height: 100%;
+	border-bottom: 1px solid #999;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.main-notice ul li:last-child {
+	border-bottom: 0;
+}
+
+.main-notice ul li span:last-child {
+	margin-left: 5px;
+	flex-shrink: 0;
+}
+
+.main-Video {
+	width: 100%;
+}
+
+iframe {
+	border-radius: 10px;
+}
