@@ -4,100 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/reserveStudy.css">
 <meta charset="UTF-8">
-<title>스터디룸 예약하기</title>
-	<style>	
-		h2{		
-			font-size: 25px;
-			font-weight: bold;
-			margin: 50px;
-			border-bottom: 1px solid #dedede;
-			width: 50%;
-			margin: 50px auto;
-			padding-bottom: 10px;		
-			color: #2d3081;
-			text-align: left;
-		}
-	    table {
-	      border-collapse: collapse;
-	      width: 500px;
-	      height: 200px;
-	      align-items: center;
-	      margin-top: 20px;
-	      margin-left: 10px;
-	      border: 1px solid #333;
-		  color: #5D5D5D;	      
-	    }
-	    td {
-	      width: 50px;
-	      height: 40px;
-	      text-align: center;
-	      vertical-align: middle;
-	      font-weight: bold;
-	    }
-	    .seat {
-	      width: 40px;   
-	      border: 1px solid #333;
-	    }
-	    .seat-btn {
-	      display: block;
-	      width: 100%;
-	      height: 100%;
-	      font-weight: bold;
-          background-color: #FAED7D;
-	      border: none;
-	      font-size: 18px;
-	      cursor: pointer;     
-		  color: #5D5D5D;
-	    }	
-	    /* 좌석 선택시 선택효과*/		
-		.selected-seat-btn {
-            background-color: #F2CB61;      
-        }	
-	    .empty {
-	    	width: 20px;	    	
-	    }
-	    .study-room-btn {
-	    	border: 0;
-			padding: 15px 25px;
-			display: inline-block;
-			text-align: center;
-			color: white;
-            border-radius: 10px;       
-            background-color: #64b1cc;
-            margin: 5px;
-            cursor: pointer; 
-	    }
-	    /* 스터디룸 선택시 선택효과*/		
-		.selected-btn {
-            background-color: #156c8a;      
-        }
-        /* 예약된 좌석 효과*/
-        .seat-btn.reserved {
-			background-color: #8C8C8C;
-			color: white;
-			cursor: not-allowed;
-		}		    
-		
-		#reserveBtn, #updateBtn {
-			margin-top: 20px;
-			margin-bottom: 50px;
-			margin-left: 15%;
-		}
-		
-		#reservedList {
-	        width: 500px;	
-	        margin-top: 3px;
-	        margin-bottom: 30px;
-		}
-		
-		#reservedList p{		
-			margin-left: 30px;
-		}
-		
-	</style>
-	
-
+<title>스터디룸 예약</title>
 </head>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -105,33 +14,47 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <!-- jQuery UI CSS -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
-
 <body>
 	<div align="center" style="margin-top: 50px;">
 		<c:choose>
-			<c:when test="${not empty param.reserveNum}">
-				<h2>스터디룸 예약 수정</h2>
+			<c:when test="${not empty param.reserveNum && sessionScope.id != 'admin'}">
+				<p class="title">스터디룸 예약 수정</p>
+			</c:when>
+			<c:when test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
+				<p class="title">스터디룸 예약 수정 - 관리자용</p>
 			</c:when>
 			<c:otherwise>
-				<h2>스터디룸 예약</h2>
+				<p class="title">스터디룸 예약</p>
 			</c:otherwise>
 		</c:choose>		
 		<form method="post" align="left" style="margin-left: 30%;">			
 			<c:if test="${not empty param.reserveNum}">				
-				<p>▪ 예약내역</p>
+				<p><span class="dott">▪</span> 예약내역</p>
 				<div id="reservedList">
 					<p>- 예약날짜 : ${param.reserveDate}</p>
 					<p>- 예약시간 : ${param.startTime}:00 ~ ${param.endTime}:00</p>
 					<p>- 예약시설 : ${param.roomName} - ${param.roomSeat}번 좌석</p>
 				</div>
 			</c:if>
-			<p>▪ 이용자정보</p>
-			<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
-			<p><br>▪ 이용날짜</p>
+			<p><span class="dott">▪</span> 이용자정보</p>
+			<c:choose>
+				<c:when test="${sessionScope.id == 'admin' && empty param.reserveNum}"> <!-- 관리자 아이디로 스터디룸 예약 -->
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>
+				<c:when test="${sessionScope.id == 'admin' && empty param.reserveId}"><!-- 관리자가 마이페이지에서 관리자 예약 수정시 -->
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>
+				<c:when test="${sessionScope.id == 'admin'&& param.reserveId != 'admin'}"><!-- 관리자 아이디로 회원 예약 수정시 -->
+					<input type="text" name="userID" id="userID" value="${param.reserveId}" readonly>
+				</c:when>
+				<c:when test="${not empty param.reserveNum || sessionScope.id != 'admin'}"><!-- 회원이 예약 수정할 경우 -->
+					<input type="text" name="userID" id="userID" value="<%=session.getAttribute("id")%>" readonly>
+				</c:when>			
+			</c:choose>
+			<p><br><span class="dott">▪</span> 이용날짜</p>
 			<input type="text" name="reserveDate" id="reserveDate" placeholder="날짜를 선택해주세요.">
 			<p>예약은 현재 날짜로부터 1개월까지만 가능합니다.</p><br>					
-				<p>▪ 이용시간</p> 
+				<p><span class="dott">▪</span> 이용시간</p> 
 				<p id="noReservationMsg" style="display: none; color: red;">
 				  예약 가능한 시간이 없습니다. 다른 날짜에 이용해주세요.
 				</p>
@@ -165,7 +88,7 @@
 					</select>
 				</p>
 			</div><br>
-			<p>▪ 스터디룸 선택</p>
+			<p><span class="dott">▪</span> 스터디룸 선택</p>
 			<div id="roomList" style="margin-top:10px;">
 				<button type="button" class="study-room-btn" value="studyA">스터디룸A</button>
 				<button type="button" class="study-room-btn" value="studyB">스터디룸B</button>
@@ -247,12 +170,16 @@
 				</div>     
              </div>   		
             <br>
-            <c:choose>			
+            <c:if test="${sessionScope.id == 'admin' && not empty param.reserveNum}">
+            	<p><span class="dott">▪</span> 관리자 메모</p>
+				<textarea id="adminMemo" rows="6" cols="70" placeholder="관리자 메모 작성란"></textarea><br>
+			</c:if>	
+            <c:choose>		
             <c:when test="${not empty param.reserveNum}">
-				<button type="button" id="updateBtn">예약 수정하기</button>	
+				<button type="button" id="updateBtn" class="reserve-btn">예약 수정하기</button>	
 			</c:when>
 			<c:otherwise>
-				<button type="button" id="reserveBtn">스터디룸 예약하기</button>	
+				<button type="button" id="reserveBtn" class="reserve-btn">스터디룸 예약하기</button>	
 			</c:otherwise>
 			</c:choose>
 	    </form>
@@ -264,11 +191,33 @@
 	$(function() {
 		const today = $.datepicker.formatDate('yy/mm/dd', new Date());
 	
+		//법정공휴일이면 선택 불가능하게 설정 (추가로 휴관할 경우 여기에 날짜 추가하면 됨!)
+		const holidays = [
+			  "2025/01/01", // 신정
+			  "2025/03/01", // 삼일절
+			  "2025/05/05", // 어린이날
+			  "2025/06/06", // 현충일
+			  "2025/08/15", // 광복절
+			  "2025/10/03", // 개천절
+			  "2025/10/09", // 한글날
+			  "2025/12/25"  // 성탄절
+		];
+		
 		$( "#reserveDate" ).datepicker({  
 			minDate: 0, // 현재 날짜
 			maxDate: "+1M", // 최대 1개월
 			dateFormat: "yy/mm/dd",
-			defaultDate: today
+			defaultDate: today,
+			beforeShowDay: function(date){
+				const day = date.getDay();
+				const formatted = $.datepicker.formatDate('yy/mm/dd', date);
+				
+				//월요일(정기휴관일) + 법정공휴일은 선택 못하도록 막음
+				if(day === 1 || holidays.includes(formatted)){
+					return [false, "", "선택불가"];
+				}
+				return [true, ""];			
+			}
 		}).val(today);
 		
 		resetSelect();
@@ -406,17 +355,14 @@
 	//사용자가 선택한 날짜, 시간, 스터디룸에 따라 좌석 현황을 동적으로 보여주는 함수
 	$('#reserveDate, #reserveTime').on('change', function() {       
 		updateSeatStatus();
-    }); 
-	
+    }); 	
 	function updateSeatStatus(){		
 		const selectedRoom = $('.study-room-btn.selected-btn').val();
-		const date = $("#reserveDate").val();
-		
+		const date = $("#reserveDate").val();		
 		//디폴트 날짜값이 컨트롤러로 안 넘어가는 경우 사용될 조건문
 		if(!date){
 			return;
-		}
-		
+		}	
         $.ajax({
             url: "<%=request.getContextPath()%>/reserve/studyRoomList",
             type: 'POST',
@@ -426,20 +372,16 @@
             	EndTime: $("#EndTime option:selected").val(),
             	studyRoom: selectedRoom
             },
-            success: function(data) {   
-            	
+            success: function(data) {              	
             	//예약 가능한 시간이 없을 경우 (당일 19시 이후 예약일 경우)
             	if(data === "NO_AVAILABLE_TIME"){
             		return;
-            	}
-            	
-                $('.seat-btn').removeClass('reserved').prop('disabled', false);
-                
+            	}          	
+                $('.seat-btn').removeClass('reserved').prop('disabled', false);              
             	data.forEach(seat => {
             		//예약된 좌석이 있을 경우 해당 좌석 class 추가하는 함수 호출
             		reservedSeat(seat.reserveSeat)     		
-            	});
-            	
+            	});            	
             }, //success
             error: function(xhr, status, error) {
             	alert('서버 오류' + error);
@@ -464,48 +406,77 @@
 			
 			//사용자가 선택한 스터디룸 정보 가져오기
 	        const reserveDate = document.getElementById("reserveDate").value;
+	        const formattedDate = reserveDate.replaceAll("/", "-"); 
 	        const startTime = document.getElementById("StartTime").value;
 	        const endTime = document.getElementById("EndTime").value;
 	        const roomName = document.querySelector(".selected-btn").innerText;
 	        const roomCode = document.querySelector(".selected-btn").value;
-	        const selectedSeat = document.querySelector(".selected-seat-btn");        
+	        const selectedSeat = document.querySelector(".selected-seat-btn"); 
+	        const userId = document.getElementById("userID").value;
 	        if (!selectedSeat) { //선택된 좌석이 없을 경우
 	            alert("이용할 좌석을 선택해주세요.");
 	            return;
-	        }           
+	        }       
+  
 	        const seat = selectedSeat.dataset.seat;
 	              
-	        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
-	        //확인용 컨펌창 띄우기
-	        const confirmResult = confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +       
-	 	            "- 이용일자 : " + reserveDate + "\n" +
-	 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
-	 	            "- 이용시설 : " + roomName + "\n" +
-	 	            "- 이용좌석 : " + seat);      
-	        
-	        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
-	        if(!confirmResult){return;}
-	        
-	        $.ajax({
-	        	url: "<%=request.getContextPath()%>/reserve/studyRoomReserve",
-	            type: "POST",
-	            data: {
-	                userID: document.getElementById("userID").value,
-	                reserveDate: reserveDate,
+	       	//동일 날짜와 시간대에 예약된 건이 있는지 체크 (중복예약방지)
+	       	$.ajax({
+	       		url: "<%=request.getContextPath()%>/reserve/checkReserve",
+	       		type: "POST",
+	       		dataType: "json",
+	       		data: {
+	                userID: userId,
+	                reserveDate: formattedDate,
 	                StartTime: startTime,
-	                EndTime: endTime,
-	                roomCode : roomCode,
-	                seat : seat
-	            },
-	            success: function(response) {
-	                alert("예약이 완료되었습니다.");
-	                //예약이 완료되면 예약 확인 페이지로 이동
-	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
-	            },
-	            error: function(xhr, status, error) {
-	                alert("예약에 실패하였습니다. " + error);
-	            }     	
-	        });		
+	                EndTime: endTime
+	       		},
+	       		success: function(response){
+	       			if(response.isReserved){ //조회된 결과가 있을 경우
+	       				alert("동일한 시간대에 이미 예약된 건이 있습니다.")
+	       				return;
+	       			}
+	       			
+	    	        //사용자가 모든 정보를 선택하고 예약하기 버튼을 클릭했을 경우
+	    	        //확인용 컨펌창 띄우기
+	    	        const confirmResult = confirm("아래 내용대로 예약을 진행하시겠습니까?\n\n" +       
+	    	 	            "- 이용일자 : " + reserveDate + "\n" +
+	    	 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+	    	 	            "- 이용시설 : " + roomName + "\n" +
+	    	 	            "- 이용좌석 : " + seat);      
+	    	        
+	    	        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+	    	        if(!confirmResult){return;}
+	    	        
+	    	        $.ajax({
+	    	        	url: "<%=request.getContextPath()%>/reserve/studyRoomReserve",
+	    	            type: "POST",
+	    	            data: {
+	    	                userID: document.getElementById("userID").value,
+	    	                reserveDate: reserveDate,
+	    	                StartTime: startTime,
+	    	                EndTime: endTime,
+	    	                roomCode : roomCode,
+	    	                seat : seat
+	    	            },
+	    	            success: function(response) {
+	    	            	if(response.trim() === "OK"){
+	    	                	alert("예약이 완료되었습니다.");
+	    		                //예약이 완료되면 예약 확인 페이지로 이동
+	    		                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	    	            	}else{
+	    	            		alert("예약에 실패하였습니다. 다시 시도해주세요.");
+	    	            	}
+	    	            },
+	    	            error: function(xhr, status, error) {
+	    	                alert("서버 오류 발생!" + error);
+	    	            }     	
+	    	        });	
+	       		},
+	       		error: function(xhr, status, error){
+	       			alert("서버 오류 발생!" + error);
+	       		}  
+	       	});	    
 		})
 	}//예약하기버튼 클릭이벤트리스너
 	
@@ -518,51 +489,127 @@
 			
 			//사용자가 선택한 스터디룸 정보 가져오기
 	        const reserveDate = document.getElementById("reserveDate").value;
+	        const formattedDate = reserveDate.replaceAll("/", "-"); 
 	        const startTime = document.getElementById("StartTime").value;
 	        const endTime = document.getElementById("EndTime").value;
 	        const roomName = document.querySelector(".selected-btn").innerText;
 	        const roomCode = document.querySelector(".selected-btn").value;
-	        const selectedSeat = document.querySelector(".selected-seat-btn");        
+	        const selectedSeat = document.querySelector(".selected-seat-btn");      
+      			
+	        const adminId = "${sessionScope.id}";
+	        const userId = "${param.reserveId}";
+	        
+	        const adminMemoElement = document.getElementById("adminMemo");
+	        let adminMemo = "";
+	        if(adminId === "admin"){
+	        	adminMemo = adminMemoElement.value;
+	        }
+    
 	        if (!selectedSeat) { //선택된 좌석이 없을 경우
 	            alert("이용할 좌석을 선택해주세요.");
 	            return;
-	        }           
+	        }        
+	        
 	        const seat = selectedSeat.dataset.seat;
-	              
-	        //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
-	        //확인용 컨펌창 띄우기
-	        const confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
-	 	            "- 이용일자 : " + reserveDate + "\n" +
-	 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
-	 	            "- 이용시설 : " + roomName + "\n" +
-	 	            "- 이용좌석 : " + seat);      
+	            
+	        //관리자가 메모를 적지 않았을 경우
+	        if(adminId === "admin"){
+	        	if(typeof adminMemo !== "string" || !adminMemo.trim()){
+	        		alert("관리자 메모란을 기입해주세요.");
+	        		return;
+	        	}
+	        }
+	                 
+	        let confirmResult = "";
 	        
-	        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
-	        if(!confirmResult){return;}
-	        
-	        $.ajax({
-	        	url: "<%=request.getContextPath()%>/reserve/studyRoomUpdate",
-	            type: "POST",
-	            data: {
+	       	//동일 날짜와 시간대에 예약된 건이 있는지 체크 (중복예약방지)
+	       	$.ajax({
+	       		url: "<%=request.getContextPath()%>/reserve/checkReserve",
+	       		type: "POST",
+	       		dataType: "json",
+	       		data: {
 	                userID: document.getElementById("userID").value,
-	                reserveDate: reserveDate,
+	                reserveDate: formattedDate,
 	                StartTime: startTime,
 	                EndTime: endTime,
-	                roomCode : roomCode,
-	                seat : seat,
-	                reserveNum : reserveNum
-	            },
-	            success: function(response) {
-	                alert("예약이 수정되었습니다.");
-	                //예약이 수정되면 예약 확인 페이지로 이동
-	                window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
-	            },
-	            error: function(xhr, status, error) {
-	                alert("예약 수정에 실패하였습니다. " + error);
-	            }     	
-	        });		 
+	                reserveNum: reserveNum
+	       		},
+	       		success: function(response){
+	       			console.log("response.isReserved:", response.isReserved, typeof response.isReserved);
+	       			if(response.isReserved){ //조회된 결과가 있을 경우
+	       				alert("동일한 시간대에 이미 예약된 건이 있습니다.")
+	       				return;
+	       			}	       			
+	    	        //관리자가 예약 내역을 수정할 경우
+	    	        if(adminId == 'admin'){        	
+	    		        confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +  
+	    		        		"- 이용자ID : " + userId + "\n" + 
+	    		 	            "- 이용일자 : " + reserveDate + "\n" +
+	    		 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+	    		 	            "- 이용시설 : " + roomName + "\n" +
+	    		 	            "- 이용좌석 : " + seat + "\n" +
+	    		 	            "- 관리자메모 : " + adminMemo);           	
+	    	        }else{
+	    		        //사용자가 모든 정보를 선택하고 예약 수정하기 버튼을 클릭했을 경우
+	    		        //확인용 컨펌창 띄우기
+	    		        confirmResult = confirm("아래 내용대로 예약을 수정하시겠습니까?\n\n" +       
+	    		 	            "- 이용일자 : " + reserveDate + "\n" +
+	    		 	            "- 이용시간 : " + startTime + " ~ " + endTime + "\n" +
+	    		 	            "- 이용시설 : " + roomName + "\n" +
+	    		 	            "- 이용좌석 : " + seat);           	
+	    	        }
+	    	        
+	    	        //컨펌창에서 취소를 누를 경우 메소드 빠져나가기
+	    	        if(!confirmResult){return;}
+	    	        
+	    	        $.ajax({
+	    	        	url: "<%=request.getContextPath()%>/reserve/studyRoomUpdate",
+	    	            type: "POST",
+	    	            data: {
+	    	                userID: document.getElementById("userID").value,
+	    	                reserveDate: reserveDate,
+	    	                StartTime: startTime,
+	    	                EndTime: endTime,
+	    	                roomCode : roomCode,
+	    	                seat : seat,
+	    	                reserveNum : reserveNum,
+	    	                reserveNotice : adminId === 'admin' ? adminMemo : ""                
+	    	            },
+	    	            success: function(response) {
+	    	                alert("예약이 수정되었습니다.");
+	    	              	//예약이 수정되면 예약 확인 페이지로 이동
+	    	                if(adminId === 'admin'){
+	    	                	window.location.href = "<%=request.getContextPath()%>/reserve/reserveAdmin";
+	    	                }else{
+	    	                	window.location.href = "<%=request.getContextPath()%>/reserve/reserveCheck";
+	    	                }   
+	    	            },
+	    	            error: function(xhr, status, error) {
+	    	                alert("예약 수정에 실패하였습니다. " + error);
+	    	            }     	
+	    	        });				
+	       		},
+	       		error: function(xhr, status, error){
+	       			alert("서버 오류 발생!" + error);
+	       		}  
+	       	});		      
 		})
 	}
+	
+	//관리자 메모 동적으로 값 넣기
+	window.addEventListener('DOMContentLoaded', () => {
+		const memo = sessionStorage.getItem("reserveNotice");
+		const adminId = "${sessionScope.id}";
+		//console.log(memo);
+		if(adminId === "admin"){
+			//console.log(memo);
+			if (memo != "null") {
+				document.getElementById("adminMemo").value = memo;
+			}else{
+			  document.getElementById("adminMemo").value = "";
+			}	
+		}
+	});
     
     
 </script>

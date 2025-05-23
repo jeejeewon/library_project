@@ -65,8 +65,15 @@ public class BookService {
 
     // 도서 대여
     public boolean rentBook(String userId, int bookNo) {
+        // 현재 대여 중인 도서 수 조회
+        int currentRentCount = bookDao.countCurrentRentals(userId);
+
+        // 5권 이상 대여 불가
+        if (currentRentCount >= 5) {
+            return false;
+        }
         return bookDao.rentBook(userId, bookNo);
-    }    
+    }
     
     // 사용자별 대여 전체 수
     public int myRentalCount(String userId) {
@@ -88,7 +95,6 @@ public class BookService {
     public boolean isIsbnExists(String isbn) {
         return bookDao.isIsbnExists(isbn);
     }
-
 
     // 도서 수정
     public boolean updateBook(BookVo book) {

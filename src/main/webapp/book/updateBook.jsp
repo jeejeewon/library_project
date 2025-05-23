@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.BookVo, java.util.*" %>
-<% 
+<%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
     Vector<BookVo> bookList = (Vector<BookVo>) request.getAttribute("v");
@@ -76,14 +76,9 @@
             background-color: #f0f0f0;
         }
 
-        .title-link {
-            color: #003c83;
-            text-decoration: underline;
-        }
-
-        .title-link:hover {
-            color: #002c66;
-        }
+        .green { color: green; font-weight: bold; }
+        .red { color: red; font-weight: bold; }
+        .gray { color: gray; font-weight: bold; }
 
         .btn {
             padding: 6px 12px;
@@ -142,25 +137,24 @@
     <div class="toolbar">
         <a href="<%= contextPath %>/books/adminBook.do">관리자화면으로</a> 
     </div>
-    <br><br>
 
-    <% if (fromUpdate != null && fromUpdate && message != null) { %>
-    <script>
-        alert("<%= message.replaceAll("\"", "\\\\\"") %>");
-    </script>
+    <% if (Boolean.TRUE.equals(fromUpdate) && message != null) { %>
+        <script>
+            alert("<%= message.replaceAll("\"", "\\\\\"") %>");
+        </script>
     <% } %>
 
     <% if (bookList != null && !bookList.isEmpty()) { %>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 8%;">책NO</th>
-                    <th style="width: 30%;">도서명</th>
+                    <th style="width: 8%;">도서NO.</th>
+                    <th style="width: 27%;">도서명</th>
                     <th style="width: 14%;">저자</th>
                     <th style="width: 14%;">출판사</th>
-                    <th style="width: 10%;">분야</th>
-                    <th style="width: 10%;">출판년도</th>                    
-                    <th style="width: 10%;">도서상태</th>                    
+                    <th style="width: 8%;">분야</th>
+                    <th style="width: 8%;">출판년도</th>                    
+                    <th style="width: 15%;">도서상태</th>                    
                     <th style="width: 10%;">관리</th>
                 </tr>
             </thead>
@@ -173,17 +167,14 @@
                     <td><%= book.getPublisher() %></td>
                     <td><%= book.getCategory() %></td>
                     <td><%= book.getPublishYear() %></td>
-                    <td>
-			            <% if (book.getRentalState() == 0) { %>
-			                <span style="color: green;">대출가능</span>
-			            <% } else if (book.getRentalState() == 1) { %>
-			                <span style="color: red;">대출 중</span>
-			            <% } else { %>
-			            	<span style="color: gray;">분실 또는 이용 불가</span>
-			            <% } %>
+                    <td class="<%= 
+                        book.getRentalState() == 0 ? "green" :
+                        book.getRentalState() == 1 ? "red" : "gray" %>">
+                        <%= book.getRentalState() == 0 ? "대출 가능" :
+                             book.getRentalState() == 1 ? "대출 중" : "분실/이용 불가" %>
                     </td>
                     <td>
-                        <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>" class="btn">수정/삭제</a>
+                        <a href="<%= contextPath %>/books/editBook.do?bookNo=<%= book.getBookNo() %>&page=<%= currentPage %>" class="btn">수정/삭제</a>
                     </td>
                 </tr>
                 <% } %>
@@ -198,7 +189,7 @@
                 <% if (i == currentPage) { %>
                     <a class="active"><%= i %></a>
                 <% } else { %>
-                    <a href="<%= contextPath %>/books/updateBook.do?page=<%= i %>"> <%= i %> </a>
+                    <a href="<%= contextPath %>/books/updateBook.do?page=<%= i %>"><%= i %></a>
                 <% } %>
             <% } %>
             <% if (currentPage < totalPage) { %>

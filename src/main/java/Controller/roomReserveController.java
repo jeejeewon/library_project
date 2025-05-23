@@ -3,8 +3,11 @@ package Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,8 +123,32 @@ public class roomReserveController extends HttpServlet{
 			
 			//로그인한 사용자의 예약내역을 List로 받아오기
 			List<libraryReserveVO> reserveList = roomReserveService.selectReserveList(userId);
-			
-			System.out.println("예약내역 리스트 : " + reserveList);		
+							
+			//날짜를 비교하여 이용전/이용중/이용완료 상태값 저장
+			for(libraryReserveVO vo : reserveList) {
+				
+				//날짜 비교를 위해 날짜와 시간 합침
+				LocalDate reserveDate  = vo.getReserveDate().toLocalDate();
+				int reserveStart = vo.getReserveStart();
+				int reserveEnd = vo.getReserveEnd();
+				
+				LocalDateTime startDateTime = reserveDate.atTime(reserveStart, 0);
+				LocalDateTime endDateTime = reserveDate.atTime(reserveEnd, 0);
+				LocalDateTime now = LocalDateTime.now();
+				
+				//상태값 계산
+				String status = "";
+				
+				if(now.isBefore(startDateTime)) {
+					status = "이용전";
+				}else if(!now.isAfter(endDateTime)) {
+					status = "이용중";
+				}else {
+					status = "이용완료";
+				}			
+				//vo에 저장
+				vo.setStatus(status);
+			}
 			
 			//List를 request에 바인딩
 			request.setAttribute("reserveList", reserveList);
@@ -234,10 +261,20 @@ public class roomReserveController extends HttpServlet{
 			vo.setRoomName(roomName);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.reserveMeetingRoom(vo);
+			int result = roomReserveService.reserveMeetingRoom(vo);
+			System.out.println(result);
 			
-			//예약완료 후 예약내역 페이지로 이동
-			nextPage = "/reserve/reserveCheck";
+			if(result == 1) {
+				response.setStatus(response.SC_OK);
+				out.write("OK");
+			}else {
+				response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+				out.write("FAIL");
+			}
+			   out.flush();
+			   out.close();  
+			
+			return;
 			
 			
 		//시설 예약 삭제 	
@@ -358,10 +395,20 @@ public class roomReserveController extends HttpServlet{
 			vo.setReserveSeat(seat);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
-			roomReserveService.reserveStudyRoom(vo);
+			int result = roomReserveService.reserveStudyRoom(vo);		
+			System.out.println(result);
 			
-			//예약완료 후 예약내역 페이지로 이동
-			nextPage = "/reserve/reserveCheck";
+			if(result == 1) {
+				response.setStatus(response.SC_OK);
+				out.write("OK");
+			}else {
+				response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+				out.write("FAIL");
+			}
+			   out.flush();
+			   out.close();  
+			
+			return;
 			
 			
 		//스터디룸 예약 수정 진행
@@ -377,6 +424,7 @@ public class roomReserveController extends HttpServlet{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			java.util.Date utilDate = null; //utilDate는 java.util.Date형
 			Date reserveDate = null;		//sqlDate는 java.sql.Date형
+			String reserveNotice = request.getParameter("reserveNotice");
 			
 			try {
 				utilDate = dateFormat.parse(selectedDate);
@@ -395,11 +443,13 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("예약 수정시간 : " + StartTime + " ~ " + EndTime);
 			System.out.println("예약 수정 스터디룸 : " + roomCode + "-" + seat);
 			System.out.println("예약번호 : " + reserveNum);
-					
+			System.out.println("관리자 메모 : " + reserveNotice);
+								
 			//받아온 정보를 VO객체에 저장
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
 			vo.setReserveSeat(seat);
 			vo.setReserveNum(reserveNum);
+			vo.setReserveNotice(reserveNotice);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
 			roomReserveService.updateStudyRoom(vo);
@@ -421,6 +471,7 @@ public class roomReserveController extends HttpServlet{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			java.util.Date utilDate = null; //utilDate는 java.util.Date형
 			Date reserveDate = null;		//sqlDate는 java.sql.Date형
+			String reserveNotice = request.getParameter("reserveNotice");
 			
 			try {
 				utilDate = dateFormat.parse(selectedDate);
@@ -438,10 +489,12 @@ public class roomReserveController extends HttpServlet{
 			System.out.println("예약 수정시간 : " + StartTime + " ~ " + EndTime);
 			System.out.println("예약 수정 미팅룸 : " + roomCode);
 			System.out.println("예약번호 : " + reserveNum);
+			System.out.println("관리자 메모 : " + reserveNotice);
 					
 			//받아온 정보를 VO객체에 저장
 			libraryReserveVO vo = new libraryReserveVO(roomCode, userId, reserveDate, StartTime, EndTime);
 			vo.setReserveNum(reserveNum);
+			vo.setReserveNotice(reserveNotice);
 			
 			//vo를 service로 넘겨서 비즈니스 로직 처리
 			roomReserveService.updateMeetingRoom(vo);
@@ -476,6 +529,48 @@ public class roomReserveController extends HttpServlet{
 			
 			   return;
 						
+		}else if(action.equals("/checkReserve")) {
+			
+			System.out.println("checkReserve호출됨===============");
+			
+			Map<String, Object> reserveMap = new HashMap();
+			
+			//값 얻기
+			String userID = request.getParameter("userID");
+				
+			//예약번호가 있을 경우 map에 저장
+			String reserveNumParam = request.getParameter("reserveNum");
+			if(reserveNumParam != null && !reserveNumParam.trim().isEmpty()) {
+			    reserveMap.put("reserveNum", reserveNumParam);
+			}
+			
+			String reserveDateStr = request.getParameter("reserveDate");					
+		    Date reserveDate = null;		    
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date parsedDate = sdf.parse(reserveDateStr);
+				reserveDate = new Date(parsedDate.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}		
+			
+			int StartTime = Integer.parseInt(request.getParameter("StartTime").split(":")[0]); 
+			int EndTime = Integer.parseInt(request.getParameter("EndTime").split(":")[0]);
+						
+			reserveMap.put("userID", userID);
+			reserveMap.put("reserveDate", reserveDate);
+			reserveMap.put("StartTime", StartTime);
+			reserveMap.put("EndTime", EndTime);			
+			
+			//동일 날짜와 시간대에 예약 건이 있는지 체크
+			boolean result = roomReserveService.checkReserve(reserveMap);
+			
+			System.out.println("result :" + result);
+			
+			response.setContentType("application/json;charset=utf-8");
+			out.print("{\"isReserved\": " + result + "}");
+			out.flush();
+			out.close();  		
 		}
 		
 	

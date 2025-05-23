@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="Vo.RentalVo, Vo.BookVo, java.util.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
- 
+
 <%
     request.setCharacterEncoding("UTF-8");
     String contextPath = request.getContextPath();
@@ -193,11 +193,7 @@
 			                 onerror="this.src='<%= contextPath %>/book/img/noimage.jpg';" alt="썸네일" />
 			        </td>
 			        <td><%= book.getTitle() %></td>
-			        <td>
-			            <a href="<%= contextPath %>/members/userDetail.jsp?userId=<%= rental.getUserId() %>" class="user-link">
-			                <%= rental.getUserId() %>
-			            </a>
-			        </td>
+			        <td><%= rental.getUserId() %></td>
 			        <td><%= sdf.format(rental.getStartDate()) %></td>
 			        <td><%= sdf.format(rental.getReturnDue()) %></td>
 			        <td><%= rental.getReturnDate() != null ? sdf.format(rental.getReturnDate()) : "-" %></td>

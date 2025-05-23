@@ -4,22 +4,39 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%-- 이 페이지를 관리자만 접근가능하게하는 코드
+<%-- 이 글을 작성한 유저 혹은 admin만 이 페이지에 접근가능 --%>
 <%
 request.setCharacterEncoding("UTF-8");
 String contextPath = request.getContextPath();
-String id = (String) session.getAttribute("id"); 
-System.out.println(id);
-if (id == null || !id.equals("admin")) {
+
+String currentUserId = (String) session.getAttribute("id");
+boardVO board = (boardVO) request.getAttribute("board");
+String postAuthorId = null;
+
+if (board != null) {
+    postAuthorId = board.getUserId();
+} else {
+    System.err.println("'board' 속성이 request에 존재하지 않습니다. 글을 찾을 수 없거나 잘못된 접근일 수 있습니다.");
+}
+System.out.println("현재 접속 ID: " + currentUserId);
+System.out.println("글 작성자 ID: " + postAuthorId);
+
+if (currentUserId == null || 
+    (currentUserId != null && 
+     (postAuthorId == null ||
+      (!currentUserId.equals(postAuthorId) && !currentUserId.equals("admin"))
+     )
+    )
+   )
+{
 %>
 <script>
-   alert("접근 권한이 없습니다."); 
-   history.back(); 
+   alert("이 글에 접근할 권한이 없습니다.");
+   history.back();
 </script>
 <%
 }
 %>
---%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%
@@ -33,56 +50,173 @@ request.setCharacterEncoding("UTF-8");
 
 
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
 <style>
-.file-upload-label {
-	display: inline-block;
-	margin-right: 10px;
-	font-weight: bold;
-	background-color: #f0f0f0;
-	padding: 5px 10px;
-}
 
-.file-name {
-	font-style: italic;
-	color: #333;
-}
+	.wri-mod-form {
+		width:100%;
+		max-width: 800px;
+		margin: 20px auto;
+		background-color: #fff;
+		border-radius: 8px;
+	}
 
-.file-input {
-	display: none; /* 커스텀 라벨만 보이게 하려면 숨김 */
-}
+	.form-title {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+		padding-bottom: 15px;
+		border-bottom: 2px solid #003c83;
+	}
 
-.form-title {
-	display: flex;
-	justify-content: space-between;
-}
+	.form-title h2 {
+		margin: 0;
+		color: #003c83;
+		font-size: 24px;
+		font-weight: bold;
+	}
+
+	input[type="text"],
+	textarea {
+		width: 100%;
+		padding: 10px;
+		margin-bottom: 15px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		font-size: 1rem;
+		box-sizing: border-box;
+		resize: vertical;
+	}
+
+    textarea {
+        min-height: 500px;
+    }
+	input[type="button"],
+	input[type="submit"],
+	button[type="button"] {
+    	padding: 8px 18px;
+    	color: #fff;
+    	cursor: pointer;
+	}
+
+	input[type="submit"] {
+		background-color: #003c83;
+		color: white;
+	}
+
+	input[type="submit"]:hover {
+		 background-color: #002c66; 
+	}
+	input[type="button"] {
+		background-color: #f4f4f4;
+		color: #424242; 
+	}
+	input[type="button"]:hover {
+		background-color: #f2f2f2; 
+	}
+
+	button[type="button"] { 
+		background-color: #f4f4f4;
+		color: #424242;
+		font-size: 0.9rem;
+		padding: 8px 18px;
+		margin-left: 10px;
+		vertical-align: middle;
+		border: 1px solid #dedede;
+		border-radius: 4px;
+	}
+    button[type="button"]:hover {
+        background-color: #f2f2f2;
+    }
+	
+	.file-group {
+		margin-bottom: 15px;
+		border: 1px dashed #ccc;
+		padding: 15px;
+		border-radius: 4px;
+		background-color: #f9f9f9;
+	}
+    .file-group p {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+	.file-upload-label {
+		display: inline-block;
+		padding: 8px 15px;
+		background-color: #003c83;
+		color: white;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin-right: 10px;
+        vertical-align: middle;
+	}
+
+	.file-upload-label:hover {
+		background-color: #002c66;
+	}
+
+	.file-input {
+		display: none;
+	}
+
+	.file-name {
+		font-weight: bold;
+		color: #555;
+        vertical-align: middle;
+	}
+
+	.checkbox-group {
+		margin-top: 15px;
+		margin-bottom: 20px;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        display: inline-block;
+	}
+
+	.checkbox-label {
+		cursor: pointer;
+        font-size: 0.95rem;
+        color: #495057;
+	}
+
+	.checkbox-label input[type="checkbox"] {
+		margin-right: 5px;
+        vertical-align: middle;
+	}
+
+    #bannerPreview img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background-color: #fff;
+    }
+
 </style>
-
 </head>
 <body>
-	<center>
-
-
+	<section class="wri-mod-form">
 		<form name="questionWriteForm" method="post" action="${contextPath}/bbs/questionModify.do" enctype="multipart/form-data">
-		
-			<!-- 수정 대상 게시글 ID 전달 -->
-			<input type="hidden" name="boardId" value="${board.boardId}">
-		
 			<div class="form-title">
 				<h2>문의사항 글 수정</h2>
 				<div>
-					<button type="button" onclick="location.href='${contextPath}/bbs/questionInfo.do?boardId=${board.boardId}'">취소</button>
+					<input type="button" onclick="location.href='${contextPath}/bbs/questionInfo.do?boardId=${board.boardId}'" value="취소"/>
 					<input type="submit" value="수정">
 				</div>
 			</div>
-		
 			
-			<table align="center" border="1">
-				<tr>
-					<td>
-						<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;" value="${board.title}" onfocus="this.select()">
-					</td>
-					<td>
-						<label for="file" class="file-upload-label">첨부파일 업로드</label>
+			<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;" value="${board.title}" onfocus="this.select()">
+			
+			<div class="file-group">
+				<label for="file" class="file-upload-label">첨부파일 업로드</label>
 						<span class="file-name" id="fileName">
 							<c:choose>
             					<c:when test="${not empty board.file}">
@@ -96,14 +230,12 @@ request.setCharacterEncoding("UTF-8");
 						<!-- 첨부파일 삭제 버튼 (초기에는 숨김) -->
 						<button type="button" id="deleteFileBtn" onclick="deleteFile('file', 'fileName', 'deleteFileBtn')" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
     					<input type="file" name="file" id="file" class="file-input">	
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
-					</td>
-				</tr>
-			</table>
+			</div>
+			
+			<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
+			
+			<!-- 수정 대상 게시글 ID 전달 -->
+			<input type="hidden" name="boardId" value="${board.boardId}">
 			
 			<div class="checkbox-group">
 				<label for="secret" class="checkbox-label">
@@ -114,7 +246,7 @@ request.setCharacterEncoding("UTF-8");
 			
 		</form>
 
-	</center>
+	</section>
 	<script>
 		// 파일 삭제 함수
 		function deleteFile(fileInputId, fileNameSpanId, deleteBtnId, previewId) {

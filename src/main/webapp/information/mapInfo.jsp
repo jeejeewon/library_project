@@ -1,167 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>   
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="../css/information.css">
 <meta charset="UTF-8">
-<style>
-
-	h2{		
-		font-size: 25px;
-		font-weight: bold;
-		margin: 50px;
-		border-bottom: 1px solid #dedede;
-		width: 50%;
-		margin: 50px auto;
-		padding-bottom: 10px;		
-		color: #2d3081;
-		text-align: left;
-	}
-	
-	#infoBtn{
-		text-align: left;
-		width: 50%;
-	}
-	
-	.floor-btn {
-		background-color: #828282;
-		border: none;
-		color: white;
-		padding: 10px 15px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 20px;
-		margin: 6px 0;
-		cursor: pointer;
-		border-radius: 12px;
-		width: 70px;
-
-	}
-		
-	.floor-btn:hover {
-      background-color: #2d3081;    
-    }
-    
-    .floor-btn.active{
-    	background-color: #2d3081; 
-    }
-    
-	html, body {
-		height: 100%;
-		margin: 0;
-	}
-	
-	#infoContainer {
-		min-height: 500px;
-	}
-	
-	#inpotitle {
-		margin-bottom: 30px;
-	}
-	
-	#libraryInpo{
-		margin-bottom: 100px;
-	}
-	
-	#libraryInpo h3 {
-		text-align: left;
-		font-size: 24px;
-		font-weight: bold;
-		width: 50%;		
-	}
-	
-	#inpoContext p{
-		font-size: 17px;
-		line-height: 26px;
-		text-align: left;
-		width: 50%;	
-	
-	}
-	
-	#roomInpo {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;
-	}
-	
-	#roomInpo table {
-		width: 100%;
-		border-collapse: collapse;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-	}
-	
-	#roomInpo th,
-	#roomInpo td {
-		border: 1px solid #ccc;
-		padding: 0.8rem;
-		text-align: center;
-		vertical-align: middle;
-	}
-	
-	#roomInpo thead th {
-		background-color: #f3f6f9;
-		font-weight: 600;
-		color: #2a2a2a;
-	}
-	
-	#roomInpo td {
-		font-size: 0.95rem;
-	}
-	
-	#roomInpo2 {
-		margin: 2rem auto;
-		max-width: 900px;
-		font-family: 'Noto Sans KR', sans-serif;
-		color: #333;
-	}
-	
-	#roomInpo2 table {
-		width: 100%;
-		border-collapse: collapse;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-	}
-	
-	#roomInpo2 th,
-	#roomInpo2 td {
-		border: 1px solid #ccc;
-		padding: 0.8rem;
-		text-align: center;
-		vertical-align: middle;
-	}
-	
-	#roomInpo2 thead th {
-		background-color: #f3f6f9;
-		font-weight: 600;
-		color: #2a2a2a;
-	}
-	
-	#roomInpo2 td {
-		font-size: 0.95rem;
-	}
-	
-	#mapImg{
-		margin-bottom: 50px;
-	}
-	
-
-</style>
 </head>
 <body onload="showDefaultMap()">	
 	<div id="infoContainer" align="center"> 
-		<h2>도서관 소개</h2>
+		<p class="title">도서관 소개</p>
 		<div id="libraryInpo">
 			<div id="inpotitle">
 				<h3>시민의 마음을 채우는 지식의 공간</h3>
 				<h3>부산광역시립시민도서관입니다.</h3>
 			</div>
-			<div id="inpoContext">
-			
+			<div id="inpoContext">		
 				<p>"찾는 도서관 얻는 새 지식"</p>
 				<br>
 				<p>우리 중앙도서관은 21세기 정보문화센터로서 앞서가는 도서관이 되고자<br>
@@ -175,7 +30,7 @@
 				</p>
 			</div>
 		</div>
-		<h2>도서관 안내</h2>
+		<p class="title">도서관 안내</p>
 		<div style="display: flex; width: 50%;">
 			<div id="infoBtn" style="display: flex; flex-direction: column; align-items: flex-start; margin-right: 20px;">
 					<button class="floor-btn" value="1F" onclick="mapImgClick(this)" >1F</button>
@@ -184,7 +39,7 @@
 			</div>	
 			<div id="mapImg"><!-- 시설 배치도 보여줄 자리 --></div>
 		</div>	
-		<h2>시설현황</h2>
+		<p class="title">시설현황</p>
 		<div id="roomInpo">
 			<table>
 				<colgroup>
@@ -209,7 +64,7 @@
 					<tr>
 						<td>본관</td>
 						<td>22,466㎡</td>
-						<td>철근콘크리트 슬라브·지상4층</td>
+						<td>철근콘크리트 슬라브·지상3층</td>
 						<td>6,260㎡</td>
 						<td>개관 '1990.4.28</td>
 					</tr>
@@ -331,9 +186,7 @@
 		</div>
 	</div>
 </body>
-
 <script>
-
 	//층버튼 클릭 시 해당 층의 시설 배치도 보여주는 함수
 	function mapImgClick(btn) {
         var mapImg = document.getElementById("mapImg");
@@ -358,7 +211,13 @@
 	
 	//층버튼을 누르지 않아도 기본적으로 1F 시설 배치도 보여주는 함수
 	function showDefaultMap() {
-		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";
+		document.getElementById("mapImg").innerHTML = "<img src='../information/img/mapImg_1F.png' alt='1F Map'>";	
+	
+	    // 1F 버튼에 active 클래스 추가
+	    const firstFloorBtn = document.querySelector('.floor-btn[value="1F"]');
+	    if (firstFloorBtn) {
+	        firstFloorBtn.classList.add('active');
+	    }	
 	}
 	
 	//층버튼 클릭시 버튼 효과
@@ -374,6 +233,5 @@
     });
 
 </script>
-
 </html>
 

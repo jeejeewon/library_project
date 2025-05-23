@@ -13,15 +13,12 @@ public class libraryReserveVO {
 	private String reserveId;		//예약자 ID
 	private String reserveName;	    //예약자명
 	private String tel;				//예약자 연락처
-	private String email;			//예약자 이메일
 	private Date reserveDate;		//예약일자
 	private int reserveStart;		//예약시작시간
 	private int reserveEnd;		    //예약종료시간
 	private Timestamp reserveTime;	//예약시간
-	private boolean isFuture;	    //예약날짜가 미래인지 여부 (true:미래, false:현재)
-	private boolean isNow;          //예약된 시간에 현재 시간이 겹친다면? (현재 이용중이라면?)
 	private String reserveNotice;   //관리자가 예약을 수정/취소할 경우 메모
-	private String reserveStatus;   //예약상태 (예약완료, 예약취소)
+	private String status;			//과거, 현재, 미래 를 비교해서 상태 저장
 	
 	//기본생성자
 	public libraryReserveVO() {}
@@ -153,26 +150,6 @@ public class libraryReserveVO {
 		this.reserveTime = reserveTime;
 	}
 
-	public boolean getIsFuture() {
-		return isFuture;
-	}
-
-	public void setIsFuture(boolean isFuture) {
-		this.isFuture = isFuture;
-	}
-
-	public boolean getIsNow() {
-		return isNow;
-	}
-
-	public void setIsNow(boolean isNow) {
-		this.isNow = isNow;
-	}
-
-	public void setFuture(boolean isFuture) {
-		this.isFuture = isFuture;
-	}
-
 	public String getTel() {
 		return tel;
 	}
@@ -181,9 +158,6 @@ public class libraryReserveVO {
 		this.tel = tel;
 	}
 
-	public void setNow(boolean isNow) {
-		this.isNow = isNow;
-	}
 
 	public String getReserveNotice() {
 		return reserveNotice;
@@ -193,24 +167,31 @@ public class libraryReserveVO {
 		this.reserveNotice = reserveNotice;
 	}
 
-	public String getReserveStatus() {
-		return reserveStatus;
+	
+	public String getStatus() {
+		return status;
 	}
 
-	public void setReserveStatus(String reserveStatus) {
-		this.reserveStatus = reserveStatus;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
-	public String getEmail() {
-		return email;
+	@Override
+	public String toString() {
+		 return "RoomReserveVO{" +
+		         "reserveNum=" + reserveNum + 
+		         ", reserveRoom=" + reserveRoom + 
+		         ", roomName=" + roomName +
+		         ", reserveSeat=" + reserveSeat +
+		         ", reserveId=" + reserveId + 
+		         ", reserveName=" + reserveName + 
+		         ", tel=" + tel +
+		         ", reserveDate=" + reserveDate + 
+		         ", reserveStart=" + reserveStart +
+		         ", reserveEnd=" + reserveEnd +
+		         ", reserveTime=" + reserveTime +
+		         ", reserveNotice=" + reserveNotice + "}";
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	
-	
-	
-	
+
 }

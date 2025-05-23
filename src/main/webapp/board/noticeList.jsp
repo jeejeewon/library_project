@@ -16,148 +16,220 @@ request.setCharacterEncoding("UTF-8");
 <html>
 <head>
     <title>공지사항 리스트 - noticeList.jsp</title>
-    <!-- 스타일 추가 -->
+
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
- 
-        
-	    .board-head{
-	    font-size: 28px;
-	    color: #003c83;
-	    font-weight: bold;
-        	width:80%;
-        	display: flex;
-        	align-items: center;
-        }
-        .board-head h2{
-        	font-size: 20px;
-        }
-        .board-head p{
-        	margin-left: 10px;
-        }
-        
-        .search-form {
-	        display: flex;
-	        justify-content: center;
-	        align-items: center;
-	        margin-bottom: 20px;
-	    }
-	
-	    .search-select {
-	        padding: 8px;
-	        margin-right: 10px;
-	        font-size: 16px;
-	        border-radius: 5px;
-	        border: 1px solid #ddd;
-	    }
-	
-	    .search-input {
-	        padding: 8px;
-	        font-size: 16px;
-	        margin-right: 10px;
-	        border-radius: 5px;
-	        border: 1px solid #ddd;
-	        width: 250px;
-	    }
-	
-	    .search-btn {
-	        padding: 8px 16px;
-	        background-color: #007bff;
-	        color: white;
-	        font-size: 16px;
-	        border-radius: 5px;
-	        border: none;
-	        cursor: pointer;
-	    }
-	
-	    .search-btn:hover {
-	        background-color: #0056b3;
-	    }
-	
-	    .search-btn:focus {
-	        outline: none;
-	    }
+.board-list-area {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
 
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: #ffffff; /* 테이블 배경을 흰색으로 변경 */
-        }
+.board-head h2 {
+    font-size: 24px;
+    color: #003c83;
+    font-weight: bold;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-        table th, table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
 
-        table th {
-            background-color: #f2f2f2;
-        }
+.search-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
 
-        .pagination-wrapper {
-            text-align: center;
-            margin-top: 20px;
-        }
+.search-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
 
-        .pagination {
-            display: inline-block;
-            padding-left: 0;
-            list-style: none;
-            background-color: transparent;
-            border-radius: 0.25rem;
-        }
+.search-btn {
+    padding: 8px 15px;
+    background-color: #003c83;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
 
-        .page-item {
-            display: inline;
-        }
+.search-btn:hover {
+    background-color: #002c66;
+}
 
-        .page-link {
-            color: #007bff;
-            text-decoration: none;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            margin: 0 4px;
-        }
+.board-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
 
-        .page-link:hover {
-            background-color: #f0f0f0;
-        }
+.totalCount {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
 
-        .active .page-link {
-            background-color: #007bff;
-            color: white;
-        }
-		
-		.board-topbar{
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			width: 80%
-		}
-		
-        .write-btn {
-            margin: 20px 0;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+.write-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #003c83;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px; 
+    font-size: 14px; 
+    transition: background-color 0.3s ease;
+}
 
-        .write-btn:hover {
-            background-color: #218838;
-        }
+.write-btn:hover {
+    background-color: #002c66;
+}
+
+
+.board-list-area table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    able-layout: fixed;
+}
+
+.board-list-area th, .board-list-area td {
+    padding: 12px;
+    border-bottom: 1px solid #eee; 
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.first-tr{
+	background-color: #f4f4f4;
+	font-weight: bold;
+}
+
+
+.board-list-area th:nth-child(1), 
+.board-list-area td:nth-child(1) {
+    width: 5%;
+}
+
+.board-list-area th:nth-child(2),
+.board-list-area td:nth-child(2) { 
+    width: auto;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.board-list-area th:nth-child(3),
+.board-list-area td:nth-child(3) {
+    width: 15%;
+}
+.board-list-area th:nth-child(4),
+.board-list-area td:nth-child(4) {
+     width: 15%;
+}
+.board-list-area th:nth-child(5),
+.board-list-area td:nth-child(5) {
+     width: 8%;
+}
+
+.board-list-area th:nth-child(6),
+.board-list-area td:nth-child(6) {
+    width: 5%;
+    text-align: center;
+}
+
+
+.board-list-area td a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+
+.board-list-area td svg { 
+    vertical-align: middle; 
+}
+
+
+.board-list-area td[colspan="6"] {
+    font-style: italic;
+    color: #777;
+    padding: 30px; 
+}
+
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; 
+}
+
+.pagination {
+    display: flex;
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+.page-item {
+    margin: 0 4px;
+}
+
+.page-link {
+    display: block;
+    padding: 8px 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    color: #003c83; 
+    text-decoration: none; 
+    transition: background-color 0.3s ease;
+}
+
+.page-item.active .page-link {
+    background-color: #003c83; 
+    color: white; 
+    border-color: #003c83;
+    pointer-events: none;
+}
+
+
+.page-link:hover:not(.active .page-link) {
+    background-color: #f2f2f2; 
+    border-color: #b3b3b3;
+    color: #002c66;
+}
+
+.page-link span[aria-hidden="true"] {
+    font-weight: bold;
+}
+
     </style>
 
 </head>
 <body>
-    <center>
-    	<div class="board-head">
+    	<section class="board-list-area">
+    		<div class="board-head">
     		<h2>공지사항</h2>
     	</div>
 		<!-- 검색 기능의 폼 태그 -->
@@ -182,13 +254,13 @@ request.setCharacterEncoding("UTF-8");
 
         <!-- 공지사항 리스트 테이블 -->
         <table>
-            <tr height="20" align="center" bgcolor="lightgray">
+            <tr height="20" align="center" class="first-tr">
                 <td>No</td>
                 <td>제목</td>
                 <td>작성자</td>
                 <td>작성일</td>
                 <td>조회수</td>
-                <td>첨부파일</td>
+                <td>첨부</td>
             </tr>
             <!-- 등록된 공지사항이 없을 때 표시 -->
             <c:if test="${empty boardList}">
@@ -202,7 +274,7 @@ request.setCharacterEncoding("UTF-8");
                     <!-- 게시글 번호 계산 (현재 페이지와 총 게시글 수를 고려) -->
                     <td>${totalBoardCount - (pageNum - 1) * 10 - status.count + 1}</td>
                     <td>
-                        <a href="${contextPath}/bbs/noticeInfo.do?boardId=${boardVo.boardId}">
+                        <a href="${contextPath}/bbs/noticeInfo.do?boardId=${boardVo.boardId}" class="">
                             ${boardVo.title}
                         </a>
                     </td>
@@ -260,6 +332,6 @@ request.setCharacterEncoding("UTF-8");
                 </ul>
             </nav>
         </div>
-    </center>
+    	</section>
 </body>
 </html>

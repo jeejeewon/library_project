@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="Vo.BookVo" %>
-<% 
+<%
     String contextPath = request.getContextPath();
     BookVo book = (BookVo) request.getAttribute("book");
 %>

@@ -4,7 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%-- 이 페이지를 관리자만 접근가능하게하는 코드
+<%-- 이 페이지를 관리자만 접근가능하게하는 코드 --%>
 <%
 request.setCharacterEncoding("UTF-8");
 String contextPath = request.getContextPath();
@@ -19,7 +19,6 @@ if (id == null || !id.equals("admin")) {
 <%
 }
 %>
---%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%
@@ -32,108 +31,223 @@ request.setCharacterEncoding("UTF-8");
 <title>공지사항 글수정 - noticeModifyForm.jsp</title>
 
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-<style>
-.file-upload-label {
-	display: inline-block;
-	margin-right: 10px;
-	font-weight: bold;
-	background-color: #f0f0f0;
-	padding: 5px 10px;
-}
+	<style>
 
-.file-name {
-	font-style: italic;
-	color: #333;
-}
+	.wri-mod-form {
+		width:100%;
+		max-width: 800px;
+		margin: 20px auto;
+		background-color: #fff;
+		border-radius: 8px;
+	}
 
-.file-input {
-	display: none; /* 커스텀 라벨만 보이게 하려면 숨김 */
-}
+	.form-title {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+		padding-bottom: 15px;
+		border-bottom: 2px solid #003c83;
+	}
 
-.form-title {
-	display: flex;
-	justify-content: space-between;
-}
+	.form-title h2 {
+		margin: 0;
+		color: #003c83;
+		font-size: 24px;
+		font-weight: bold;
+	}
+
+	input[type="text"],
+	textarea {
+		width: 100%;
+		padding: 10px;
+		margin-bottom: 15px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		font-size: 1rem;
+		box-sizing: border-box;
+		resize: vertical;
+	}
+
+    textarea {
+        min-height: 500px;
+    }
+	input[type="button"],
+	input[type="submit"],
+	button[type="button"] {
+    	padding: 8px 18px;
+    	color: #fff;
+    	cursor: pointer;
+	}
+
+	input[type="submit"] {
+		background-color: #003c83;
+		color: white;
+	}
+
+	input[type="submit"]:hover {
+		 background-color: #002c66; 
+	}
+	input[type="button"] {
+		background-color: #f4f4f4;
+		color: #424242; 
+	}
+	input[type="button"]:hover {
+		background-color: #f2f2f2; 
+	}
+
+	button[type="button"] { 
+		background-color: #f4f4f4;
+		color: #424242;
+		font-size: 0.9rem;
+		padding: 8px 18px;
+		margin-left: 10px;
+		vertical-align: middle;
+		border: 1px solid #dedede;
+		border-radius: 4px;
+	}
+    button[type="button"]:hover {
+        background-color: #f2f2f2;
+    }
+	
+	.file-group {
+		margin-bottom: 15px;
+		border: 1px dashed #ccc;
+		padding: 15px;
+		border-radius: 4px;
+		background-color: #f9f9f9;
+	}
+    .file-group p {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+	.file-upload-label {
+		display: inline-block;
+		padding: 8px 15px;
+		background-color: #003c83;
+		color: white;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin-right: 10px;
+        vertical-align: middle;
+	}
+
+	.file-upload-label:hover {
+		background-color: #002c66;
+	}
+
+	.file-input {
+		display: none;
+	}
+
+	.file-name {
+		font-weight: bold;
+		color: #555;
+        vertical-align: middle;
+	}
+
+	.checkbox-group {
+		margin-top: 15px;
+		margin-bottom: 20px;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        display: inline-block;
+	}
+
+	.checkbox-label {
+		cursor: pointer;
+        font-size: 0.95rem;
+        color: #495057;
+	}
+
+	.checkbox-label input[type="checkbox"] {
+		margin-right: 5px;
+        vertical-align: middle;
+	}
+
+    #bannerPreview img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background-color: #fff;
+    }
+
 </style>
 
 </head>
 <body>
-	<center>
+	<section class="wri-mod-form">
 		<form name="noticeWriteForm" method="post" action="${contextPath}/bbs/noticeModify.do" enctype="multipart/form-data">
+			<div class="form-title">
+				<h2>공지사항 글 수정</h2>
+				<div>
+					<input type="button" onclick="location.href='${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}'" value="취소"/>
+					<input type="submit" value="수정">
+				</div>
+			</div>
+			
+			<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;" value="${board.title}" onfocus="this.select()">
+			
+			<div class="file-group">
+				<label for="file" class="file-upload-label">첨부파일 업로드</label>
+				<span class="file-name" id="fileName">
+					<c:choose>
+            			<c:when test="${not empty board.file}">${board.file}</c:when>
+            		<c:otherwise>선택된 파일 없음</c:otherwise>
+        			</c:choose>
+    			</span>
+				<!-- 첨부파일 삭제 버튼 (초기에는 숨김) -->
+				<button type="button" id="deleteFileBtn" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
+    			<input type="file" name="file" id="file" class="file-input">	
+			</div>
+			
+			<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
+			
+			<div class="file-group">
+				<p>배너 이미지를 등록하면 행사안내 게시판과 메인슬라이드에 노출됩니다.</p>
+    			<p>배너 이미지 권장 사이즈 1200px * 900px (4:3)</p>
+   				<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
+    			<span class="file-name" id="bannerFileName">
+        			<c:choose>
+            				<c:when test="${not empty board.bannerImg}">
+             					${board.bannerImg}
+            					</c:when>
+            				<c:otherwise>
+                					선택된 파일 없음
+            					</c:otherwise>
+        					</c:choose>
+    					</span>
+    					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
+    					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
+		                <button type="button" id="deleteBannerBtn" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
+    					<div id="bannerPreview">
+        					<c:if test="${not empty board.bannerImg}">
+            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
+        					</c:if>
+    					</div>
+			</div>
+			
 			<!-- 수정 대상 게시글 ID 전달 -->
 			<input type="hidden" name="boardId" value="${board.boardId}">
 			<!-- 원래 첨부파일 이름 전달 -->
 			<input type="hidden" name="originalFileName" value="${board.file}">
 			<!-- 원래 배너 이미지 이름 전달 -->
 			<input type="hidden" name="originalBannerName" value="${board.bannerImg}">
-			<div class="form-title">
-				<h2>공지사항 글 수정</h2>
-				<div>
-					<button type="button" onclick="location.href='${contextPath}/bbs/noticeInfo.do?boardId=${board.boardId}'">취소</button>
-					<input type="submit" value="수정">
-				</div>
-			</div>
-		
-			<table align="center" border="1">
-				<tr>
-					<td>
-						<input type="text" name="title" placeholder="제목을 입력하세요" style="width: 100%;" value="${board.title}" onfocus="this.select()">
-					</td>
-					<td>
-						<label for="file" class="file-upload-label">첨부파일 업로드</label>
-						<span class="file-name" id="fileName">
-							<c:choose>
-            					<c:when test="${not empty board.file}">
-                					${board.file}
-            					</c:when>
-            					<c:otherwise>
-                					선택된 파일 없음
-            					</c:otherwise>
-        					</c:choose>
-    					</span>
-						<!-- 첨부파일 삭제 버튼 (초기에는 숨김) -->
-						<button type="button" id="deleteFileBtn" style="<c:if test='${empty board.file}'>display:none;</c:if>">첨부파일 삭제</button>
-    					<input type="file" name="file" id="file" class="file-input">	
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요" style="width: 100%;">${board.content}</textarea>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<p>배너 이미지를 등록하면 행사안내 게시판과 메인슬라이드에 노출됩니다.</p>
-    					<p>배너 이미지 권장 사이즈 1200px * 900px (4:3)</p>
-    					<div id="bannerPreview">
-        					<c:if test="${not empty board.bannerImg}">
-            					<img src="${contextPath}/download.do?boardId=${board.boardId}&bannerImg=${board.bannerImg}&type=banner" style="width:200px; height:auto; border:1px solid #ccc; margin-top:5px;">
-        					</c:if>
-    					</div>
-						<label for="bannerImage" class="file-upload-label">배너이미지 업로드</label>
-    					<span class="file-name" id="bannerFileName">
-        					<c:choose>
-            					<c:when test="${not empty board.bannerImg}">
-                					${board.bannerImg}
-            					</c:when>
-            					<c:otherwise>
-                					선택된 파일 없음
-            					</c:otherwise>
-        					</c:choose>
-    					</span>
-    					<!-- 배너이미지 삭제 버튼 (초기에는 숨김) -->
-		                <button type="button" id="deleteBannerBtn" style="<c:if test='${empty board.bannerImg}'>display:none;</c:if>">배너이미지 삭제</button>
-    					<input type="file" name="bannerImage" id="bannerImage" class="file-input">
-					</td>
-				</tr>
-			</table>
 			
 			<!-- 히든 input 추가 (파일 삭제 여부 확인용) -->
 			<input type="hidden" id="deleteFile" name="deleteFile" value="false">
 			<input type="hidden" id="deleteBanner" name="deleteBanner" value="false">
 	
 		</form>
-	</center>
+	</section>>
 
 
 
