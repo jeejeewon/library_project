@@ -647,6 +647,11 @@
 	border-bottom: 1px solid #dedede;
 }
 
+#myPageMain .my-book .empty-message {
+	text-align: center;
+    padding-top: 1.5rem;
+} 
+
 #myPageMain .my-book .tit h3 {
 	font-size: 1.250rem;
 	font-weight: 600;
