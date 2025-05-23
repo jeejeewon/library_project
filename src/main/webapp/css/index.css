@@ -163,6 +163,7 @@
 	
 	.main-notice{
 		width:100%;
+		
 	}
 	.main-notice ul{
 		background-color: white;
@@ -170,7 +171,8 @@
 		border-radius: 10px;
 		height: 100%;
 		display: flex;
-		flex-direction: column; 
+		flex-direction: column;
+		border: 1px solid #999;
 	}
 	.main-notice ul li{
 		height:100%;

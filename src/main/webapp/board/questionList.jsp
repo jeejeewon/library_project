@@ -237,7 +237,9 @@ request.setCharacterEncoding("UTF-8");
     	
     	<div class="board-topbar">
     		<p class="totalCount">총 ${totalBoardCount}건, ${pageNum}/${totalPage}페이지</p>
-        	<a href="${contextPath}/bbs/questionWrite.do" class="write-btn">글쓰기</a>
+    		<c:if test="${not empty sessionScope.id}">
+    			<a href="${contextPath}/bbs/questionWrite.do" class="write-btn">글쓰기</a>
+			</c:if>
     	</div>
 
         <!-- 문의게시판 리스트 테이블 -->
