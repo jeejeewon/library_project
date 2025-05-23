@@ -381,7 +381,7 @@ public class MemberController extends HttpServlet {
 				RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 				dispatch.forward(request, response); // 지정된 페이지로 포워딩
 			} else {
-				response.sendRedirect("view/main");
+				response.sendRedirect(request.getContextPath() + "/view/main");
 			}
 
 		} catch (Exception e) {

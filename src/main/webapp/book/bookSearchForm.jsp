@@ -80,7 +80,7 @@
     <form action="<%= contextPath %>/books/bookSearch.do" method="get" class="search-form">
         <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색" required />
         <button type="submit" class="btn btn-green">검색</button>
-        <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
+        <a href="<%= contextPath %>/view/main" class="btn btn-blue">메인으로</a>
     </form>
 </div>
 </body>

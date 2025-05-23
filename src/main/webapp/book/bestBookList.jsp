@@ -161,7 +161,7 @@
 <!--             <input type="text" name="keyword" placeholder="도서명, 저자, 출판사, 분야 검색"> -->
 <!--             <button type="submit" class="btn btn-green">검색</button> -->
 <!--         </form> -->
-        <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
+        <a href="<%= contextPath %>/view/main" class="btn btn-blue">메인으로</a>
     </div>
 
     <div class="title">인기 도서</div>

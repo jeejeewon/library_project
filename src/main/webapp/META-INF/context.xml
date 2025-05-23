@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 <!-- JNDI기술을 사용하여 접속할 DB정보를 지정 -->
-<!-- 	 <Resource 
+	 <Resource 
 	name="jdbc/jspbeginner"
 	auth="Container"
 	type="javax.sql.DataSource"
@@ -9,7 +9,7 @@
 	url="jdbc:mysql://localhost:3306/jspbeginner"
 	username="jspid"
 	password="jsppass"	
-	/> -->
+	/> 
 </Context>
 
 

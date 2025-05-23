@@ -183,7 +183,7 @@
 	        </select>
 	        <button type="submit" class="btn btn-green">검색</button>
 	    </form>
-	    <a href="<%= contextPath %>/main.jsp" class="btn btn-blue">메인으로</a>
+	    <a href="<%= contextPath %>/view/main" class="btn btn-blue">메인으로</a>
 	</div>
 
     <div class="title">전체 도서</div>
