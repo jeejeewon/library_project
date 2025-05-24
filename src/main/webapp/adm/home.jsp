@@ -48,7 +48,7 @@ if (id == null || !id.equals("admin")) {
 			<ul>
 				<li><a href="<%=contextPath%>/admin/memberSearch">회원 관리</a></li>
 				<li><a href="<%=contextPath%>/books/adminBook.do" targer="_blank">도서 관리</a></li>
-				<li><a>시설 관리</a></li>
+				<li><a href="<%=contextPath%>/reserve/reserveAdmin">시설 관리</a></li>
 				<li><a href="<%=contextPath%>/bbs/noticeList.do" targer="_blank">게시판 관리</a></li>
 			</ul>
 		</div>
