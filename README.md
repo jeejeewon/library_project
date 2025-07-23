@@ -46,48 +46,24 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 ---
 
 
-## 👩‍💻 담당 업무 (윤지원)
+## 👩‍💻 담당 업무 (이지원)
 
-### 📌 게시판 모듈 전체 구현  
-공지사항, 서평, 문의, 배너 게시판 등 전체 게시판 기능을 기획하고 구현하였습니다.
-
-<img width="904" height="626" alt="4" src="https://github.com/user-attachments/assets/bfeb5427-aa0c-492c-8b8e-d4815b7c2418" />
-
+### 📌 공통 레이아웃 설계
+- head.jsp, center.jsp, tail.jsp 레이아웃
+- common.css
 ---
 
-### 📌 게시글 등록 / 수정 / 삭제 / 조회 기능 구현
-
-<img width="895" height="672" alt="5" src="https://github.com/user-attachments/assets/79f91ea3-7a8d-4f14-9ace-1e9ceb3dfbdb" />
-
+### 📌 회원 관련 기능
+- 로그인, 로그아웃, 회원가입, 정보 수정, 탈퇴, 아이디 찾기 기능
+- 비빌번호 찾기 시 인증번호 전송
+- 마이페이지
+- 관리자용 회원 관리 페이지
 ---
 
-### 📌 게시판별 리스트 & 상세 페이지 및 데이터 연동 처리
-
-<img width="895" height="646" alt="6" src="https://github.com/user-attachments/assets/77102e4a-db4c-445e-af27-93cd1576d284" />
-
+### 📌 소셜 로그인 기능 구현
+- 카카오 로그인 API
 ---
 
-### 📌 첨부파일 업로드 기능 구현  
-- 서버 디렉토리에 저장되는 구조로 설계
-
----
-
-### 📌 메인 페이지에 최신 게시글 5건 노출
-
-<img width="835" height="548" alt="1" src="https://github.com/user-attachments/assets/970b9730-96ef-47bb-84aa-87f2c022be1e" />
-<img width="872" height="527" alt="2" src="https://github.com/user-attachments/assets/6079f5a7-4fb5-4eca-b858-5ed33dd2a09d" />
-
----
-
-### 📌 게시판용 테이블 설계 및 DB 연동  
-- MySQL 기반 테이블 설계 및 연동 처리
-
----
-
-### 📌 JSP/Servlet 기반 아키텍처 설계 및 유지보수  
-- MVC 구조 내에서 게시판 기능 중심의 흐름 설계 및 유지
-
----
 
 ## 📄 프로젝트 소개서
 
