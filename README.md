@@ -3,15 +3,11 @@
 Java Servlet & JSP 기반의 도서관 사이트입니다.  
 게시판 중심 기능을 포함하여 웹 애플리케이션의 주요 기능들을 직접 설계하고 구현하였습니다.
 
----
-
 ## 프로젝트 개요
 
 - **프로젝트명**: 도서관 사이트  
 - **개발 기간**: 2025.04.23 ~ 2025.05.23 (1개월)  
 - **참여 인원**: 4명  
-
----
 
 ## 개발 환경
 
@@ -36,34 +32,26 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
   ![SQL Developer](https://img.shields.io/badge/SQL_Developer-0F4B7F?style=for-the-badge&logo=oracle&logoColor=white)
   ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)  
 
-
 ## DB 구성
 
 아래는 프로젝트에서 사용된 데이터베이스 테이블 간 관계(ERD)입니다.
 
 <img width="879" height="681" alt="DB" src="https://github.com/user-attachments/assets/1d4a805c-da97-4dd2-9995-f5924ed8f5b3" />
 
----
-
-
 ## 담당 업무 (이지원)
 
 ### 공통 레이아웃 설계
 - head.jsp, center.jsp, tail.jsp 레이아웃
 - common.css
----
 
 ### 회원 관련 기능
 - 로그인, 로그아웃, 회원가입, 정보 수정, 탈퇴, 아이디 찾기 기능
 - 비빌번호 찾기 시 인증번호 전송
 - 마이페이지 (회원 정보 조회)
 - 관리자용 회원 관리 페이지
----
 
 ### 소셜 로그인 기능 구현
 - 카카오 로그인 API
----
-
 
 ## 프로젝트 소개서
 
@@ -71,5 +59,3 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 아래 버튼을 눌러 PDF 파일을 다운로드할 수 있습니다.
 
 [PDF 다운로드](https://raw.githubusercontent.com/YOON-J11/library_project/develop/LibraryProject_ppt.pdf)
-
-
