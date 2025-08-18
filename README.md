@@ -38,7 +38,7 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 
 <img width="879" height="681" alt="DB" src="https://github.com/user-attachments/assets/1d4a805c-da97-4dd2-9995-f5924ed8f5b3" />
 
-## 담당 업무 (이지원
+## 담당 업무
 
 ### 공통 레이아웃 설계
 - head.jsp, center.jsp, tail.jsp 레이아웃
