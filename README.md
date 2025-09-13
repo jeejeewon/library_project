@@ -46,11 +46,10 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
   <img width="1500" height="1230" alt="L2PI1SF" src="https://github.com/user-attachments/assets/3280cbca-ed57-43a0-9493-7165a12be465" />
 
 ### 회원 관련 기능
-- 로그인, 로그아웃, 회원가입, 정보 수정, 탈퇴, 아이디 찾기 기능  
-- 비빌번호 찾기 시 인증번호 전송
+- 로그인, 로그아웃, 회원가입, 아이디 찾기, 비밀번호 찾기 등 회원 관련 전반 기능  
   <img width="1000" height="1179" alt="8CMf9rh" src="https://github.com/user-attachments/assets/93bc5a82-c334-4c4f-870d-3f0eeb1f24e9" />
 
-- 마이페이지 (회원 정보 조회)
+- 마이페이지 (회원 정보 조회, 정보 수정 및 탈퇴)
   <img width="1429" height="710" alt="SbkzYcC" src="https://github.com/user-attachments/assets/20bd4aad-0f94-4d7a-abfe-a46c15815450" />
 
 - 관리자용 회원 관리 페이지
