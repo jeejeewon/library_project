@@ -64,4 +64,4 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 팀원별 기능, DB 설계, 전체 흐름 등을 정리한 프로젝트 발표 자료입니다.  
 아래 버튼을 눌러 PDF 파일을 다운로드할 수 있습니다.
 
-[도서관프로젝트.pdf](https://github.com/user-attachments/files/22524016/default.pdf)
+[PDF 다운로드](https://raw.githubusercontent.com/jeejeewon/library_project/main/도서관프로젝트.pdf)
