@@ -36,7 +36,8 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 
 아래는 프로젝트에서 사용된 데이터베이스 테이블 간 관계(ERD)입니다.
 
-<img width="879" height="681" alt="DB" src="https://github.com/user-attachments/assets/1d4a805c-da97-4dd2-9995-f5924ed8f5b3" />
+![DB](https://github.com/user-attachments/assets/cfa53297-7c4b-41e4-bca6-485271a72890)
+
 
 ## 담당 업무
 
@@ -63,4 +64,4 @@ Java Servlet & JSP 기반의 도서관 사이트입니다.
 팀원별 기능, DB 설계, 전체 흐름 등을 정리한 프로젝트 발표 자료입니다.  
 아래 버튼을 눌러 PDF 파일을 다운로드할 수 있습니다.
 
-[PDF 다운로드](https://raw.githubusercontent.com/YOON-J11/library_project/develop/LibraryProject_ppt.pdf)
+[PDF 다운로드](https://github.com/user-attachments/files/22523999/default.pdf)
