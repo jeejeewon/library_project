@@ -1,67 +1,70 @@
-# 도서관 사이트 제작 프로젝트 (Library Web Project)
+# Library Web Project
+**Java Servlet & JSP 기반의 도서관 통합 관리 시스템**
 
-Java Servlet & JSP 기반의 도서관 사이트입니다.  
-게시판 기능을 포함한 웹 애플리케이션의 주요 기능들을 직접 설계하고 구현하였습니다.
+본 프로젝트는 도서 대출 관리와 사용자 커뮤니티 기능을 결합한 웹 애플리케이션입니다. 사용자 중심의 UI/UX 설계를 바탕으로 효율적인 정보 전달과 직관적인 인터페이스 구현에 초점을 맞추어 진행했습니다.
 
-## 프로젝트 개요
+---
 
-- **프로젝트명**: 도서관 사이트  
-- **개발 기간**: 2025.04.23 ~ 2025.05.23 (1개월)  
-- **참여 인원**: 4명  
+## 1. 프로젝트 개요
 
-## 개발 환경
+- **프로젝트명**: 도서관 통합 관리 및 사용자 플랫폼 구축
+- **개발 기간**: 2025.04.23 ~ 2025.05.23 (1개월)
+- **참여 인원**: 4명
+- **핵심 목표**: MVC 아키텍처 기반의 동적 콘텐츠 렌더링 및 사용자 편의성을 고려한 인터페이스 설계
 
-### Frontend  
-  ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-  ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-  ![JQuery](https://img.shields.io/badge/JQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)  
+---
 
-### Backend
-  ![Apache Tomcat](https://img.shields.io/badge/Tomcat-005571?style=for-the-badge&logo=apachetomcat&logoColor=white)
-  ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
-  ![JSP](https://img.shields.io/badge/JSP-007396?style=for-the-badge&logo=java&logoColor=white)
-  ![Servlet](https://img.shields.io/badge/Servlet-2C2255?style=for-the-badge&logo=java&logoColor=white)
-  ![JDK](https://img.shields.io/badge/JDK-007396?style=for-the-badge&logo=java&logoColor=white)  
+## 2. 기술 스택 (Tech Stack)
 
-### Database
-  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
+### UI/UX & Frontend
+- HTML5 / CSS3 / JavaScript / jQuery
 
-### 개발 도구
-  ![Eclipse](https://img.shields.io/badge/Eclipse-2C2255?style=for-the-badge&logo=eclipse&logoColor=white)
-  ![SQL Developer](https://img.shields.io/badge/SQL_Developer-0F4B7F?style=for-the-badge&logo=oracle&logoColor=white)
-  ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)  
+### Backend & Server
+- Java (JDK) / JSP / Servlet
+- Apache Tomcat
 
-## DB 구성
+### Database & Tools
+- MySQL
+- Eclipse / SQL Developer / Git
 
-아래는 프로젝트에서 사용된 데이터베이스 테이블 간 관계(ERD)입니다.
+---
 
-![DB](https://github.com/user-attachments/assets/cfa53297-7c4b-41e4-bca6-485271a72890)
+## 3. 데이터베이스 설계 (ERD)
 
+![Database ERD](https://github.com/user-attachments/assets/cfa53297-7c4b-41e4-bca6-485271a72890)
 
-## 담당 업무
+---
 
-### 공통 레이아웃 설계
-- head.jsp, center.jsp, tail.jsp 레이아웃
-- common.css
-  <img width="1500" height="1230" alt="L2PI1SF" src="https://github.com/user-attachments/assets/3280cbca-ed57-43a0-9493-7165a12be465" />
+## 4. 담당 업무 및 UI 구현 상세
 
-### 회원 관련 기능
-- 로그인, 회원가입, 아이디 찾기, 비밀번호 찾기 등 회원 관련 기능  
-  <img width="1000" height="1179" alt="8CMf9rh" src="https://github.com/user-attachments/assets/93bc5a82-c334-4c4f-870d-3f0eeb1f24e9" />
+### 레이아웃 모듈화 및 시각적 일관성 확보
+- **Composite View 패턴 적용**: `head.jsp`, `center.jsp`, `tail.jsp`로 화면 구조를 분리해서 코드의 가독성을 높이고 유지보수가 용이한 모듈형 레이아웃을 구현했습니다.
+- **Global Style 정의**: `common.css`를 통해 프로젝트 전반의 폰트, 컬러 시스템, 여백 등을 규격화해서 사용자에게 일관된 시각적 경험(Visual Consistency)을 제공하고자 노력했습니다.
 
-- 마이페이지 (회원 정보 조회, 정보 수정 및 탈퇴)
-  <img width="1429" height="710" alt="SbkzYcC" src="https://github.com/user-attachments/assets/20bd4aad-0f94-4d7a-abfe-a46c15815450" />
+### 사용자 인증 및 회원 관리 시스템
+- **Flow 설계**: 회원가입부터 로그인, 아이디/비밀번호 찾기까지 이어지는 사용자 흐름을 직관적으로 설계했습니다.
+- **개인화 인터페이스**: 마이페이지를 통해 사용자 본인의 정보를 한눈에 파악하고 관리할 수 있는 대시보드 형태의 UI를 구현했습니다.
+- **API 통합**: Kakao Login API를 연동해서 가입 절차를 간소화하고 접근성을 향상시켰습니다.
 
-- 관리자용 회원 관리 페이지
-  <img width="1180" height="700" alt="qmfkzZm" src="https://github.com/user-attachments/assets/f9943bdb-aebc-4de5-8f2b-1a5231372fee" />
+### 관리자 전용 데이터 제어 유닛
+- **데이터 그리드 구현**: 전체 회원 목록을 효율적으로 모니터링할 수 있는 관리자 전용 뷰를 구축해서 운영 관리의 효율성을 높였습니다.
 
-### 소셜 로그인 기능 구현
-- 카카오 로그인 API
+---
 
-## 프로젝트 소개서
+## 5. 주요 구현 화면
 
-팀원별 기능, DB 설계, 전체 흐름 등을 정리한 프로젝트 발표 자료입니다.  
-아래 버튼을 눌러 PDF 파일을 다운로드할 수 있습니다.
+| 공통 레이아웃 설계 | 회원 인증 시스템 인터페이스 |
+| :--- | :--- |
+| ![Layout](https://github.com/user-attachments/assets/3280cbca-ed57-43a0-9493-7165a12be465) | ![Auth](https://github.com/user-attachments/assets/93bc5a82-c334-4c4f-870d-3f0eeb1f24e9) |
 
-[PDF 다운로드](https://raw.githubusercontent.com/jeejeewon/library_project/main/도서관프로젝트.pdf)
+| 마이페이지 대시보드 | 관리자 회원 관리 시스템 |
+| :--- | :--- |
+| ![Mypage](https://github.com/user-attachments/assets/20bd4aad-0f94-4d7a-abfe-a46c15815450) | ![Admin](https://github.com/user-attachments/assets/f9943bdb-aebc-4de5-8f2b-1a5231372fee) |
+
+---
+
+## 6. 프로젝트 분석 자료
+
+프로젝트의 상세 기능 명세와 설계 의도는 아래 발표 자료에 정리되어 있습니다.
+
+[프로젝트 소개서(PDF) 다운로드](https://raw.githubusercontent.com/jeejeewon/library_project/main/도서관프로젝트.pdf)
