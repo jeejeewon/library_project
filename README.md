@@ -14,7 +14,7 @@
 
 ---
 
-## 2. 기술 스택 (Tech Stack)
+## 2. 기술 스택
 
 ### UI/UX & Frontend
 - HTML5 / CSS3 / JavaScript / jQuery
